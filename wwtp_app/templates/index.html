@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+
+{% block title %}
+
+    <h1>Welcome to Home page!!!</h1>
+
+{% endblock %}
+
+
+{% block content %}
+
+    
+    <p>Hello board game player! Let's play!</p>
+    {% for x in range(3) %}
+        <h3>{{x}} - Let's play!!!</h3>
+    {% endfor %}
+
+    {% for name in listName %}
+        <h3>{{name}}</h3>
+    {% endfor %}
+
+{% endblock %}

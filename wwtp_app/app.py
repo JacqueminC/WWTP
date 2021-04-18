@@ -7,8 +7,10 @@ app.register_blueprint(bpTable, url_prefix="/table")
 app.register_blueprint(bpHome, ulr_prefix="/home")
 
 @app.route("/")
+@app.route("/index")
 def index():
-    return "index"
+    return render_template("index.html",
+                            listName = ["Cédric", "Eléanore", "Emeline"])
 
 if __name__ == "__main__":
     app.run(debug=True)
