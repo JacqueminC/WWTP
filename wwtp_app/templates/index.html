@@ -14,9 +14,10 @@
     {% for x in range(3) %}
         <h3>{{x}} - Let's play!!!</h3>
     {% endfor %}
+    {{test}}
 
-    {% for name in listName %}
-        <h3>{{name}}</h3>
+    {% for value in test %}
+        <h3>{{value}}</h3>
     {% endfor %}
 
 {% endblock %}
