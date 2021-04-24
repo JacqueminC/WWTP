@@ -5,4 +5,4 @@ bpHome = Blueprint("home", __name__, static_folder="static", template_folder="te
 ##@bpHome.route("/")
 @bpHome.route("/home")
 def home():
-    return "Welcome Home!!!"
+    return render_template("home.html")

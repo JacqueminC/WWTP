@@ -2,6 +2,6 @@ from flask import Blueprint, render_template
 
 bpTable = Blueprint("table", __name__, static_folder="static", template_folder="templates")
 
-@bpTable.route("/table")
+@bpTable.route("/tableForm")
 def tableForm():
-    return "Table form!!!"
+    return render_template("tableForm.html")
