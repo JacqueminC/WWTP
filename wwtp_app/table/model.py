@@ -1,14 +1,7 @@
-from joueur.model import Joueur 
+from joueur.model import Joueur
+from datetime import date, datetime, timedelta
 
 class Table:
-    idTable = ""
-    #jeuxLibre True pour jeux libre ou False pour jeux prédéfini
-    nbPlace = 4
-    date = ""
-    ville = ""
-    ageMin = 18
-    regle = False
-    noteMin = 0
 
     def __init__(self, hote , jeuxLibre, nbPlace, jeux, date, ville, ageMin, regle, noteMin):
         self.hote = hote
@@ -20,15 +13,25 @@ class Table:
             self.nbPlace = nbPlace
         
         if jeuxLibre == True:
-            self.jeux = None
+            del jeux[:]
+            self.jeux = jeux
         elif jeuxLibre == False and len(jeux) < 1:
-            self.jeuxLibre == True
+            self.jeuxLibre = True
         else:
             self.jeux = jeux
 
         self.jeux = jeux
-        self.date = date
-        self.ville = ville
+
+        if date < datetime.today() + timedelta(hours=2):
+            raise Exception("La date ne peut pas être antérieur à la date actuelle PLUS 2h")
+        else:
+            self.date = date            
+        
+        if ville == "" or ville == None:
+            raise Exception("La ville ne peut pas être vide")
+        else:
+            self.ville = ville
+
         self.ageMin = ageMin
         self.regle = regle
         self.noteMin = noteMin

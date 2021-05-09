@@ -31,7 +31,7 @@ def test_new_table():
 
     
     table1 = Table(joueur1, True, 5, jeux1, dateAfter1, "La comté", 18, False, False)
-    assert table1.jeux == None, "Jeux libre à été choisi, la liste ne doit pas être enregistrée"
+    assert len(table1.jeux) == 0, "Jeux libre à été choisi, la liste ne doit pas être enregistrée"
 
     table1 = Table(joueur1, False, 5, jeux2, dateAfter1, "La comté", 18, False, False)
     assert table1.jeuxLibre == True, "Aucun jeu n'a été encodé la table doit passer en jeux libre"
