@@ -29,7 +29,6 @@ def test_new_table():
     except Exception as e:
         pytest.fail("Aucune erreur ne doit être retourné - " + str(e))
 
-    
     table1 = Table(joueur1, True, 5, jeux1, dateAfter1, "La comté", 18, False, False)
     assert len(table1.jeux) == 0, "Jeux libre à été choisi, la liste ne doit pas être enregistrée"
 
@@ -43,6 +42,4 @@ def test_new_table():
     with pytest.raises(Exception) as e:
         table1 = Table(joueur1, False, 5, jeux2, dateAfter1, "", 18, False, False)
     assert "La ville ne peut pas être vide" in str(e.value)
-
-
 
