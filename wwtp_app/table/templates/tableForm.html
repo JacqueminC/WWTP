@@ -1,15 +1,81 @@
 {% extends "base.html" %}
+{% import "bootstrap/wtf.html" as wtf%}
 
 {% block title %}
 
-    <h1>Page de création d'une table</h1>
+    <title>Page de création d'une table</title>
 
 {% endblock %}
 
 
 {% block content %}
 
-    
+
+
+<div class="container">
     <p>formulaire de création d'une table</p>
 
+    <form method="POST" action="{{url_for('table.creationTable')}}">
+        {{form.csrf_token}}
+                
+        {{wtf.form_field(form.jeuxLibre)}}
+        {{wtf.form_field(form.nbPlace)}}
+
+        <div class="ml-1 px-5" style="width: 400px;">            
+
+            {{wtf.form_field(form.jeux)}}
+
+        </div>
+
+        {{wtf.form_field(form.date)}}
+        {{wtf.form_field(form.ville)}}
+        {{wtf.form_field(form.ageMin)}}
+        {{wtf.form_field(form.age)}}
+        {{wtf.form_field(form.regle)}}
+        {{wtf.form_field(form.noteMin)}}
+        {{ form.note.label("Note minimum") }}
+        {{ form.note(min=0, max=5, oninput="outputUpdate(value)") }}
+        <output for="age" id="selected-note">{{ form.noteMin.data }}</output>
+
+        <br>
+
+    <input type="submit" value="Créer" class="btn btn-primary">
+    </form>
+
+</div>  
+
 {% endblock %}
+
+<!--        
+        {{form.name.label}}
+        {{form.name}}
+        {{form.city.label}}
+        {{form.city}}
+
+        OR
+
+        {{ form.jeuxLibre.label("table de jeux libre?") }}
+        {{ form.jeuxLibre }}
+
+        {{ form.nbPlace.label("Nombre de place libre") }}
+        {{ form.nbPlace }}
+
+        {{ form.jeux.label("Jeux") }}
+        {{ form.jeux }}
+
+        {{ form.date.label("Date") }}
+        {{ form.date }}
+
+        {{ form.ville.label("Ville") }}
+        {{ form.ville }}
+
+        {{ form.ageMin.label("Age minimum") }}
+        {{ form.ageMin }}
+
+        {{ form.regle.label("Connaissance des règles requises?") }}
+        {{ form.regle }}
+
+        OR
+
+        wtf.quick_form(form)
+-->

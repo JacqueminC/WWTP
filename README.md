@@ -2,10 +2,18 @@
 Projet TFE
 
 installer un environement virtuel (env)
-lancer .\env\Scripts\active (env)
+python3 -m venv venv
+lancer l'environement virtuel
+.\env\Scripts\active (env)
 
-installer les dépendances avec pip (en étant sous env)
+installer les dépendances avec pip en étant sous env
+pip install flask
+pip install pytest
+pip install flask_pymongo
+pip install flask-wtf
+pip install flask-bootstrap
 
+pip list
 python .\app.py
 
 

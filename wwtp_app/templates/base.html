@@ -47,9 +47,14 @@
         </form>
       </div>
     </nav>
+    <script>
+      function outputUpdate(note) {
+          document.querySelector('#selected-note').value = note;
+      }
+    </script>
 </head>
 
-<body>
+<body onload="outputUpdate(3)">
   {% block title %}
 
   {% endblock %}
