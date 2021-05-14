@@ -22,8 +22,6 @@ dateAfter1 = datetime.today() + timedelta(days=60)
 
 
 def test_new_table(): 
-    #TODO generate bad var for test
-
     try:
         table1 = Table(joueur1, False, 4, jeux1, dateAfter1, "La comté", 18, False, False)
     except Exception as e:
@@ -43,3 +41,6 @@ def test_new_table():
         table1 = Table(joueur1, False, 5, jeux2, dateAfter1, "", 18, False, False)
     assert "La ville ne peut pas être vide" in str(e.value)
 
+def test_canCreateTable():
+    #TODO
+    print("TODO")

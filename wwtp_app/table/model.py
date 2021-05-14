@@ -55,7 +55,7 @@ class Table:
             raise Exception("Le format de regle n'est pas un boolean")
         self.noteMin = noteMin
 
-
-
-
-        
+    def canCreateTable(self):
+        #est-ce que l'hote peut créer cette table?
+        #n'est il pas déjà inscrit sur une autre table comme hote ou joueur à - ou + de 8h
+        print("TODO")
