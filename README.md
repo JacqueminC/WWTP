@@ -12,6 +12,7 @@ pip install pytest
 pip install flask_pymongo
 pip install flask-wtf
 pip install flask-bootstrap
+pip install flask_admin
 
 pip list
 python .\app.py
