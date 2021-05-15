@@ -23,7 +23,7 @@
 
         <div class="ml-1 px-5" style="width: 400px;">            
 
-            {{wtf.form_field(form.jeux)}}
+            {{ form.jeux() }}
 
         </div>
 
@@ -45,37 +45,3 @@
 </div>  
 
 {% endblock %}
-
-<!--        
-        {{form.name.label}}
-        {{form.name}}
-        {{form.city.label}}
-        {{form.city}}
-
-        OR
-
-        {{ form.jeuxLibre.label("table de jeux libre?") }}
-        {{ form.jeuxLibre }}
-
-        {{ form.nbPlace.label("Nombre de place libre") }}
-        {{ form.nbPlace }}
-
-        {{ form.jeux.label("Jeux") }}
-        {{ form.jeux }}
-
-        {{ form.date.label("Date") }}
-        {{ form.date }}
-
-        {{ form.ville.label("Ville") }}
-        {{ form.ville }}
-
-        {{ form.ageMin.label("Age minimum") }}
-        {{ form.ageMin }}
-
-        {{ form.regle.label("Connaissance des règles requises?") }}
-        {{ form.regle }}
-
-        OR
-
-        wtf.quick_form(form)
--->
