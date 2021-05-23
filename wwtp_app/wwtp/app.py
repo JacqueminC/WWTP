@@ -1,4 +1,4 @@
-print('__file__={0:<35} | __name__={1:<25} | __package__={2:<25}'.format(__file__,__name__,str(__package__)))
+#print('__file__={0:<35} | __name__={1:<25} | __package__={2:<25}'.format(__file__,__name__,str(__package__)))
 
 from flask import Flask, render_template
 from flask_pymongo import PyMongo
@@ -11,8 +11,6 @@ app = Flask(__name__)
 
 app.config['SECRET_KEY'] = "secretkey"
 app.config["MONGO_URI"] = "mongodb://localhost:27017/wwtp"
-
-size = 42
 
 Bootstrap(app)
 
