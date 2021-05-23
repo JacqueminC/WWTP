@@ -24,5 +24,17 @@ Quand j'ai voulu installer sur l'environement
 
 J'ai du le faire en local pour que cela puisse également fonctionner
 
+J'ai eu un soucis au niveau des imports, impossible d'avoir accès à la variable app dans app.py, il a fallut modifier la structure avec qu'il concidére app.py dans un package
+### Ceci permet de voir le nom du fichier, le nom et le package
+print('__file__={0:<35} | __name__={1:<25} | __package__={2:<25}'.format(__file__,__name__,str(__package__)))
 
+pour la lancer l'app j'utilisais ceci:
+if __name__ == "__main__":
+    app.run(debug=True)
+
+mais avec la modfication je dois faire ceci:
+if __name__ == "wwtp.app":
+    app.run(debug=True)
+
+mon app.py est bien dans un package mais de ce fait n'est plus comme __main__
 

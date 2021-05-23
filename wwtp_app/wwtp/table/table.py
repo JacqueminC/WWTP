@@ -6,7 +6,7 @@ from wtforms.fields.html5 import IntegerRangeField, DateTimeField, DateField, Ti
 from wtforms.form import Form
 from wtforms.validators import InputRequired, ValidationError
 from datetime import datetime, timedelta
-from table.model import Table
+from wwtp.table.model import Table
 
 bpTable = Blueprint("table", __name__, template_folder="templates")
 
