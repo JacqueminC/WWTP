@@ -32,11 +32,14 @@
 
             {% endfor %}
 
+            {% for error in form.jeux.errors %}
+              <span style="color: red;">{{ error }}</span>
+            {% endfor %}
+
         </div>
 
         {{wtf.form_field(form.date)}}
-        {{wtf.form_field(form.heure)}}
-
+        {{wtf.form_field(form.heure)}}   
 
         {{wtf.form_field(form.ville)}}
         {{wtf.form_field(form.ageMin)}}
