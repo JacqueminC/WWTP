@@ -1,5 +1,6 @@
 from joueur.model import Joueur
-from datetime import date, datetime, timedelta
+from table.repo import RepoTable
+from datetime import datetime, timedelta
 
 class Table:
 
@@ -55,7 +56,8 @@ class Table:
             raise Exception("Le format de regle n'est pas un boolean")
         self.noteMin = noteMin
 
-    def canCreateTable(self):
+    def canCreateTable():
         #est-ce que l'hote peut créer cette table?
         #n'est il pas déjà inscrit sur une autre table comme hote ou joueur à - ou + de 8h
-        print("TODO")
+        r = RepoTable.FindAll()
+        return r

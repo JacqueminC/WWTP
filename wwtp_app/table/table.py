@@ -1,11 +1,12 @@
-from flask import Blueprint, app, render_template
+from flask import Blueprint, render_template
 from flask_wtf import FlaskForm
 from wtforms import StringField, IntegerField, BooleanField, FormField, FieldList
 from wtforms import validators
 from wtforms.fields.html5 import IntegerRangeField, DateTimeField, DateField, TimeField
 from wtforms.form import Form
 from wtforms.validators import InputRequired, ValidationError
-from datetime import datetime, time, timedelta
+from datetime import datetime, timedelta
+from table.model import Table
 
 bpTable = Blueprint("table", __name__, template_folder="templates")
 
@@ -29,7 +30,7 @@ class CreationTableForm(FlaskForm):
     def validate_jeux(self, jeux):        
         if self.jeuxLibre.data == False:
             if self.jeux[0].nom.data == None or self.jeux[0].nom.data == "":
-                raise ValidationError("Vous devez indiquer un jeu si vous êtes pas en jeux libre!")
+                raise ValidationError("Vous devez indiquer un jeu si vous n'êtes pas en jeux libre!")
      
 
     def validate_age(self, age):
@@ -58,6 +59,10 @@ def creationTable():
     form = CreationTableForm()
 
     if form.validate_on_submit():
-       return "Form envoyé! {} and {}".format(form.nbPlace.data, form.ville.data)
+       #return "Form envoyé! {} and {}".format(form.nbPlace.data, form.ville.data)
+       result = Table.canCreateTable()
+
+       return result
+       
 
     return render_template("tableForm.html", form=form)
