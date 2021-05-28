@@ -14,8 +14,8 @@ app.config["MONGO_URI"] = "mongodb://localhost:27017/wwtp"
 
 Bootstrap(app)
 
-mongodb_client = PyMongo(app)
-db = mongodb_client.db
+#mongodb_client = PyMongo(app)
+#db = mongodb_client.db
 
 app.register_blueprint(bpTable, url_prefix="/table")
 app.register_blueprint(bpHome, ulr_prefix="/home")
@@ -23,10 +23,7 @@ app.register_blueprint(bpHome, ulr_prefix="/home")
 @app.route("/")
 @app.route("/index")
 def index():
-    #testDb = mongo.db.cedric.find()
-    #testDb = mdb.cedric.find_one_or_404({"name": "Cédric"})
-    #db.cedric.insert_one({"name":"frodon", "last":"Sacquet", "job":"destroy one ring"})
-
+    
     return render_template("index.html")
 
 if __name__ == "wwtp.app":
