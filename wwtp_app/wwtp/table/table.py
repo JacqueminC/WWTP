@@ -1,12 +1,13 @@
 from flask import Blueprint, render_template
 from flask_wtf import FlaskForm
+from pymongo import results
 from wtforms import StringField, IntegerField, BooleanField, FormField, FieldList
 from wtforms import validators
 from wtforms.fields.html5 import IntegerRangeField, DateTimeField, DateField, TimeField
 from wtforms.form import Form
 from wtforms.validators import InputRequired, ValidationError
 from datetime import datetime, timedelta
-from table.model import Table
+from .model import Table
 
 bpTable = Blueprint("table", __name__, template_folder="templates")
 
@@ -44,7 +45,6 @@ class CreationTableForm(FlaskForm):
     
     def validate_date(self, date):
         now = datetime.now() + timedelta(hours=2)
-        print(now)
         dtString = str(date.data) + " " + str(self.heure.data)
         dtForm = datetime.strptime(dtString, '%Y-%m-%d %H:%M:%S')
 
@@ -60,9 +60,15 @@ def creationTable():
 
     if form.validate_on_submit():
        #return "Form envoyé! {} and {}".format(form.nbPlace.data, form.ville.data)
-       result = Table.canCreateTable()
 
-       return result
+       result = Table.canCreateTable(1, form.date.data, form.heure.data)
+
+       if result >= 1:
+           ve = ValidationError("Impossible de créer une table car vous participez déjà à une table pour le moment choisi")
+           return render_template("tableForm.html", form=form, ve=ve)
+       else:
+           Table.createTable(form)
+           return "Ok la table doit maintenant être créée dans la DB et vous devait avoir l'information afficher pop up" 
        
 
     return render_template("tableForm.html", form=form)
