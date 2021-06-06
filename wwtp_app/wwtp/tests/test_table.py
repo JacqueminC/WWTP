@@ -2,6 +2,7 @@ import pytest
 from datetime import datetime, timedelta
 from pymongo import MongoClient
 from wwtp.table.model import Table
+from wwtp.joueur.model import Joueur
 
 joueur1 = {"1", "Bilbo"}
 
@@ -53,14 +54,17 @@ def test_new_table():
 
 def test_canCreateTable():
     client = MongoClient('mongodb://localhost:27017/')
-    db = client["tests"]
+    db = client["wwtp"]
     tableColl = db["table"]
 
-    dtString = "2021-05-28 10:00:00.000"
-    fullDate = datetime.strptime(dtString, '%Y-%m-%d %H:%M:%S.%f')
+    fullDate = datetime.now() + timedelta(days=7)
 
     value = [{
-        "hoteId" : 1,
+        "test": "delete",
+        "hote" : {
+            "idJoueur": "Test",
+            "pseudo": "Test"
+        },
         "jeuxLibre" : True,
         "nbPlace" : 4,
         "jeux" : [],
@@ -69,21 +73,50 @@ def test_canCreateTable():
         "ageMin" : False,
         "regle" : False,
         "noteMin" : False
+        },
+        {
+        "test": "delete",
+        "hote" : {
+            "idJoueur": "Bob",
+            "pseudo": "Test"
+        },
+        "jeuxLibre" : True,
+        "nbPlace" : 4,
+        "jeux" : [],
+        "date" : fullDate,
+        "ville" : "La Louvière",
+        "ageMin" : False,
+        "regle" : False,
+        "noteMin" : False,
+        "joueurs" : [{
+            "idJoueur": "Test2",
+            "pseudo": "Test"
+            }]
         }]
-
-    print("----------------")
 
     tableColl.insert_many(value)
 
-    result = Table.canCreateTable(1, "2021-05-30", "10:00:00")
+    dateTest1 = fullDate + timedelta(days=2)
+    dateStr = str(dateTest1)
+
+    result = Table.canCreateTable("Test", dateStr[:10], dateStr[11:19])
 
     assert result == 0, "Une table peut être créée"
 
-    result = Table.canCreateTable(1, "2021-05-28", "04:00:00")
+    dateTest2 = fullDate + timedelta(hours=4)
+    dateStr = str(dateTest2)
 
-    print("test ------------------------ : " + str(result))
+    result = Table.canCreateTable("Test", dateStr[:10], dateStr[11:19])
 
-    assert result >= 1, "Une table ne doit pas être créée"
+    assert result >= 1, "Une table ne doit pas être créée, l'hôte à déjà une table"
+
+    result = Table.canCreateTable("Test2", dateStr[:10], dateStr[11:19])
+
+    assert result >= 1, "Une table ne doit pas être créée, l'hôte est joueur à une autre table"
+
+    tableColl.delete_many({"test": "delete"})
+
+'''def test_joinTable():'''
 
 
 

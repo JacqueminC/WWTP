@@ -94,9 +94,10 @@ class Table:
         dtString = str(form.date.data) + " " + str(form.heure.data) + str(".000")
         fullDate = datetime.strptime(dtString, '%Y-%m-%d %H:%M:%S.%f')
 
+        """json.dumps(hote.__dict__, ensure_ascii=False)"""
         hote = Joueur(1, "Cédric")
         table = Table(
-            json.dumps(hote.__dict__, ensure_ascii=False), 
+            hote.__dict__, 
             form.jeuxLibre.data, 
             form.nbPlace.data, 
             form.jeux.data, 

@@ -15,7 +15,7 @@ pip install flask-bootstrap
 pip install flask_admin
 
 pip list
-python .\app.py
+python .\main.py
 
 
 Quand j'ai voulu installer sur l'environement

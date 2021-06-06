@@ -23,7 +23,7 @@ class RepoTable:
         print("date table B " + str(dateBefore))
         print("date table A " + str(dateAfter))
 
-        query1 = {"hoteId" : {"$elemMatch": {"joueurId": hoteId}}, 
+        query1 = {"hoteId.idJoueur": hoteId, 
             "date": {
                 "$gte": dateBefore,
                 "$lt": dateAfter
@@ -36,7 +36,7 @@ class RepoTable:
         if result1 != 0:
             return result1
 
-        query2 = {"joueurs": {"$elemMatch": {"joueurId": hoteId}},
+        query2 = {"joueurs": {"$elemMatch": {"idJoueur": hoteId}},
             "date": {
                 "$gte": dateBefore,
                 "$lt": dateAfter
