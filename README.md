@@ -13,6 +13,7 @@ pip install flask_pymongo
 pip install flask-wtf
 pip install flask-bootstrap
 pip install flask_admin
+pip install python-dateutil
 
 pip list
 python .\main.py

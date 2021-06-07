@@ -1,8 +1,9 @@
 from wwtp.joueur.model import Joueur
 from .repo import *
 from datetime import datetime, timedelta
-import json
+from dateutil.relativedelta import relativedelta
 
+repositoryTable = RepoTable()
 
 class Table:
 
@@ -82,11 +83,9 @@ class Table:
     def canCreateTable(hoteId, date, heure):
 
         dtString = str(date) + " " + str(heure) + str(".000")
-        fullDate = datetime.strptime(dtString, '%Y-%m-%d %H:%M:%S.%f')
+        fullDate = datetime.strptime(dtString, '%Y-%m-%d %H:%M:%S.%f')        
 
-        print(fullDate)
-
-        result = RepoTable.FindCanCreateTable(hoteId, fullDate)
+        result = repositoryTable.canCreateTable(hoteId, fullDate)
 
         return result
 
@@ -94,7 +93,6 @@ class Table:
         dtString = str(form.date.data) + " " + str(form.heure.data) + str(".000")
         fullDate = datetime.strptime(dtString, '%Y-%m-%d %H:%M:%S.%f')
 
-        """json.dumps(hote.__dict__, ensure_ascii=False)"""
         hote = Joueur(1, "Cédric")
         table = Table(
             hote.__dict__, 
@@ -110,3 +108,20 @@ class Table:
             form.age.data)
         
         RepoTable.CreateTable(table)
+
+    def findAvalaibleTable(idJoueur):
+        result = RepoTable.findAvalaibleTable(idJoueur)
+        return result
+
+    def canJoinTable(table, joueur):
+
+        ageCalcule = relativedelta(datetime.today(), joueur.dateDeNaissance).years
+
+        if table.ageMin == True:
+            if table.age >= ageCalcule:
+                return False
+        if table.noteMin == True:
+            if table.note >= joueur.note:
+                return False
+
+        return True
