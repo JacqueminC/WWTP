@@ -67,8 +67,15 @@ class RepoTable:
 
         return result
 
-    def CreateTable(table):
-        result = tableColl.insert_one(table.__dict__)
+    def createTable(table):
+        tableColl.insert_one(table.__dict__)
+
+    def joinTable(joueur, idTable):
+
+        find = {"_id" : idTable}
+        push = {"$push": {"joueurs": {"idJoueur": joueur.idJoueur, "nom": joueur.nom, "pseudo" : joueur.pseudo}}}
+
+        tableColl.update_one(find, push)
 
     
 

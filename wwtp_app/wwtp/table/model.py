@@ -107,7 +107,7 @@ class Table:
             form.noteMin.data, 
             form.age.data)
         
-        RepoTable.CreateTable(table)
+        RepoTable.createTable(table)
 
     def findAvalaibleTable(idJoueur):
         result = RepoTable.findAvalaibleTable(idJoueur)
@@ -125,3 +125,6 @@ class Table:
                 return False
 
         return True
+
+    def joinTable(joueur, idTable):
+        repositoryTable.joinTable(joueur, idTable)

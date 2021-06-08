@@ -249,7 +249,4 @@ def test_canJoinTable():
 
     table1 = Table(joueur1, False, 4, jeux1, dateAfter1, "La comté", True, 70, False, True, 4)
     assert Table.canJoinTable(table1, joueur2) == False, "Le joueur n'a pas l'age requis et n'a pas une note suffisante"
-    
 
-def test_joinTable():
-    print("TODO")
