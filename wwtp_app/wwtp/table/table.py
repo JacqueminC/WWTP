@@ -54,8 +54,8 @@ class CreationTableForm(FlaskForm):
             raise ValidationError("La date doit être supérieur à maintenant PLUS 2 heures!")
             
 
-@bpTable.route("/tableForm", methods=["GET", "POST"])
-def creationTable():
+@bpTable.route("/formCreation", methods=["GET", "POST"])
+def formCreation():
     form = CreationTableForm()
 
     if form.validate_on_submit():
@@ -65,10 +65,19 @@ def creationTable():
 
        if result >= 1:
            ve = ValidationError("Impossible de créer une table car vous participez déjà à une table pour le moment choisi")
-           return render_template("tableForm.html", form=form, ve=ve)
+           return render_template("formCreation.html", form=form, ve=ve)
        else:
            Table.createTable(form)
            return "Ok la table doit maintenant être créée dans la DB et vous devait avoir l'information afficher pop up" 
        
 
-    return render_template("tableForm.html", form=form)
+    return render_template("formCreation.html", form=form)
+
+@bpTable.route("/listeTable", methods=["GET", "POST"])
+def listeTable():
+    tables = Table.findAvalaibleTable(1)
+    print(str(tables))
+    """for table in tables:
+        print("test")
+        print(table)"""
+    return render_template("listeTable.html", tables=tables)

@@ -13,7 +13,7 @@
 <div class="container">
     <h2>formulaire de création d'une table</h2>
 
-    <form method="POST" action="{{url_for('table.creationTable')}}">
+    <form method="POST" action="{{url_for('table.formCreation')}}">
         {{form.csrf_token}}
                 
         {{wtf.form_field(form.jeuxLibre)}}

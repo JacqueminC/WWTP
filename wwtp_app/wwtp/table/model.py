@@ -123,6 +123,8 @@ class Table:
         if table.noteMin == True:
             if table.note >= joueur.note:
                 return False
+        if table.nbPlace == len(table.joueurs):
+            return False
 
         return True
 

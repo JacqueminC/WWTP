@@ -63,7 +63,8 @@ class RepoTable:
             }
         }
 
-        result = tableColl.find(query)
+        """result = tableColl.find(query)"""
+        result = tableColl.count_documents(query)
 
         return result
 
