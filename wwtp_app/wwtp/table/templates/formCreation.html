@@ -12,6 +12,10 @@
 
 <div class="container">
     <h2>formulaire de création d'une table</h2>
+    {% if "ok" in done %}
+    <span style="color: green">Votre table à bien été créé !</span>
+    {% endif %}
+    
 
     <form method="POST" action="{{url_for('table.formCreation')}}">
         {{form.csrf_token}}
@@ -46,7 +50,7 @@
         {{wtf.form_field(form.noteMin)}}
         {{ form.note.label("Note minimum") }}
         {{ form.note(min=0, max=5, oninput="outputUpdate(value)") }}
-        <output for="age" id="selected-note">{{ form.noteMin.data }}</output>
+        <output for="note" id="selected-note">{{ form.noteMin.data }}</output>
 
         <br>
 

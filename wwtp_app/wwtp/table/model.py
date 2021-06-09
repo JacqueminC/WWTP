@@ -2,6 +2,7 @@ from wwtp.joueur.model import Joueur
 from .repo import *
 from datetime import datetime, timedelta
 from dateutil.relativedelta import relativedelta
+import json
 
 repositoryTable = RepoTable()
 
@@ -70,6 +71,7 @@ class Table:
         self.noteMin = noteMin
 
         if noteMin == True:
+            print("-------------------> " + str(note))
             if isinstance(note, int):
                 if note >= 0 and note <= 5:
                     self.note = note
@@ -93,9 +95,9 @@ class Table:
         dtString = str(form.date.data) + " " + str(form.heure.data) + str(".000")
         fullDate = datetime.strptime(dtString, '%Y-%m-%d %H:%M:%S.%f')
 
-        hote = Joueur(1, "Cédric")
+        hote = {"idJoueur": 1, "nom":  "Cédric"}
         table = Table(
-            hote.__dict__, 
+            hote, 
             form.jeuxLibre.data, 
             form.nbPlace.data, 
             form.jeux.data, 
@@ -105,7 +107,7 @@ class Table:
             form.age.data, 
             form.regle.data, 
             form.noteMin.data, 
-            form.age.data)
+            form.note.data)
         
         RepoTable.createTable(table)
 
@@ -115,15 +117,32 @@ class Table:
 
     def canJoinTable(table, joueur):
 
-        ageCalcule = relativedelta(datetime.today(), joueur.dateDeNaissance).years
+        dtFormat = datetime.strptime(joueur["dateDeNaissance"].strftime('%Y-%m-%d %H:%M:%S.%f'), '%Y-%m-%d %H:%M:%S.%f')
 
-        if table.ageMin == True:
+        print(type(dtFormat))
+        print(dtFormat)
+        print(type(datetime.today()))
+        print(datetime.today())
+
+        ageCalcule = relativedelta(datetime.today(), dtFormat).years
+
+        print(ageCalcule)
+
+        table = table.replace("\'", "\"")
+
+        print(table)
+        table = json.loads(table)
+
+        print(type(table))
+        print(table.json())
+        
+        if table["ageMin"] == True:
             if table.age >= ageCalcule:
                 return False
-        if table.noteMin == True:
-            if table.note >= joueur.note:
+        if table["noteMin"] == True:
+            if table["note"] >= joueur["note"]:
                 return False
-        if table.nbPlace == len(table.joueurs):
+        if table["nbPlace"] == len(table["joueurs"]):
             return False
 
         return True

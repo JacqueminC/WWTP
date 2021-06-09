@@ -1,9 +1,7 @@
-from flask import Blueprint, render_template
+from flask import Blueprint, render_template,session, request
 from flask_wtf import FlaskForm
-from pymongo import results
 from wtforms import StringField, IntegerField, BooleanField, FormField, FieldList
-from wtforms import validators
-from wtforms.fields.html5 import IntegerRangeField, DateTimeField, DateField, TimeField
+from wtforms.fields.html5 import IntegerRangeField, DateField, TimeField
 from wtforms.form import Form
 from wtforms.validators import InputRequired, ValidationError
 from datetime import datetime, timedelta
@@ -57,27 +55,39 @@ class CreationTableForm(FlaskForm):
 @bpTable.route("/formCreation", methods=["GET", "POST"])
 def formCreation():
     form = CreationTableForm()
+    done = "ko"
 
     if form.validate_on_submit():
        #return "Form envoyé! {} and {}".format(form.nbPlace.data, form.ville.data)
 
-       result = Table.canCreateTable(1, form.date.data, form.heure.data)
+       result = Table.canCreateTable(session["idUser"], form.date.data, form.heure.data)
 
        if result >= 1:
            ve = ValidationError("Impossible de créer une table car vous participez déjà à une table pour le moment choisi")
-           return render_template("formCreation.html", form=form, ve=ve)
+           return render_template("formCreation.html", form=form, ve=ve, done=done)
        else:
            Table.createTable(form)
-           return "Ok la table doit maintenant être créée dans la DB et vous devait avoir l'information afficher pop up" 
+           done = "ok"
+           return render_template("formCreation.html",form=form, done=done) 
        
 
-    return render_template("formCreation.html", form=form)
+    return render_template("formCreation.html", form=form, done=done)
 
 @bpTable.route("/listeTable", methods=["GET", "POST"])
 def listeTable():
-    tables = Table.findAvalaibleTable(1)
-    print(str(tables))
-    """for table in tables:
-        print("test")
-        print(table)"""
+    tables = Table.findAvalaibleTable(session["idUser"])
+
     return render_template("listeTable.html", tables=tables)
+
+@bpTable.route("/joinTable", methods=["GET", "POST"])
+def joinTable():
+    if request.method == "POST":
+        if request.form.get("join"):
+            print(session["user"])
+            print(request.values["join"])
+            result = Table.canJoinTable(request.values["join"], session["user"])
+            if result:
+                print("ok")
+            else:
+                print("not ok")
+            return request.values["join"]

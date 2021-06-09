@@ -1,3 +1,13 @@
+<style>
+
+  .box {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    grid-gap: 10px 2em;
+  }  
+
+</style>  
+
 {% extends "base.html" %}
 {% import "bootstrap/wtf.html" as wtf%}
 
@@ -12,15 +22,119 @@
 
 <div class="container">
 
-    <h2>Liste des tables disponnibles</h2>
-    {{ session }}
+  <br>
+  <h2>Liste des tables disponnibles</h2>
+  <br>
 
-</div>  
+  <div>
 
-<p>table</p>
+  <table class="table table-hover">
+    <thead>
+      <tr>
+        <th scope="col">Table de ...</th>
+        <th scope="col">Date</th>
+        <th scope="col">Lieu</th>
+        <th scope="col">Place libre</th>
+        <th scope="col">Type</th>
+        <th scope="col">Conditions</th>
+        <th scope="col">Rejoindre</th>
+      </tr>
+    </thead>
+    <tbody>
 
+    {% set vars = {'change': 0} %}
+
+    {% for table in tables %}
+
+    
+      {% if vars.change == 0 %}
+        {% if vars.update({'change' : 1 }) %} {% endif %}
+   
+      <tr>
+        <th scope="row">{{table["hote"].nom}}</th>
+        <td>{{table["date"].strftime('%d-%m-%Y %H:%m')}}</td>
+        <td>{{table["ville"]}}</td>
+        <td>{{table["nbPlace"] - table["joueurs"]|length}} / {{table["nbPlace"]}}</td>
+        <td>
+          {% if table["jeuxLibre"] == True %}
+            Jeux Libre
+          {% else %}
+            Jeux
+            <ul>
+            {% for jeu in table["jeux"] %}    
+                <li>{{ jeu["nom"] }} {% if jeu["version"] != "" %} - {{jeu["version"]}} {% endif %}</li>
+            {% endfor %}
+            </ul> 
+        {% endif %}    
+        </td>
+        <td style="font-weight: bold; color: #99433f;">
+          {% if table["regle"] == True %}
+            Connaissance des règles obligatoire
+            <br>
+          {% elif table["ageMin"] == True %}
+            Age minimum : {{table["age"]}}
+            <br>}
+          {% elif table["noteMin"] == True %}
+            Note minimum : {{table["note"]}}
+            <br>
+          {% endif %}
+        </td>
+        <td>
+          <button type="button" class="btn btn-success">Rejoindre</button>
+        </td>
+      </tr>
+    {% else %}
+      {% if vars.update({'change' : 0 }) %} {% endif %}
+      <br>
+        {% set line = 0 %}
+        <tr class="table-secondary">
+          <form action="/joinTable" method="post"></form>
+            <th scope="row">{{table["hote"].nom}}</th>
+            <td>{{table["date"].strftime('%d-%m-%Y %H:%m')}}</td>
+            <td>{{table["ville"]}}</td>
+            <td>{{table["nbPlace"] - table["joueurs"]|length}} / {{table["nbPlace"]}}</td>
+            <td>
+              {% if table["jeuxLibre"] == True %}
+                Jeux Libre
+              {% else %}
+                Jeux
+                <ul>
+                {% for jeu in table["jeux"] %}    
+                    <li>{{ jeu["nom"] }} {% if jeu["version"] != "" %} - {{jeu["version"]}} {% endif %}</li>
+                {% endfor %}
+                </ul> 
+            {% endif %}    
+            </td>
+            <td style="font-weight: bold; color: #99433f;">
+              {% if table["regle"] == True %}
+                Connaissance des règles obligatoire
+                <br>
+              {% endif %}
+              {% if table["ageMin"] == True %}
+                Age minimum : {{ table["age"] }}
+                <br>
+              {% endif %}
+              {% if table["noteMin"] == True %}
+                Note minimum : {{ table["note"] }}
+                <br>
+              {% endif %}
+            </td>
+            <td>
+              <form method ="post" action="/table/joinTable">
+                <button type="submit" name="join" value="{{ table }}" class="btn btn-success">Rejoindre</button>
+              </form> 
+            </td>
+          </form>
+        </tr>
+    {% endif %}
+    </tbody>
+
+  {% endfor %}
+
+  </div>
   
-  {{ tables }}
+
+</div> 
 
 {% endblock %}
 

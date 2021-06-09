@@ -1,6 +1,7 @@
 #print('__file__={0:<35} | __name__={1:<25} | __package__={2:<25}'.format(__file__,__name__,str(__package__)))
 from datetime import datetime, timedelta
 from pymongo import MongoClient, results
+import pymongo
 
 client = MongoClient('mongodb://localhost:27017/')
 db = client["wwtp"]
@@ -40,7 +41,6 @@ class RepoTable:
 
         return tableColl.count_documents(query)
 
-
     def canCreateTable(self, hoteId, dateTable):
 
         result = self.isHote(hoteId, dateTable)
@@ -63,8 +63,11 @@ class RepoTable:
             }
         }
 
-        """result = tableColl.find(query)"""
-        result = tableColl.count_documents(query)
+        sort = {
+            "date": -1
+        }
+
+        result = tableColl.find(query).sort([("date", pymongo.ASCENDING)])
 
         return result
 
