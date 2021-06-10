@@ -32,7 +32,8 @@ def index():
     session["user"] = {
         "idJoueur": 99,
         "dateDeNaissance" : datetime(1988, 10, 8, 0,0,0),        
-        "note" : 5
+        "note" : 3,
+        "nom" : "Random Guy"
         }
 
     return render_template("index.html")

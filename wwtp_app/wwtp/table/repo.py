@@ -2,12 +2,24 @@
 from datetime import datetime, timedelta
 from pymongo import MongoClient, results
 import pymongo
+from bson import ObjectId
 
 client = MongoClient('mongodb://localhost:27017/')
 db = client["wwtp"]
 tableColl = db["table"]
 
 class RepoTable:
+
+    def findTable(id):
+
+        query = {
+            "_id" : ObjectId(id)
+        }
+
+        return tableColl.find_one(query)
+
+    def saveTable(table):
+        return tableColl.save(table)
 
     def isHote(self, hoteId, dateTable):
         
@@ -45,15 +57,20 @@ class RepoTable:
 
         result = self.isHote(hoteId, dateTable)
 
-        if result != 0:
+        print(result)
+
+        if result > 0:
             return result
         else:
             result = self.isPlayer(hoteId, dateTable)
+            print(result)
             return result 
 
     def findAvalaibleTable(idJoueur):
 
         now = datetime.today()
+
+        print(idJoueur)
 
         query = {
             "hote.idJoueur" : {"$ne" : idJoueur},
@@ -62,6 +79,8 @@ class RepoTable:
                 "$gte": now
             }
         }
+
+        print(query)
 
         sort = {
             "date": -1

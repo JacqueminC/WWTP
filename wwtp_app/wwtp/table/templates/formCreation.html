@@ -12,9 +12,6 @@
 
 <div class="container">
     <h2>formulaire de création d'une table</h2>
-    {% if "ok" in done %}
-    <span style="color: green">Votre table à bien été créé !</span>
-    {% endif %}
     
 
     <form method="POST" action="{{url_for('table.formCreation')}}">
@@ -57,7 +54,19 @@
     <input type="submit" value="Créer" class="btn btn-primary">
     </form>
 
-    <span style="color: red;">{{ ve }}</span>
+    {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+      {% for category, message in messages %}
+
+        {% if category == "error" %}
+        <p style="color: red; font: bold;">{{ message }}</p>
+        {% else %}
+          <p style="color: green; font: bold;">{{ message }}</p>
+        {% endif %}
+        
+      {% endfor %}
+    {% endif %}
+  {% endwith %}
 
 </div>  
 

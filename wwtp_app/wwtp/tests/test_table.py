@@ -12,6 +12,12 @@ datePlus7 = dateNow + timedelta(days=7)
 
 joueur1 = {"1", "Bilbo", }
 joueur2 = Joueur("Duke1", "Duke", "duke@gmail.com", "HASHPWD", "Duke", "Nukem", "rue Street", 10, "Mons", 7000, dateNow-timedelta(weeks=1040), 3)
+Joueur3 = {
+        "idJoueur": 99,
+        "dateDeNaissance" : datetime(1988, 10, 8, 0,0,0),        
+        "note" : 3,
+        "nom" : "Random Guy"
+        }
 
 jeu1 = {"Carcassonne", ""}
 jeu2 = {"Catane", ""}
@@ -20,6 +26,27 @@ jeu3 = {"SmashUp", ""}
 jeux1 = [jeu1, jeu2, jeu3]
 jeux2 = []
 jeux3 = None
+
+table1 = {
+    'hote': {
+        'idJoueur' : 1,
+        'nom' : 'Bilbo'
+        },
+    'jeuxLibre' : False,
+    'placeLibre' : 4,
+    'jeux' : [{
+        'nom': 'Carcassonne',
+        'version': ""
+    }],
+    'date' : dateAfter1,
+    'ville' : 'La comté',
+    'ageMin' : False,
+    'age' : 0,
+    'regle' :  False,
+    'noteMin' : False,
+    'note': 0
+    }
+
 client = MongoClient('mongodb://localhost:27017/')
 db = client["wwtp"]
 tableColl = db["table"]
@@ -238,15 +265,20 @@ def test_findAvalaibleTable():
 
 def test_canJoinTable():
     
-    table1 = Table(joueur1, False, 4, jeux1, dateAfter1, "La comté", False, 0, False, False, 0)
-    assert Table.canJoinTable(table1, joueur2) == True, "Le joueur peut rejoindre la table"
+    assert Table.canJoinTable(table1, Joueur3) == True, "Le joueur peut rejoindre la table"
 
-    table1 = Table(joueur1, False, 4, jeux1, dateAfter1, "La comté", True, 70, False, False, 0)
-    assert Table.canJoinTable(table1, joueur2) == False, "Le joueur n'a pas l'age requis"
+    table1['ageMin'] = True
+    table1['age'] = 70
 
-    table1 = Table(joueur1, False, 4, jeux1, dateAfter1, "La comté", False, 0, False, True, 4)
-    assert Table.canJoinTable(table1, joueur2) == False, "Le joueur n'a pas une note suffisante"
+    assert Table.canJoinTable(table1, Joueur3) == False, "Le joueur n'a pas l'age requis"
 
-    table1 = Table(joueur1, False, 4, jeux1, dateAfter1, "La comté", True, 70, False, True, 4)
-    assert Table.canJoinTable(table1, joueur2) == False, "Le joueur n'a pas l'age requis et n'a pas une note suffisante"
+    table1['ageMin'] = False
+    table1['noteMin'] = True
+    table1['note'] = 4
+
+    assert Table.canJoinTable(table1, Joueur3) == False, "Le joueur n'a pas une note suffisante"
+
+    table1['ageMin'] = True
+
+    assert Table.canJoinTable(table1, Joueur3) == False, "Le joueur n'a pas l'age requis et n'a pas une note suffisante"
 

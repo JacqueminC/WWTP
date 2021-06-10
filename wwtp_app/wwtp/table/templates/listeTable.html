@@ -28,6 +28,20 @@
 
   <div>
 
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+      {% for category, message in messages %}
+
+        {% if category == "error" %}
+        <p style="color: red; font: bold;">{{ message }}</p>
+        {% else %}
+          <p style="color: green; font: bold;">{{ message }}</p>
+        {% endif %}
+        
+      {% endfor %}
+    {% endif %}
+  {% endwith %}
+
   <table class="table table-hover">
     <thead>
       <tr>
@@ -73,14 +87,16 @@
             <br>
           {% elif table["ageMin"] == True %}
             Age minimum : {{table["age"]}}
-            <br>}
+            <br>
           {% elif table["noteMin"] == True %}
             Note minimum : {{table["note"]}}
             <br>
           {% endif %}
         </td>
         <td>
-          <button type="button" class="btn btn-success">Rejoindre</button>
+          <form method ="post" action="/table/joinTable">
+            <button type="submit" name="join" value="{{ table['_id'] }}" class="btn btn-success">Rejoindre</button>
+          </form>
         </td>
       </tr>
     {% else %}
@@ -121,8 +137,8 @@
             </td>
             <td>
               <form method ="post" action="/table/joinTable">
-                <button type="submit" name="join" value="{{ table }}" class="btn btn-success">Rejoindre</button>
-              </form> 
+                <button type="submit" name="join" value="{{ table['_id'] }}" class="btn btn-success">Rejoindre</button>
+              </form>
             </td>
           </form>
         </tr>

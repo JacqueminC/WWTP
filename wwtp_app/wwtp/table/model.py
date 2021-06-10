@@ -2,7 +2,7 @@ from wwtp.joueur.model import Joueur
 from .repo import *
 from datetime import datetime, timedelta
 from dateutil.relativedelta import relativedelta
-import json
+from flask import session
 
 repositoryTable = RepoTable()
 
@@ -89,13 +89,15 @@ class Table:
 
         result = repositoryTable.canCreateTable(hoteId, fullDate)
 
+        print(result)
+
         return result
 
     def createTable(form):
         dtString = str(form.date.data) + " " + str(form.heure.data) + str(".000")
         fullDate = datetime.strptime(dtString, '%Y-%m-%d %H:%M:%S.%f')
 
-        hote = {"idJoueur": 1, "nom":  "Cédric"}
+        hote = {"idJoueur": session['user']['idJoueur'], "nom":  session['user']['nom']}
         table = Table(
             hote, 
             form.jeuxLibre.data, 
@@ -108,7 +110,7 @@ class Table:
             form.regle.data, 
             form.noteMin.data, 
             form.note.data)
-        
+
         RepoTable.createTable(table)
 
     def findAvalaibleTable(idJoueur):
@@ -119,33 +121,26 @@ class Table:
 
         dtFormat = datetime.strptime(joueur["dateDeNaissance"].strftime('%Y-%m-%d %H:%M:%S.%f'), '%Y-%m-%d %H:%M:%S.%f')
 
-        print(type(dtFormat))
-        print(dtFormat)
-        print(type(datetime.today()))
-        print(datetime.today())
-
-        ageCalcule = relativedelta(datetime.today(), dtFormat).years
-
-        print(ageCalcule)
-
-        table = table.replace("\'", "\"")
-
-        print(table)
-        table = json.loads(table)
-
-        print(type(table))
-        print(table.json())
+        ageCalcule = relativedelta(datetime.today(), dtFormat).years        
         
         if table["ageMin"] == True:
-            if table.age >= ageCalcule:
+            if table["age"] >= ageCalcule:
                 return False
         if table["noteMin"] == True:
             if table["note"] >= joueur["note"]:
                 return False
-        if table["nbPlace"] == len(table["joueurs"]):
-            return False
+        if "joureurs" in table:
+            if table["nbPlace"] == len(table["joueurs"]):
+                return False
 
         return True
 
     def joinTable(joueur, idTable):
         repositoryTable.joinTable(joueur, idTable)
+
+
+    def findTable(id):
+        return  RepoTable.findTable(str(id))
+
+    def saveTable(table):
+        return RepoTable.saveTable(table)

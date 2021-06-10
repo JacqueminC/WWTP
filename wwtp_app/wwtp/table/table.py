@@ -1,5 +1,7 @@
-from flask import Blueprint, render_template,session, request
+from flask import Blueprint, render_template,session, request, redirect, url_for, flash
 from flask_wtf import FlaskForm
+from pymongo import message
+from werkzeug.utils import redirect
 from wtforms import StringField, IntegerField, BooleanField, FormField, FieldList
 from wtforms.fields.html5 import IntegerRangeField, DateField, TimeField
 from wtforms.form import Form
@@ -60,14 +62,19 @@ def formCreation():
     if form.validate_on_submit():
        #return "Form envoyé! {} and {}".format(form.nbPlace.data, form.ville.data)
 
-       result = Table.canCreateTable(session["idUser"], form.date.data, form.heure.data)
+       user = session["user"]
+       idJoueur = user["idJoueur"]
+
+       result = Table.canCreateTable(idJoueur, form.date.data, form.heure.data)
 
        if result >= 1:
-           ve = ValidationError("Impossible de créer une table car vous participez déjà à une table pour le moment choisi")
+           ve = ValidationError()
+           flash("Impossible de créer une table car vous participez déjà à une table pour le moment choisi !!!", 'error')
            return render_template("formCreation.html", form=form, ve=ve, done=done)
        else:
            Table.createTable(form)
            done = "ok"
+           flash('Votre table à bien été créé !', 'info')
            return render_template("formCreation.html",form=form, done=done) 
        
 
@@ -75,7 +82,8 @@ def formCreation():
 
 @bpTable.route("/listeTable", methods=["GET", "POST"])
 def listeTable():
-    tables = Table.findAvalaibleTable(session["idUser"])
+    user = session["user"]
+    tables = Table.findAvalaibleTable(user["idJoueur"])
 
     return render_template("listeTable.html", tables=tables)
 
@@ -83,11 +91,44 @@ def listeTable():
 def joinTable():
     if request.method == "POST":
         if request.form.get("join"):
-            print(session["user"])
-            print(request.values["join"])
-            result = Table.canJoinTable(request.values["join"], session["user"])
+            table = Table.findTable(request.values["join"])
+            result = Table.canJoinTable(table, session["user"])
+            
             if result:
-                print("ok")
+                user = session["user"]
+                id = user["idJoueur"]
+                name = user["nom"]
+                hote = table["hote"]
+
+                if "joueurs" in table:   
+                    joueurs = table["joueurs"]
+                    joueurs.append(
+                        {
+                            "idJoueur" : id,
+                            "nom" : name
+                        })
+                    table["joueurs"] = joueurs
+
+                else:
+                    joueurs = []
+                    joueurs.append(
+                        {
+                            "idJoueur" : id,
+                            "nom" : name
+                        })
+
+                    table["joueurs"] = joueurs
+
+                Table.saveTable(table)
+                flash('Vous avez rejoins la table de ' + hote + ' à ' + table["ville"] + ' le ' + table['date'], 'info')
+                return redirect(url_for('table.listeTable'))    
+
             else:
-                print("not ok")
-            return request.values["join"]
+                flash('Impossible de rejoindre la table vous ne remplisez pas les conditions !!!', 'error')
+                return redirect(url_for('table.listeTable'))
+
+    else:
+        flash('Une erreur c\'est produite veuillez réessayer !', 'error')
+        return redirect(url_for('table.listeTable'))
+
+        
