@@ -142,5 +142,11 @@ class Table:
     def findTable(id):
         return  RepoTable.findTable(str(id))
 
+    def findTableByPlayer(id):
+        return RepoTable.findTableByPlayer(id)
+
+    def findTableByHost(id):
+        return RepoTable.findTableByHost(id)
+
     def saveTable(table):
         return RepoTable.saveTable(table)

@@ -5,7 +5,8 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="https://bootswatch.com/4/lumen/bootstrap.min.css"  crossorigin="anonymous">
-    
+    <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}">
+        
     <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
       <a class="navbar-brand" href="/">Who want to play ?!</a>
       <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarColor01" aria-controls="navbarColor01" aria-expanded="false" aria-label="Toggle navigation">
@@ -28,8 +29,8 @@
           <li class="nav-item dropdown">
             <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Mes tables</a>
             <div class="dropdown-menu">
-              <a class="dropdown-item" href="#">Hote</a>
-              <a class="dropdown-item" href="#">Joueur</a>
+              <a class="dropdown-item" href="/table/tableHote">Hote</a>
+              <a class="dropdown-item" href="/table/tableJoueur">Joueur</a>
             </div>
           </li>
           <li class="nav-item">

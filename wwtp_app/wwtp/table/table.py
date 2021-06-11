@@ -28,6 +28,14 @@ class CreationTableForm(FlaskForm):
     noteMin = BooleanField(' Note minimum ?')
     note = IntegerRangeField('Note', default=0)
 
+    def validate_nbPlace(self, nbPlace):
+        if nbPlace.data < 1:
+            flash("Il doit y avoir au moins une place de libre pour créer une table", "place")
+            return ValidationError()
+        if nbPlace.data > 10:
+            flash("Le nombre de place maximum est de 10", "place")
+            return ValidationError()
+
     def validate_jeux(self, jeux):        
         if self.jeuxLibre.data == False:
             if jeux[0].nom.data == None or self.jeux[0].nom.data == "":
@@ -63,7 +71,6 @@ def formCreation():
     done = "ko"
 
     if form.validate_on_submit():
-       #return "Form envoyé! {} and {}".format(form.nbPlace.data, form.ville.data)
 
        user = session["user"]
        idJoueur = user["idJoueur"]
@@ -133,5 +140,20 @@ def joinTable():
     else:
         flash('Une erreur c\'est produite veuillez réessayer !', 'error')
         return redirect(url_for('table.listeTable'))
+
+@bpTable.route("/tableJoueur", methods=["GET", "POST"])
+def tableJoueur():
+    user = session["user"]
+    id = user["idJoueur"]
+    result = Table.findTableByPlayer(id)
+    return render_template("tablesJoueur.html", result=result)
+
+@bpTable.route("/tableHote", methods=["GET", "POST"])
+def tableHote():
+    user = session["user"]
+    id = user["idJoueur"]
+    result = Table.findTableByHost(id)
+    return render_template("tablesHote.html", result=result)
+
 
         

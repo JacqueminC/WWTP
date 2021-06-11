@@ -13,7 +13,6 @@
 
 <div class="container">
     <h2>formulaire de création d'une table</h2>
-    
 
     <form method="POST" action="{{url_for('table.formCreation')}}">
         {{form.csrf_token}}
@@ -22,6 +21,14 @@
                 
         {{wtf.form_field(form.jeuxLibre)}}
         {{wtf.form_field(form.nbPlace)}}
+
+        {% if messages %}
+          {% for category, message in messages %}        
+            {% if category == "place" %}
+              <p style="color: red; font-weight: bold;">{{ message }}</p>
+            {% endif %}                
+          {% endfor %}
+        {% endif %}
 
         <div class="ml-1 px-5" style="width: 70%;">            
 
@@ -43,7 +50,7 @@
             {% if messages %}
               {% for category, message in messages %}        
                 {% if category == "jeu" %}
-                  <p style="color: red; font: bold;">{{ message }}</p>
+                  <p style="color: red; font-weight: bold;">{{ message }}</p>
                 {% endif %}                
               {% endfor %}
             {% endif %}
@@ -58,7 +65,7 @@
         {% if messages %}
           {% for category, message in messages %}    
             {% if category == "date" %}
-              <p style="color: red; font: bold;">{{ message }}</p>
+              <p style="color: red; font-weight: bold;">{{ message }}</p>
             {% endif %}            
           {% endfor %}
         {% endif %}
@@ -70,7 +77,7 @@
         {% if messages %}
           {% for category, message in messages %}    
             {% if category == "age" %}
-            <p style="color: red; font: bold;">{{ message }}</p>
+            <p style="color: red; font-weight: bold;">{{ message }}</p>
             {% endif %}            
           {% endfor %}
         {% endif %}     
