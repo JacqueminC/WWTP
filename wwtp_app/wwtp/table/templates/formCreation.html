@@ -12,8 +12,9 @@
 
 <div class="container">
     <h2>formulaire de création d'une table</h2>
+    
 
-    <form method="POST" action="{{url_for('table.creationTable')}}">
+    <form method="POST" action="{{url_for('table.formCreation')}}">
         {{form.csrf_token}}
                 
         {{wtf.form_field(form.jeuxLibre)}}
@@ -46,14 +47,26 @@
         {{wtf.form_field(form.noteMin)}}
         {{ form.note.label("Note minimum") }}
         {{ form.note(min=0, max=5, oninput="outputUpdate(value)") }}
-        <output for="age" id="selected-note">{{ form.noteMin.data }}</output>
+        <output for="note" id="selected-note">{{ form.noteMin.data }}</output>
 
         <br>
 
     <input type="submit" value="Créer" class="btn btn-primary">
     </form>
 
-    <span style="color: red;">{{ ve }}</span>
+    {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+      {% for category, message in messages %}
+
+        {% if category == "error" %}
+        <p style="color: red; font: bold;">{{ message }}</p>
+        {% else %}
+          <p style="color: green; font: bold;">{{ message }}</p>
+        {% endif %}
+        
+      {% endfor %}
+    {% endif %}
+  {% endwith %}
 
 </div>  
 

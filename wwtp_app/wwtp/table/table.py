@@ -1,9 +1,9 @@
-from flask import Blueprint, render_template
+from flask import Blueprint, render_template,session, request, redirect, url_for, flash
 from flask_wtf import FlaskForm
-from pymongo import results
+from pymongo import message
+from werkzeug.utils import redirect
 from wtforms import StringField, IntegerField, BooleanField, FormField, FieldList
-from wtforms import validators
-from wtforms.fields.html5 import IntegerRangeField, DateTimeField, DateField, TimeField
+from wtforms.fields.html5 import IntegerRangeField, DateField, TimeField
 from wtforms.form import Form
 from wtforms.validators import InputRequired, ValidationError
 from datetime import datetime, timedelta
@@ -54,21 +54,81 @@ class CreationTableForm(FlaskForm):
             raise ValidationError("La date doit être supérieur à maintenant PLUS 2 heures!")
             
 
-@bpTable.route("/tableForm", methods=["GET", "POST"])
-def creationTable():
+@bpTable.route("/formCreation", methods=["GET", "POST"])
+def formCreation():
     form = CreationTableForm()
+    done = "ko"
 
     if form.validate_on_submit():
        #return "Form envoyé! {} and {}".format(form.nbPlace.data, form.ville.data)
 
-       result = Table.canCreateTable(1, form.date.data, form.heure.data)
+       user = session["user"]
+       idJoueur = user["idJoueur"]
+
+       result = Table.canCreateTable(idJoueur, form.date.data, form.heure.data)
 
        if result >= 1:
-           ve = ValidationError("Impossible de créer une table car vous participez déjà à une table pour le moment choisi")
-           return render_template("tableForm.html", form=form, ve=ve)
+           ve = ValidationError()
+           flash("Impossible de créer une table car vous participez déjà à une table pour le moment choisi !!!", 'error')
+           return render_template("formCreation.html", form=form, ve=ve, done=done)
        else:
            Table.createTable(form)
-           return "Ok la table doit maintenant être créée dans la DB et vous devait avoir l'information afficher pop up" 
+           done = "ok"
+           flash('Votre table à bien été créé !', 'info')
+           return render_template("formCreation.html",form=form, done=done) 
        
 
-    return render_template("tableForm.html", form=form)
+    return render_template("formCreation.html", form=form, done=done)
+
+@bpTable.route("/listeTable", methods=["GET", "POST"])
+def listeTable():
+    user = session["user"]
+    tables = Table.findAvalaibleTable(user["idJoueur"])
+
+    return render_template("listeTable.html", tables=tables)
+
+@bpTable.route("/joinTable", methods=["GET", "POST"])
+def joinTable():
+    if request.method == "POST":
+        if request.form.get("join"):
+            table = Table.findTable(request.values["join"])
+            result = Table.canJoinTable(table, session["user"])
+            
+            if result:
+                user = session["user"]
+                id = user["idJoueur"]
+                name = user["nom"]
+                hote = table["hote"]
+
+                if "joueurs" in table:   
+                    joueurs = table["joueurs"]
+                    joueurs.append(
+                        {
+                            "idJoueur" : id,
+                            "nom" : name
+                        })
+                    table["joueurs"] = joueurs
+
+                else:
+                    joueurs = []
+                    joueurs.append(
+                        {
+                            "idJoueur" : id,
+                            "nom" : name
+                        })
+
+                    table["joueurs"] = joueurs
+
+                Table.saveTable(table)
+                flash('Vous avez rejoins la table de ' + hote + ' à ' + table["ville"] + ' le ' + table['date'], 'info')
+                return redirect(url_for('table.listeTable'))    
+
+            else:
+                flash('Impossible de rejoindre la table vous ne remplisez pas les conditions !!!', 'error')
+                return redirect(url_for('table.listeTable'))
+
+    else:
+        flash('Une erreur c\'est produite veuillez réessayer !', 'error')
+        return redirect(url_for('table.listeTable'))
+
+        

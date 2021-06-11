@@ -1,8 +1,10 @@
 from wwtp.joueur.model import Joueur
 from .repo import *
 from datetime import datetime, timedelta
-import json
+from dateutil.relativedelta import relativedelta
+from flask import session
 
+repositoryTable = RepoTable()
 
 class Table:
 
@@ -69,6 +71,7 @@ class Table:
         self.noteMin = noteMin
 
         if noteMin == True:
+            print("-------------------> " + str(note))
             if isinstance(note, int):
                 if note >= 0 and note <= 5:
                     self.note = note
@@ -82,11 +85,11 @@ class Table:
     def canCreateTable(hoteId, date, heure):
 
         dtString = str(date) + " " + str(heure) + str(".000")
-        fullDate = datetime.strptime(dtString, '%Y-%m-%d %H:%M:%S.%f')
+        fullDate = datetime.strptime(dtString, '%Y-%m-%d %H:%M:%S.%f')        
 
-        print(fullDate)
+        result = repositoryTable.canCreateTable(hoteId, fullDate)
 
-        result = RepoTable.FindCanCreateTable(hoteId, fullDate)
+        print(result)
 
         return result
 
@@ -94,9 +97,9 @@ class Table:
         dtString = str(form.date.data) + " " + str(form.heure.data) + str(".000")
         fullDate = datetime.strptime(dtString, '%Y-%m-%d %H:%M:%S.%f')
 
-        hote = Joueur(1, "Cédric")
+        hote = {"idJoueur": session['user']['idJoueur'], "nom":  session['user']['nom']}
         table = Table(
-            json.dumps(hote.__dict__, ensure_ascii=False), 
+            hote, 
             form.jeuxLibre.data, 
             form.nbPlace.data, 
             form.jeux.data, 
@@ -106,6 +109,38 @@ class Table:
             form.age.data, 
             form.regle.data, 
             form.noteMin.data, 
-            form.age.data)
+            form.note.data)
+
+        RepoTable.createTable(table)
+
+    def findAvalaibleTable(idJoueur):
+        result = RepoTable.findAvalaibleTable(idJoueur)
+        return result
+
+    def canJoinTable(table, joueur):
+
+        dtFormat = datetime.strptime(joueur["dateDeNaissance"].strftime('%Y-%m-%d %H:%M:%S.%f'), '%Y-%m-%d %H:%M:%S.%f')
+
+        ageCalcule = relativedelta(datetime.today(), dtFormat).years        
         
-        RepoTable.CreateTable(table)
+        if table["ageMin"] == True:
+            if table["age"] >= ageCalcule:
+                return False
+        if table["noteMin"] == True:
+            if table["note"] >= joueur["note"]:
+                return False
+        if "joureurs" in table:
+            if table["nbPlace"] == len(table["joueurs"]):
+                return False
+
+        return True
+
+    def joinTable(joueur, idTable):
+        repositoryTable.joinTable(joueur, idTable)
+
+
+    def findTable(id):
+        return  RepoTable.findTable(str(id))
+
+    def saveTable(table):
+        return RepoTable.saveTable(table)

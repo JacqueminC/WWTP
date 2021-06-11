@@ -13,9 +13,10 @@ pip install flask_pymongo
 pip install flask-wtf
 pip install flask-bootstrap
 pip install flask_admin
+pip install python-dateutil
 
 pip list
-python .\app.py
+python .\main.py
 
 
 Quand j'ai voulu installer sur l'environement
