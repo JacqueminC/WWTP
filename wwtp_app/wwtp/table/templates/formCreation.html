@@ -9,6 +9,7 @@
 
 
 {% block content %}
+{% with messages = get_flashed_messages(with_categories=true) %}
 
 <div class="container">
     <h2>formulaire de création d'une table</h2>
@@ -16,33 +17,64 @@
 
     <form method="POST" action="{{url_for('table.formCreation')}}">
         {{form.csrf_token}}
+        {{ form.hidden_tag() }}
+
                 
         {{wtf.form_field(form.jeuxLibre)}}
         {{wtf.form_field(form.nbPlace)}}
 
-        <div class="ml-1 px-5" style="width: 400px;">            
+        <div class="ml-1 px-5" style="width: 70%;">            
 
             {% for jeu in form.jeux %}
 
             <div class="border-left border-primary">
-                {{wtf.form_field(jeu.nom)}}
-                {{wtf.form_field(jeu.version)}}
+              <div class="row">
+                <div class="form-group col-md-6">
+                  {{wtf.form_field(jeu.nom)}}
+                </div>
+                <div class="form-group col-md-6">
+                  {{wtf.form_field(jeu.version)}}
+                </div>
+              </div>
             </div>
 
             {% endfor %}
 
-            {% for error in form.jeux.errors %}
-              <span style="color: red;">{{ error }}</span>
-            {% endfor %}
+            {% if messages %}
+              {% for category, message in messages %}        
+                {% if category == "jeu" %}
+                  <p style="color: red; font: bold;">{{ message }}</p>
+                {% endif %}                
+              {% endfor %}
+            {% endif %}
 
         </div>
 
-        {{wtf.form_field(form.date)}}
-        {{wtf.form_field(form.heure)}}   
+        <div>
+          {{wtf.form_field(form.date)}}
+          {{wtf.form_field(form.heure)}}
+        </div>        
+
+        {% if messages %}
+          {% for category, message in messages %}    
+            {% if category == "date" %}
+              <p style="color: red; font: bold;">{{ message }}</p>
+            {% endif %}            
+          {% endfor %}
+        {% endif %}
 
         {{wtf.form_field(form.ville)}}
         {{wtf.form_field(form.ageMin)}}
         {{wtf.form_field(form.age)}}
+
+        {% if messages %}
+          {% for category, message in messages %}    
+            {% if category == "age" %}
+            <p style="color: red; font: bold;">{{ message }}</p>
+            {% endif %}            
+          {% endfor %}
+        {% endif %}     
+        
         {{wtf.form_field(form.regle)}}
         {{wtf.form_field(form.noteMin)}}
         {{ form.note.label("Note minimum") }}
@@ -54,22 +86,19 @@
     <input type="submit" value="Créer" class="btn btn-primary">
     </form>
 
-    {% with messages = get_flashed_messages(with_categories=true) %}
     {% if messages %}
       {% for category, message in messages %}
-
         {% if category == "error" %}
         <p style="color: red; font: bold;">{{ message }}</p>
-        {% else %}
+        {% elif category == "info" %}
           <p style="color: green; font: bold;">{{ message }}</p>
-        {% endif %}
-        
+        {% endif %}        
       {% endfor %}
     {% endif %}
-  {% endwith %}
 
 </div>  
 
+{% endwith %}
 {% endblock %}
 
 {% block scripts %}

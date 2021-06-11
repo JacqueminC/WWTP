@@ -30,28 +30,31 @@ class CreationTableForm(FlaskForm):
 
     def validate_jeux(self, jeux):        
         if self.jeuxLibre.data == False:
-            if self.jeux[0].nom.data == None or self.jeux[0].nom.data == "":
-                raise ValidationError("Vous devez indiquer un jeu si vous n'êtes pas en jeux libre!")
+            if jeux[0].nom.data == None or self.jeux[0].nom.data == "":
+                flash("Vous devez indiquer un jeu si vous n'êtes pas en jeux libre!", "jeu")
+                raise ValidationError()
      
 
     def validate_age(self, age):
         if self.ageMin.data == True:
             if not isinstance(self.age.data, int):
-                raise ValidationError("Veuillez entrez un age en chiffre!")
-            if self.age.data == None:
-                raise ValidationError("Veuillez indiquer une valeur! L'age doit être entre 16 et 99!")
-            if self.age.data < 16 or self.age.data >99:
-                raise ValidationError("L'age doit être entre 16 et 99!")
+                flash("Veuillez entrez un age en chiffre!", 'age')
+                raise ValidationError()
+            if age.data == None:
+                flash("Veuillez indiquer une valeur! L'age doit être entre 16 et 99!", 'age')
+                raise ValidationError()
+            if age.data < 16 or self.age.data >99:
+                flash("L'age doit être entre 16 et 99!", 'age')
+                raise ValidationError()
     
-    def validate_date(self, date):
+    def validate_heure(self, heure):
         now = datetime.now() + timedelta(hours=2)
-        dtString = str(date.data) + " " + str(self.heure.data)
+        dtString = str(self.date.data) + " " + str(heure.data)
         dtForm = datetime.strptime(dtString, '%Y-%m-%d %H:%M:%S')
 
-        print("dtForm : " + str(dtForm))
-
         if now > dtForm:
-            raise ValidationError("La date doit être supérieur à maintenant PLUS 2 heures!")
+            flash("La date doit être supérieur à maintenant PLUS 2 heures!", "date")
+            raise ValidationError()
             
 
 @bpTable.route("/formCreation", methods=["GET", "POST"])
@@ -120,7 +123,7 @@ def joinTable():
                     table["joueurs"] = joueurs
 
                 Table.saveTable(table)
-                flash('Vous avez rejoins la table de ' + hote + ' à ' + table["ville"] + ' le ' + table['date'], 'info')
+                flash('Vous avez rejoins la table de ' + str(hote) + ' à ' + str(table["ville"]) + ' le ' + str(table['date']), 'info')
                 return redirect(url_for('table.listeTable'))    
 
             else:
