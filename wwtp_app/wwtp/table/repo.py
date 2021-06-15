@@ -22,12 +22,12 @@ class RepoTable:
 
 
     def findTableByPlayer(id):
-        query = {"joueurs.idJoueur": id}
+        query = {"joueurs.idJoueur": ObjectId(id)}
 
         return tableColl.find(query)
 
     def findTableByHost(id):
-        query = {"hote.idJoueur": id}
+        query = {"hote.idJoueur": ObjectId(id)}
 
         return tableColl.find(query)
 
