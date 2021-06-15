@@ -19,6 +19,8 @@ class RepoTable:
 
         return tableColl.find_one(query)
 
+
+
     def findTableByPlayer(id):
         query = {"joueurs.idJoueur": id}
 
@@ -29,9 +31,6 @@ class RepoTable:
 
         return tableColl.find(query)
 
-    def saveTable(table):
-        return tableColl.save(table)
-
     def isHote(self, hoteId, dateTable):
         
         dateBefore = dateTable - timedelta(hours=8)
@@ -40,7 +39,7 @@ class RepoTable:
         print(dateBefore)
         print(dateAfter)
 
-        query = {"hote.idJoueur": hoteId, 
+        query = {"hote.idJoueur": ObjectId(hoteId), 
             "date": {
                 "$gte": dateBefore,
                 "$lt": dateAfter
@@ -56,7 +55,7 @@ class RepoTable:
         print(dateBefore)
         print(dateAfter)
 
-        query = {"joueurs": {"$elemMatch": {"idJoueur": hoteId}},
+        query = {"joueurs": {"$elemMatch": {"idJoueur": ObjectId(hoteId)}},
             "date": {
                 "$gte": dateBefore,
                 "$lt": dateAfter
@@ -81,11 +80,9 @@ class RepoTable:
 
         now = datetime.today()
 
-        print(idJoueur)
-
         query = {
-            "hote.idJoueur" : {"$ne" : idJoueur},
-            "joueurs.idJoueur" : {"$ne": idJoueur},
+            "hote.idJoueur" : {"$ne" : ObjectId(idJoueur)},
+            "joueurs.idJoueur" : {"$ne": ObjectId(idJoueur)},
             "date" : {
                 "$gte": now
             }
@@ -106,10 +103,11 @@ class RepoTable:
 
     def joinTable(joueur, idTable):
 
-        find = {"_id" : idTable}
-        push = {"$push": {"joueurs": {"idJoueur": joueur.idJoueur, "nom": joueur.nom, "pseudo" : joueur.pseudo}}}
+        find = {"_id" : ObjectId(idTable)}
+        push = {"$push": {"joueurs": {"idJoueur": ObjectId(joueur["_id"]), "nom": joueur["nom"], "pseudo" : joueur["pseudo"]}}}
 
         tableColl.update_one(find, push)
+
 
     
 

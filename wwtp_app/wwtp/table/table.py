@@ -8,6 +8,7 @@ from wtforms.form import Form
 from wtforms.validators import InputRequired, ValidationError
 from datetime import datetime, timedelta
 from .model import Table
+from wwtp.joueur.model import Joueur
 
 bpTable = Blueprint("table", __name__, template_folder="templates")
 
@@ -93,6 +94,9 @@ def formCreation():
 @bpTable.route("/listeTable", methods=["GET", "POST"])
 def listeTable():
     user = session["user"]
+
+    print("")
+
     tables = Table.findAvalaibleTable(user["idJoueur"])
 
     return render_template("listeTable.html", tables=tables)
@@ -100,37 +104,18 @@ def listeTable():
 @bpTable.route("/joinTable", methods=["GET", "POST"])
 def joinTable():
     if request.method == "POST":
-        if request.form.get("join"):
+        if request.form.get("join"):            
             table = Table.findTable(request.values["join"])
             result = Table.canJoinTable(table, session["user"])
-            
+
             if result:
                 user = session["user"]
-                id = user["idJoueur"]
-                name = user["nom"]
+                idJoueur = user["idJoueur"]
                 hote = table["hote"]
+                Joueur.joinTable(idJoueur, table["_id"])
 
-                if "joueurs" in table:   
-                    joueurs = table["joueurs"]
-                    joueurs.append(
-                        {
-                            "idJoueur" : id,
-                            "nom" : name
-                        })
-                    table["joueurs"] = joueurs
+                flash('Vous avez rejoins la table de ' + hote["nom"] + ' à ' + table["ville"] + ' le ' + str(table['date']), 'info')
 
-                else:
-                    joueurs = []
-                    joueurs.append(
-                        {
-                            "idJoueur" : id,
-                            "nom" : name
-                        })
-
-                    table["joueurs"] = joueurs
-
-                Table.saveTable(table)
-                flash('Vous avez rejoins la table de ' + str(hote) + ' à ' + str(table["ville"]) + ' le ' + str(table['date']), 'info')
                 return redirect(url_for('table.listeTable'))    
 
             else:

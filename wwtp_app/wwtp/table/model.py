@@ -97,7 +97,7 @@ class Table:
         dtString = str(form.date.data) + " " + str(form.heure.data) + str(".000")
         fullDate = datetime.strptime(dtString, '%Y-%m-%d %H:%M:%S.%f')
 
-        hote = {"idJoueur": session['user']['idJoueur'], "nom":  session['user']['nom']}
+        hote = {"idJoueur": ObjectId(session['user']['idJoueur']), "nom":  session['user']['nom']}
         table = Table(
             hote, 
             form.jeuxLibre.data, 
