@@ -1,5 +1,9 @@
 from datetime import datetime
+from wwtp.table.repo import *
+from .repo import *
 
+repositoryTable = RepoTable()
+repositoryJoueur = RepoJoueur()
 
 class Joueur:
 
@@ -15,7 +19,12 @@ class Joueur:
         self.ville = ville
         self.codePostal = codePostal
         self.dateDeNaissance = dateDeNaissance
-        self.note = 0
         self.dateDeCreation = datetime.today()
         self.estBloque = False
         self.note = note
+
+    
+    def joinTable(idJoueur, idTable):
+
+        joueur = RepoJoueur.findPlayerById(idJoueur)
+        RepoTable.joinTable(joueur, idTable)
