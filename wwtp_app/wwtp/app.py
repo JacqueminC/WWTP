@@ -30,7 +30,7 @@ def index():
     resp.set_cookie('idUser', '', expires=0)
     """session.pop("idUser", None)"""
     session["user"] = {
-        "idJoueur": 99,
+        "idJoueur": "60c86295cbbfd4f430693f17",
         "dateDeNaissance" : datetime(1988, 10, 8, 0,0,0),        
         "note" : 3,
         "nom" : "Random Guy"
