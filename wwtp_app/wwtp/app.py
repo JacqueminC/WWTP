@@ -5,6 +5,7 @@ from flask import Flask, render_template, session, make_response
 from flask_pymongo import PyMongo
 from wwtp.table.table import bpTable
 from wwtp.home.home import bpHome
+from wwtp.joueur.joueur import bpJoueur
 from flask_bootstrap import Bootstrap
 
 
@@ -20,6 +21,7 @@ Bootstrap(app)
 
 app.register_blueprint(bpTable, url_prefix="/table")
 app.register_blueprint(bpHome, ulr_prefix="/home")
+app.register_blueprint(bpJoueur, url_prefix="/joueur")
 
 @app.route("/")
 @app.route("/index")

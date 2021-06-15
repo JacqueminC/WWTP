@@ -14,6 +14,20 @@
 
     <h2>Mes tables comme joueur</h2>
 
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+        {% for category, message in messages %}
+
+            {% if category == "error" %}
+            <p style="color: red; font: bold;">{{ message }}</p>
+            {% else %}
+            <p style="color: green; font: bold;">{{ message }}</p>
+            {% endif %}
+            
+        {% endfor %}
+        {% endif %}
+    {% endwith %}
+
     <div>
         <table class="table table-hover">
             <thead>
@@ -65,7 +79,7 @@
                                 {% endif %}
                             </td>
                             <td>
-                                <form method ="post" action="/table/leaveTable">
+                                <form method ="post" action="/joueur/leaveTable">
                                     <button type="submit" name="leave" value="{{ table['_id'] }}" class="btn btn-warning">Partir</button>
                                 </form>
                             </td>
@@ -106,7 +120,7 @@
                                     {% endif %}
                                 </td>
                                 <td>
-                                    <form method ="post" action="/table/leaveTable">
+                                    <form method ="post" action="/joueur/leaveTable">
                                         <button type="submit" name="leave" value="{{ table['_id'] }}" class="btn btn-warning">Partir</button>
                                     </form>
                                 </td>

@@ -101,30 +101,6 @@ def listeTable():
 
     return render_template("listeTable.html", tables=tables)
 
-@bpTable.route("/joinTable", methods=["GET", "POST"])
-def joinTable():
-    if request.method == "POST":
-        if request.form.get("join"):            
-            table = Table.findTable(request.values["join"])
-            result = Table.canJoinTable(table, session["user"])
-
-            if result:
-                user = session["user"]
-                idJoueur = user["idJoueur"]
-                hote = table["hote"]
-                Joueur.joinTable(idJoueur, table["_id"])
-
-                flash('Vous avez rejoins la table de ' + hote["nom"] + ' à ' + table["ville"] + ' le ' + str(table['date']), 'info')
-
-                return redirect(url_for('table.listeTable'))    
-
-            else:
-                flash('Impossible de rejoindre la table vous ne remplisez pas les conditions !!!', 'error')
-                return redirect(url_for('table.listeTable'))
-
-    else:
-        flash('Une erreur c\'est produite veuillez réessayer !', 'error')
-        return redirect(url_for('table.listeTable'))
 
 @bpTable.route("/tableJoueur", methods=["GET", "POST"])
 def tableJoueur():
