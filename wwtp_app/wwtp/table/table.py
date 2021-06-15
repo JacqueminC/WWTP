@@ -29,30 +29,41 @@ class CreationTableForm(FlaskForm):
     noteMin = BooleanField(' Note minimum ?')
     note = IntegerRangeField('Note', default=0)
 
+    def validate_nbPlace(self, nbPlace):
+        if nbPlace.data < 1:
+            flash("Il doit y avoir au moins une place de libre pour créer une table", "place")
+            return ValidationError()
+        if nbPlace.data > 10:
+            flash("Le nombre de place maximum est de 10", "place")
+            return ValidationError()
+
     def validate_jeux(self, jeux):        
         if self.jeuxLibre.data == False:
-            if self.jeux[0].nom.data == None or self.jeux[0].nom.data == "":
-                raise ValidationError("Vous devez indiquer un jeu si vous n'êtes pas en jeux libre!")
+            if jeux[0].nom.data == None or self.jeux[0].nom.data == "":
+                flash("Vous devez indiquer un jeu si vous n'êtes pas en jeux libre!", "jeu")
+                raise ValidationError()
      
 
     def validate_age(self, age):
         if self.ageMin.data == True:
             if not isinstance(self.age.data, int):
-                raise ValidationError("Veuillez entrez un age en chiffre!")
-            if self.age.data == None:
-                raise ValidationError("Veuillez indiquer une valeur! L'age doit être entre 16 et 99!")
-            if self.age.data < 16 or self.age.data >99:
-                raise ValidationError("L'age doit être entre 16 et 99!")
+                flash("Veuillez entrez un age en chiffre!", 'age')
+                raise ValidationError()
+            if age.data == None:
+                flash("Veuillez indiquer une valeur! L'age doit être entre 16 et 99!", 'age')
+                raise ValidationError()
+            if age.data < 16 or self.age.data >99:
+                flash("L'age doit être entre 16 et 99!", 'age')
+                raise ValidationError()
     
-    def validate_date(self, date):
+    def validate_heure(self, heure):
         now = datetime.now() + timedelta(hours=2)
-        dtString = str(date.data) + " " + str(self.heure.data)
+        dtString = str(self.date.data) + " " + str(heure.data)
         dtForm = datetime.strptime(dtString, '%Y-%m-%d %H:%M:%S')
 
-        print("dtForm : " + str(dtForm))
-
         if now > dtForm:
-            raise ValidationError("La date doit être supérieur à maintenant PLUS 2 heures!")
+            flash("La date doit être supérieur à maintenant PLUS 2 heures!", "date")
+            raise ValidationError()
             
 
 @bpTable.route("/formCreation", methods=["GET", "POST"])
@@ -61,7 +72,6 @@ def formCreation():
     done = "ko"
 
     if form.validate_on_submit():
-       #return "Form envoyé! {} and {}".format(form.nbPlace.data, form.ville.data)
 
        user = session["user"]
        idJoueur = user["idJoueur"]
@@ -105,6 +115,7 @@ def joinTable():
                 Joueur.joinTable(idJoueur, table["_id"])
 
                 flash('Vous avez rejoins la table de ' + hote["nom"] + ' à ' + table["ville"] + ' le ' + str(table['date']), 'info')
+
                 return redirect(url_for('table.listeTable'))    
 
             else:
@@ -114,5 +125,20 @@ def joinTable():
     else:
         flash('Une erreur c\'est produite veuillez réessayer !', 'error')
         return redirect(url_for('table.listeTable'))
+
+@bpTable.route("/tableJoueur", methods=["GET", "POST"])
+def tableJoueur():
+    user = session["user"]
+    id = user["idJoueur"]
+    result = Table.findTableByPlayer(id)
+    return render_template("tablesJoueur.html", result=result)
+
+@bpTable.route("/tableHote", methods=["GET", "POST"])
+def tableHote():
+    user = session["user"]
+    id = user["idJoueur"]
+    result = Table.findTableByHost(id)
+    return render_template("tablesHote.html", result=result)
+
 
         

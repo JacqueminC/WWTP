@@ -3,6 +3,7 @@ from datetime import datetime, timedelta
 from pymongo import MongoClient, results
 import pymongo
 from bson import ObjectId
+from pymongo.message import query
 
 client = MongoClient('mongodb://localhost:27017/')
 db = client["wwtp"]
@@ -18,8 +19,17 @@ class RepoTable:
 
         return tableColl.find_one(query)
 
-    """def saveTable(table):
-        return tableColl.save(table)"""
+
+
+    def findTableByPlayer(id):
+        query = {"joueurs.idJoueur": id}
+
+        return tableColl.find(query)
+
+    def findTableByHost(id):
+        query = {"hote.idJoueur": id}
+
+        return tableColl.find(query)
 
     def isHote(self, hoteId, dateTable):
         

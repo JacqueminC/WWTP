@@ -2,22 +2,26 @@
 
 {% block title %}
 
-    <h1>Welcome to Home page!!!</h1>
+    <title>Welcome to Home page!!!</title>
 
 {% endblock %}
 
 
 {% block content %}
 
-    
-    <p>Hello board game player! Let's play!</p>
-    {% for x in range(3) %}
-        <h3>{{x}} - Let's play!!!</h3>
-    {% endfor %}
-    {{test}}
+    <div class="container">
+        <p>Hello board game player! Let's play!</p>
+        {% for x in range(3) %}
+            <h3>{{x}} - Let's play!!!</h3>
+        {% endfor %}
+        {{test}}
 
-    {% for value in test %}
-        <h3>{{value}}</h3>
-    {% endfor %}
+        {% for value in test %}
+            <h3>{{value}}</h3>
+        {% endfor %}
+    </div>
+
+    
+    
 
 {% endblock %}
