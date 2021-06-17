@@ -48,7 +48,7 @@ def leaveTable():
             idJoueur = user["idJoueur"]           
             Joueur.leaveTable(idJoueur, request.values["leave"])
 
-            flash("Vous avez quitter la table, vous avez subit un malus sur votre note")        
+            flash("Vous avez quitter la table, vous avez subit un malus sur votre note !")        
             return redirect(url_for('table.tableJoueur'))
 
         else:
@@ -56,3 +56,30 @@ def leaveTable():
 
     else:
         return redirect(url_for('table.tableJoueur'))
+
+@bpJoueur.route("/manageTable", methods=["GET", "POST"])
+def manageTable():
+
+    if request.method == "POST":
+        user = session["user"]
+        idJoueur = user["idJoueur"]
+        table = Table.findTable(request.values["validate"])
+
+        if request.form.get("validate"):
+            if len(table["joueurs"]) != 0:
+                Joueur.validateTable(request.values["validate"])
+                flash("La table a été validée, les joueurs receveront l'information par email.", "done")
+                return redirect(url_for('table.tableHote'))
+            else:
+                flash("Vous ne pouvez pas valider une table pour laquelle il n'y a aucun joueur.", "error")
+                return redirect(url_for('table.tableHote'))
+
+        elif request.form.get("close"):
+            flash("Votre table a bien été annulé, vous avez subit un malus pour chaque joueur insrit !")
+            Joueur.closeTable(request.values["close"], idJoueur, len(table["joueurs"]))
+
+        else:
+            return redirect(url_for('table.tableHote'))
+
+    else:
+        return redirect(url_for('table.tableHote'))

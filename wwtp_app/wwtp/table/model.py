@@ -81,6 +81,8 @@ class Table:
                 raise Exception("La note doit être un integer")
 
         self.joueurs = []
+        self.estValide = False
+        self.estAnnule = False
 
     def canCreateTable(hoteId, date, heure):
 

@@ -1,4 +1,5 @@
 from datetime import datetime
+from wwtp.table.repo import RepoTable
 from wwtp.table.repo import *
 from .repo import *
 import math
@@ -49,4 +50,25 @@ class Joueur:
                 joueur["noteMax"] = joueur["noteMax"] + 5
                 
             RepoJoueur.updatePlayer(joueur)
+
+    def validateTable(idTable):
+        RepoTable.validateTable(idTable)
+
+    def closeTable(idTable, idJoueur, nbJoueurs):
+        joueur = RepoJoueur.findPlayerById(idJoueur)
+        RepoTable.closeTable(idTable)
+
+        if nbJoueurs != 0:
+            nbJoueurs = nbJoueurs +1
+
+        for j in range(nbJoueurs):
+            if joueur["noteGlobale"] >= 5:
+                joueur["noteGlobale"] = joueur["noteGlobale"] - 5 
+                note = Joueur.decreaseNote(joueur["noteGlobale"], joueur["noteMax"])
+                joueur["note"] = note
+            else:
+                joueur["noteMax"] = joueur["noteMax"] + 5
+        
+        RepoJoueur.updatePlayer(joueur)
+            
 
