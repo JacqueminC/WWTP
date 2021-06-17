@@ -40,8 +40,13 @@ class Joueur:
         joueur = RepoJoueur.findPlayerById(idJoueur)
 
         if "noteGlobale" in joueur:
-            joueur["noteGlobale"] = joueur["noteGlobale"] - 5 
-            note = Joueur.decreaseNote(joueur["noteGlobale"], joueur["noteMax"])
-            joueur["note"] = note
+
+            if joueur["noteGlobale"] >= 5:
+                joueur["noteGlobale"] = joueur["noteGlobale"] - 5 
+                note = Joueur.decreaseNote(joueur["noteGlobale"], joueur["noteMax"])
+                joueur["note"] = note
+            else:
+                joueur["noteMax"] = joueur["noteMax"] + 5
+                
             RepoJoueur.updatePlayer(joueur)
 
