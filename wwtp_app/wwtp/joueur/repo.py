@@ -16,3 +16,6 @@ class RepoJoueur():
         }
 
         return joueurColl.find_one(query)
+
+    def updatePlayer(joueur):
+        joueurColl.save(joueur)

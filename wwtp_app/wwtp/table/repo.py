@@ -12,14 +12,11 @@ tableColl = db["table"]
 class RepoTable:
 
     def findTable(id):
-
         query = {
             "_id" : ObjectId(id)
         }
 
         return tableColl.find_one(query)
-
-
 
     def findTableByPlayer(id):
         query = {"joueurs.idJoueur": ObjectId(id)}
@@ -107,6 +104,14 @@ class RepoTable:
         push = {"$push": {"joueurs": {"idJoueur": ObjectId(joueur["_id"]), "nom": joueur["nom"], "pseudo" : joueur["pseudo"]}}}
 
         tableColl.update_one(find, push)
+
+    def leaveTable(idJoueur, idTable):
+
+        find = {"_id" : ObjectId(idTable)}
+        pull = {"$pull": {"joueurs" : {"idJoueur": ObjectId(idJoueur)}}}
+        
+        tableColl.update_one(find, pull)
+
 
 
     
