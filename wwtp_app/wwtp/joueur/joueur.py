@@ -23,9 +23,15 @@ def joinTable():
 
             if result:
                 user = session["user"]
-                idJoueur = user["idJoueur"]
+                jName = user["nom"]
+                jId = user["idJoueur"]                
                 hote = table["hote"]
-                Joueur.joinTable(idJoueur, table["_id"])
+                joueurHote = Joueur.findPlayerById(hote["idJoueur"])
+                Joueur.joinTable(jId, table["_id"])
+
+                subject = "Un joueur à rejoints votre table"
+                body = f"{jName} a rejoint votre table du {table['date']}\n\nWWTP"
+                Joueur.sendEmail([joueurHote['email']], subject, body)
 
                 flash('Vous avez rejoins la table de ' + hote["nom"] + ' à ' + table["ville"] + ' le ' + str(table['date']), 'info')
                 return redirect(url_for('table.listeTable'))    
