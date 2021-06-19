@@ -33,9 +33,6 @@ class RepoTable:
         dateBefore = dateTable - timedelta(hours=8)
         dateAfter = dateTable + timedelta(hours=8)
 
-        print(dateBefore)
-        print(dateAfter)
-
         query = {"hote.idJoueur": ObjectId(hoteId), 
             "date": {
                 "$gte": dateBefore,
@@ -49,9 +46,6 @@ class RepoTable:
         dateBefore = dateTable - timedelta(hours=8)
         dateAfter = dateTable + timedelta(hours=8)
 
-        print(dateBefore)
-        print(dateAfter)
-
         query = {"joueurs": {"$elemMatch": {"idJoueur": ObjectId(hoteId)}},
             "date": {
                 "$gte": dateBefore,
@@ -64,13 +58,10 @@ class RepoTable:
 
         result = self.isHote(hoteId, dateTable)
 
-        print(result)
-
         if result > 0:
             return result
         else:
             result = self.isPlayer(hoteId, dateTable)
-            print(result)
             return result 
 
     def findAvalaibleTable(idJoueur):
@@ -80,13 +71,12 @@ class RepoTable:
         query = {
             "hote.idJoueur" : {"$ne" : ObjectId(idJoueur)},
             "joueurs.idJoueur" : {"$ne": ObjectId(idJoueur)},
-            
+            "estValide" : False,
+            "estAnnule" : False,
             "date" : {
                 "$gte": now
             }
         }
-
-        print(query)
 
         sort = {
             "date": -1

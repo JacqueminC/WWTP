@@ -80,7 +80,6 @@ class Joueur:
         RepoJoueur.updatePlayer(joueur)
 
     def sendEmail(emails, subject, body):
-        print(emails)
         msg = EmailMessage()
         msg.set_charset('utf8')
         msg['From'] = "wwtp.web.site@gmail.com"
