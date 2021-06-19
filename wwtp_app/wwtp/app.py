@@ -2,14 +2,15 @@
 
 from datetime import datetime
 from flask import Flask, render_template, session, make_response
+import flask
 from flask_pymongo import PyMongo
 from wwtp.table.table import bpTable
 from wwtp.home.home import bpHome
 from wwtp.joueur.joueur import bpJoueur
 from flask_bootstrap import Bootstrap
 
-
 app = Flask(__name__)
+
 
 app.config['SECRET_KEY'] = "secretkey"
 app.config["MONGO_URI"] = "mongodb://localhost:27017/wwtp"
@@ -42,4 +43,3 @@ def index():
 
 if __name__ == "wwtp.app":
     app.run(debug=True)
-

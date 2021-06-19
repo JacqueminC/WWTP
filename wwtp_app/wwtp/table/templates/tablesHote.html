@@ -61,10 +61,10 @@
                             <td>{{table["ville"]}}</td>
                             <td>{{table["nbPlace"] - table["joueurs"]|length}} / {{table["nbPlace"]}}</td>
                             <td>
-                                {% if joueurs in table %}
+                                {% if "joueurs" in table %}
                                     <ul>
                                     {% for joueur in table["joueurs"] %}                                        
-                                            <li>joueur["nom"]</li>                                        
+                                            <li>{{ joueur["nom"] }}</li>                                        
                                     {% endfor %}
                                     </ul>
                                 {% else %}
@@ -97,14 +97,12 @@
                             </td>
                             <td>
                                 <form method ="post" action="/joueur/manageTable">
-                                    {% if table["estValide"] == False  or  table["estValide"] == True%}
+                                    {% if table["estValide"] == False  %}
                                         <button type="submit" name="validate" value="{{ table['_id'] }}" class="btn btn-success">Valider</button>
                                     {% else %}
-                                        <button type="submit"  class="btn btn-success disabled">Valider</button>
+                                        <button type="submit"  class="btn btn-success disabled" disabled>Valider</button>
                                     {% endif %}
-
                                     <button type="submit" name="close" value="{{ table['_id'] }}" class="btn btn-danger">Annuler</button>
-
                                 </form>
                             </td>
                         </tr>
@@ -118,10 +116,10 @@
                                 <td>{{table["ville"]}}</td>
                                 <td>{{table["nbPlace"] - table["joueurs"]|length}} / {{table["nbPlace"]}}</td>
                                 <td>
-                                    {% if joueurs in table %}
+                                    {% if "joueurs" in table %}
                                         <ul>
                                         {% for joueur in table["joueurs"] %}                                        
-                                                <li>joueur["nom"]</li>                                        
+                                                <li>{{ joueur["nom"] }}</li>                                        
                                         {% endfor %}
                                         </ul>
                                     {% else %}
@@ -156,14 +154,12 @@
                                 </td>
                                 <td>
                                     <form method ="post" action="/joueur/manageTable">
-                                        {% if table["estValide"] == False %}
+                                        {% if table["estValide"] == False  %}
                                             <button type="submit" name="validate" value="{{ table['_id'] }}" class="btn btn-success">Valider</button>
                                         {% else %}
-                                            <button type="submit"  class="btn btn-success disabled">Valider</button>
-                                        {% endif %}
-
-                                        <button type="submit" name="close" value="{{ table['_id'] }}" class="btn btn-danger">Annuler</button>
-                                        
+                                            <button type="submit"  class="btn btn-success disabled" disabled>Valider</button>
+                                        {% endif %}    
+                                        <button type="submit" name="close" value="{{ table['_id'] }}" class="btn btn-danger">Annuler</button>    
                                     </form>
                                 </td>
                             </tr>

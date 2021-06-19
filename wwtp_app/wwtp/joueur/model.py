@@ -1,8 +1,12 @@
 from datetime import datetime
+
+from werkzeug.datastructures import Headers
 from wwtp.table.repo import RepoTable
-from wwtp.table.repo import *
 from .repo import *
-import math
+import smtplib
+from email.mime.text import MIMEText
+from email.header import Header
+from email.message import EmailMessage
 
 repositoryTable = RepoTable()
 repositoryJoueur = RepoJoueur()
@@ -27,9 +31,11 @@ class Joueur:
         self.noteGlobale = 0
         self.noteMax = 0
 
+    def findPlayerById(id):
+        return RepoJoueur.findPlayerById(id)
+
     def decreaseNote(noteGlobale, max):
         average = (noteGlobale/max) * 5
-        print(type(round(average, 5)))
         return round(average, 5)
     
     def joinTable(idJoueur, idTable):
@@ -56,7 +62,9 @@ class Joueur:
 
     def closeTable(idTable, idJoueur, nbJoueurs):
         joueur = RepoJoueur.findPlayerById(idJoueur)
-        RepoTable.closeTable(idTable)
+        table = RepoTable.findTable(idTable)
+
+        RepoTable.closeTable(idTable)  
 
         if nbJoueurs != 0:
             nbJoueurs = nbJoueurs +1
@@ -70,5 +78,25 @@ class Joueur:
                 joueur["noteMax"] = joueur["noteMax"] + 5
         
         RepoJoueur.updatePlayer(joueur)
+
+    def sendEmail(emails, subject, body):
+        print(emails)
+        msg = EmailMessage()
+        msg.set_charset('utf8')
+        msg['From'] = "wwtp.web.site@gmail.com"
+        msg['To'] = emails
+        msg['Subject'] = subject
+
+        with smtplib.SMTP('smtp.gmail.com', 587) as smtp:
+            smtp.ehlo()
+            smtp.starttls()
+            smtp.ehlo()
+
+            smtp.login("wwtp.web.site@gmail.com", "wflxfjxtwfseitvb")
+
+            msg = f'Subject: {subject}\n\n{body}'
+
+            smtp.sendmail("wwtp.web.site@gmail.com", emails, msg.encode('utf-8'))
+    
             
 

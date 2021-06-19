@@ -1,4 +1,3 @@
-from wwtp.joueur.model import Joueur
 from .repo import *
 from datetime import datetime, timedelta
 from dateutil.relativedelta import relativedelta
@@ -152,3 +151,4 @@ class Table:
 
     def saveTable(table):
         return RepoTable.saveTable(table)
+

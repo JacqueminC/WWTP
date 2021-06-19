@@ -94,9 +94,7 @@ def formCreation():
 @bpTable.route("/listeTable", methods=["GET", "POST"])
 def listeTable():
     user = session["user"]
-
-    print("")
-
+    
     tables = Table.findAvalaibleTable(user["idJoueur"])
 
     return render_template("listeTable.html", tables=tables)
