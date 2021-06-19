@@ -18,7 +18,7 @@ def joinTable():
     if request.method == "POST":
 
         if request.form.get("join"):            
-            table = Joueur.findTable(request.values["join"])
+            table = Table.findTable(request.values["join"])
             result = Table.canJoinTable(table, session["user"])
 
             if result:

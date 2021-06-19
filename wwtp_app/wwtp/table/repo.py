@@ -80,6 +80,7 @@ class RepoTable:
         query = {
             "hote.idJoueur" : {"$ne" : ObjectId(idJoueur)},
             "joueurs.idJoueur" : {"$ne": ObjectId(idJoueur)},
+            
             "date" : {
                 "$gte": now
             }
