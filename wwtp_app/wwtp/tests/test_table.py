@@ -192,7 +192,7 @@ def test_new_table():
     try:
         table1 = Table(joueur1, False, 4, jeux1, dateAfter1, "La comté", True, 18, False, False, 0)
     except Exception as e:
-        pytest.fail("Aucune erreur ne doit être retourné - " + str(e))
+        pytest.fail("Aucune erreur ne doit être retournée - " + str(e))
 
     table1 = Table(joueur1, True, 5, jeux1, dateAfter1, "La comté", True, 18, False, False, 0)
     assert len(table1.jeux) == 0, "Jeux libre à été choisi, la liste ne doit pas être enregistrée"
