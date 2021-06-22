@@ -1,5 +1,4 @@
 from datetime import datetime
-
 from werkzeug.datastructures import Headers
 from wwtp.table.repo import RepoTable
 from .repo import *
@@ -62,7 +61,6 @@ class Joueur:
 
     def closeTable(idTable, idJoueur, nbJoueurs):
         joueur = RepoJoueur.findPlayerById(idJoueur)
-        table = RepoTable.findTable(idTable)
 
         RepoTable.closeTable(idTable)  
 

@@ -1,6 +1,7 @@
 from flask import Blueprint, render_template,session, request, redirect, url_for, flash
 from werkzeug.utils import redirect
 from wwtp.table.model import Table
+from wwtp.evaluation.model import Evaluation
 from .model import Joueur
 
 bpJoueur = Blueprint("joueur", __name__, template_folder="templates")
@@ -44,8 +45,11 @@ def leaveTable():
 
         if request.form.get("leave"):
             user = session["user"]
-            idJoueur = user["idJoueur"]           
-            Joueur.leaveTable(idJoueur, request.values["leave"])
+            idJoueur = user["idJoueur"]
+            idTable = request.values["leave"]         
+            Joueur.leaveTable(idJoueur, idTable)
+            Evaluation.createEvaluation(idTable, idJoueur, idJoueur, 0, "Leave")
+            note = Evaluation.CalculateNote(idJoueur)
 
             flash("Vous avez quitter la table, vous avez subit un malus sur votre note !")        
             return redirect(url_for('table.tableJoueur'))

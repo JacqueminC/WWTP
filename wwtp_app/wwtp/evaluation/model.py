@@ -1,8 +1,12 @@
+from .repo import *
+from bson import ObjectId
 
+
+repositoryEvaluation = RepoEvaluation()
 
 class Evaluation:
 
-    def __init__(self, note, info):
+    def __init__(self, idTable, idJoueur, idEvaluateur, note, info):
         if isinstance(note, int):
             if note <= 5:
                 if note >=0:
@@ -19,4 +23,13 @@ class Evaluation:
         else:
             raise Exception("Info doit contenir une valeur de 3 caractère minimum !")
 
+        self.idTable = idTable
+        self.idJoueur= idJoueur
+        self.idEvaluateur = idEvaluateur
 
+    def createEvaluation(idTable, idJoueur, idEvaluateur, note, info):
+        eval = Evaluation(note, info, ObjectId(idTable), ObjectId(idJoueur), ObjectId(idEvaluateur))
+        repositoryEvaluation.createEvaluation(eval) 
+
+    def CalculateNote(idJoueur):
+        result = repositoryEvaluation.CalculateNote(idJoueur)

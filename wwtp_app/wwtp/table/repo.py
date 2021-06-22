@@ -3,7 +3,6 @@ from datetime import datetime, timedelta
 from pymongo import MongoClient, results
 import pymongo
 from bson import ObjectId
-from pymongo.message import query
 
 client = MongoClient('mongodb://localhost:27017/')
 db = client["wwtp"]

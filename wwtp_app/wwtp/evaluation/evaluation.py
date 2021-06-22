@@ -6,4 +6,4 @@ from .model import Joueur
 """
 
 
-bpEvaluation = Blueprint("joueur", __name__, template_folder="templates")
+bpEvaluation = Blueprint("evaluation", __name__, template_folder="templates")
