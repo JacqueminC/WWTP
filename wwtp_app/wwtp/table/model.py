@@ -1,4 +1,3 @@
-from wwtp.joueur.model import Joueur
 from .repo import *
 from datetime import datetime, timedelta
 from dateutil.relativedelta import relativedelta
@@ -71,7 +70,6 @@ class Table:
         self.noteMin = noteMin
 
         if noteMin == True:
-            print("-------------------> " + str(note))
             if isinstance(note, int):
                 if note >= 0 and note <= 5:
                     self.note = note
@@ -81,6 +79,8 @@ class Table:
                 raise Exception("La note doit être un integer")
 
         self.joueurs = []
+        self.estValide = False
+        self.estAnnule = False
 
     def canCreateTable(hoteId, date, heure):
 
@@ -88,8 +88,6 @@ class Table:
         fullDate = datetime.strptime(dtString, '%Y-%m-%d %H:%M:%S.%f')        
 
         result = repositoryTable.canCreateTable(hoteId, fullDate)
-
-        print(result)
 
         return result
 
@@ -150,3 +148,4 @@ class Table:
 
     def saveTable(table):
         return RepoTable.saveTable(table)
+

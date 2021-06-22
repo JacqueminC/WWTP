@@ -80,7 +80,11 @@
                             </td>
                             <td>
                                 <form method ="post" action="/joueur/leaveTable">
-                                    <button type="submit" name="leave" value="{{ table['_id'] }}" class="btn btn-warning">Partir</button>
+                                    {% if table["estValide"] == False %}
+                                        <button type="submit" name="leave" value="{{ table['_id'] }}" class="btn btn-warning">Partir</button>
+                                    {% else %}
+                                        <button type="submit" class="btn btn-warning disabled" disabled>Partir</button>
+                                    {% endif %}
                                 </form>
                             </td>
                         </tr>
@@ -121,7 +125,11 @@
                                 </td>
                                 <td>
                                     <form method ="post" action="/joueur/leaveTable">
-                                        <button type="submit" name="leave" value="{{ table['_id'] }}" class="btn btn-warning">Partir</button>
+                                        {% if table["estValide"] == False %}
+                                            <button type="submit" name="leave" value="{{ table['_id'] }}" class="btn btn-warning">Partir</button>
+                                        {% else %}
+                                            <button type="submit" class="btn btn-warning disabled" disabled>Partir</button>
+                                        {% endif %}
                                     </form>
                                 </td>
                             </tr>

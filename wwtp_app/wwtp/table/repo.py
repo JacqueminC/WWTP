@@ -19,12 +19,12 @@ class RepoTable:
         return tableColl.find_one(query)
 
     def findTableByPlayer(id):
-        query = {"joueurs.idJoueur": ObjectId(id)}
+        query = {"joueurs.idJoueur": ObjectId(id), "estAnnule": False}
 
         return tableColl.find(query)
 
     def findTableByHost(id):
-        query = {"hote.idJoueur": ObjectId(id)}
+        query = {"hote.idJoueur": ObjectId(id), "estAnnule": False}
 
         return tableColl.find(query)
 
@@ -32,9 +32,6 @@ class RepoTable:
         
         dateBefore = dateTable - timedelta(hours=8)
         dateAfter = dateTable + timedelta(hours=8)
-
-        print(dateBefore)
-        print(dateAfter)
 
         query = {"hote.idJoueur": ObjectId(hoteId), 
             "date": {
@@ -49,9 +46,6 @@ class RepoTable:
         dateBefore = dateTable - timedelta(hours=8)
         dateAfter = dateTable + timedelta(hours=8)
 
-        print(dateBefore)
-        print(dateAfter)
-
         query = {"joueurs": {"$elemMatch": {"idJoueur": ObjectId(hoteId)}},
             "date": {
                 "$gte": dateBefore,
@@ -64,13 +58,10 @@ class RepoTable:
 
         result = self.isHote(hoteId, dateTable)
 
-        print(result)
-
         if result > 0:
             return result
         else:
             result = self.isPlayer(hoteId, dateTable)
-            print(result)
             return result 
 
     def findAvalaibleTable(idJoueur):
@@ -80,12 +71,12 @@ class RepoTable:
         query = {
             "hote.idJoueur" : {"$ne" : ObjectId(idJoueur)},
             "joueurs.idJoueur" : {"$ne": ObjectId(idJoueur)},
+            "estValide" : False,
+            "estAnnule" : False,
             "date" : {
                 "$gte": now
             }
         }
-
-        print(query)
 
         sort = {
             "date": -1
@@ -99,18 +90,29 @@ class RepoTable:
         tableColl.insert_one(table.__dict__)
 
     def joinTable(joueur, idTable):
-
         find = {"_id" : ObjectId(idTable)}
         push = {"$push": {"joueurs": {"idJoueur": ObjectId(joueur["_id"]), "nom": joueur["nom"], "pseudo" : joueur["pseudo"]}}}
 
         tableColl.update_one(find, push)
 
     def leaveTable(idJoueur, idTable):
-
         find = {"_id" : ObjectId(idTable)}
         pull = {"$pull": {"joueurs" : {"idJoueur": ObjectId(idJoueur)}}}
         
         tableColl.update_one(find, pull)
+
+    def validateTable(idTable):
+        find = {"_id" : ObjectId(idTable)}
+        save = {"$set" : {"estValide": True, "dateValide": datetime.today()}}
+
+        tableColl.update(find, save)
+    
+    def closeTable(idTable):
+        find = {"_id" : ObjectId(idTable)}
+        save = {"$set" : {"estAnnule": True, "dateAnnule": datetime.today()}}
+
+        tableColl.update(find, save)
+
 
 
 

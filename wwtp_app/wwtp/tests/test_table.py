@@ -255,7 +255,6 @@ def test_findAvalaibleTable():
 
         
         for r in result:
-            print(r)
             if "count" in r:
                 count += 1
 
