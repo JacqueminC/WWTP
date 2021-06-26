@@ -3,6 +3,7 @@ from werkzeug.utils import redirect
 from wwtp.table.model import Table
 from wwtp.evaluation.model import Evaluation
 from .model import Joueur
+from bson import ObjectId
 
 bpJoueur = Blueprint("joueur", __name__, template_folder="templates")
 
@@ -47,9 +48,14 @@ def leaveTable():
             user = session["user"]
             idJoueur = user["idJoueur"]
             idTable = request.values["leave"]         
-            Joueur.leaveTable(idJoueur, idTable)
-            Evaluation.createEvaluation(idTable, idJoueur, idJoueur, 0, "Leave")
-            note = Evaluation.CalculateNote(idJoueur)
+            """Joueur.leaveTable(idJoueur, idTable)"""
+            """eval = Evaluation(ObjectId(idTable), ObjectId(idJoueur), ObjectId(idJoueur), 0, "leave")"""
+            result = Evaluation.createEvaluation(idTable, idJoueur, idJoueur, 0, "Leave")
+            note = Evaluation.calculateNote(idJoueur)
+
+            user = session.get('user')
+            user["note"] = round(note, 2)
+            session.update(user)
 
             flash("Vous avez quitter la table, vous avez subit un malus sur votre note !")        
             return redirect(url_for('table.tableJoueur'))

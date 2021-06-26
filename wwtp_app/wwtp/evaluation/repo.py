@@ -10,7 +10,7 @@ evaluationColl = db["evaluation"]
 class RepoEvaluation:
 
     def createEvaluation(eval):
-        evaluationColl.insert_one(eval)
+        evaluationColl.insert_one(eval.__dict__)
 
     def CalculateNote(idJoueur):
 
@@ -30,9 +30,10 @@ class RepoEvaluation:
 
         result = evaluationColl.aggregate(pipeline)
 
-        noteMoyenne = result["total"] / (result["count"] * 5 )
+        for doc in result:
+            noteMoyenne = doc["total"] / (doc["count"])
 
-        print("note moyenne--------------------------> " + noteMoyenne)
+        return noteMoyenne
 
         
 

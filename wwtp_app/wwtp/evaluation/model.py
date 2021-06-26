@@ -16,7 +16,7 @@ class Evaluation:
             else:
                 raise Exception("La note doit être inferieur à 5 !")  
         else:
-             raise Exception("La valeur doit être un entier")
+            raise Exception("La valeur doit être un entier")
 
         if len(info.replace(" ","")) > 3:
             self.info = info
@@ -28,8 +28,9 @@ class Evaluation:
         self.idEvaluateur = idEvaluateur
 
     def createEvaluation(idTable, idJoueur, idEvaluateur, note, info):
-        eval = Evaluation(note, info, ObjectId(idTable), ObjectId(idJoueur), ObjectId(idEvaluateur))
-        repositoryEvaluation.createEvaluation(eval) 
+        eval = Evaluation(ObjectId(idTable), ObjectId(idJoueur), ObjectId(idEvaluateur), note, info)
+        RepoEvaluation.createEvaluation(eval) 
 
-    def CalculateNote(idJoueur):
-        result = repositoryEvaluation.CalculateNote(idJoueur)
+    def calculateNote(idJoueur):
+        result = RepoEvaluation.CalculateNote(idJoueur)
+        return result

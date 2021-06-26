@@ -37,7 +37,7 @@ def index():
     session["user"] = {
         "idJoueur": "60c86295cbbfd4f430693f17",
         "dateDeNaissance" : datetime(1988, 10, 8, 0,0,0),        
-        "note" : 3,
+        "note" : 0,
         "nom" : "Random Guy"
         }
 
