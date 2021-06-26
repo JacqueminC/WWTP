@@ -1,4 +1,5 @@
 from flask import Blueprint, render_template,session, request, redirect, url_for, flash
+from werkzeug.datastructures import T
 from werkzeug.utils import redirect
 from wwtp.table.model import Table
 from wwtp.evaluation.model import Evaluation
@@ -48,7 +49,7 @@ def leaveTable():
             user = session["user"]
             idJoueur = user["idJoueur"]
             idTable = request.values["leave"]         
-            """Joueur.leaveTable(idJoueur, idTable)"""
+            Joueur.leaveTable(idJoueur, idTable)
             """eval = Evaluation(ObjectId(idTable), ObjectId(idJoueur), ObjectId(idJoueur), 0, "leave")"""
             result = Evaluation.createEvaluation(idTable, idJoueur, idJoueur, 0, "Leave")
             note = Evaluation.calculateNote(idJoueur)
@@ -92,10 +93,20 @@ def manageTable():
                 flash("Vous ne pouvez pas valider une table pour laquelle il n'y a aucun joueur.", "error")
 
         elif request.form.get("close"): 
-            table = Table.findTable(request.values["close"])
+            idTable = request.values["close"]
+            table = Table.findTable(idTable)
             hote = table["hote"]
 
             Joueur.closeTable(request.values["close"], idJoueur, len(table["joueurs"]))
+
+            for player in table["players"]:
+                result = Evaluation.createEvaluation(idTable, idJoueur, idJoueur, 0, "close")
+
+            note = Evaluation.calculateNote(idJoueur)
+
+            user = session.get('user')
+            user["note"] = round(note, 2)
+            session.update(user)
 
             subject = "Une table a été annulée"
             body = f"La table de {hote['nom']} du {table['date']} a été annulée !\n\nWWTP"

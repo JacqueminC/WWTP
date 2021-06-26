@@ -63,17 +63,6 @@ class Joueur:
         joueur = RepoJoueur.findPlayerById(idJoueur)
 
         RepoTable.closeTable(idTable)  
-
-        if nbJoueurs != 0:
-            nbJoueurs = nbJoueurs +1
-
-        for j in range(nbJoueurs):
-            if joueur["noteGlobale"] >= 5:
-                joueur["noteGlobale"] = joueur["noteGlobale"] - 5 
-                note = Joueur.decreaseNote(joueur["noteGlobale"], joueur["noteMax"])
-                joueur["note"] = note
-            else:
-                joueur["noteMax"] = joueur["noteMax"] + 5
         
         RepoJoueur.updatePlayer(joueur)
 
