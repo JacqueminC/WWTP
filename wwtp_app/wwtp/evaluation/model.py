@@ -34,3 +34,9 @@ class Evaluation:
     def calculateNote(idJoueur):
         result = RepoEvaluation.CalculateNote(idJoueur)
         return result
+
+    def findEvalByTable(id):
+        return RepoEvaluation.findEvalByTable(id)
+
+    def findNoteByEvaluateurAndEvalue(idEvaluateur, idEvalue, idTable):
+        return RepoEvaluation.findNoteByEvaluateurAndEvalue(idEvaluateur, idEvalue, idTable)

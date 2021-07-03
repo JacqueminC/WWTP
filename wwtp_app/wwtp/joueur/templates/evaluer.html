@@ -1,0 +1,105 @@
+<style>
+.rate {
+    float: right;
+    color: rgb(255, 176, 29);
+    text-decoration: none;
+    font-size: 3em;
+}
+.rating a {
+   float: right;
+   color: #aaa;
+   text-decoration: none;
+   font-size: 3em;
+   transition: color .4s;
+}
+.rating a:hover,
+.rating a:focus,
+.rating a:hover ~ a,
+.rating a:focus ~ a {
+   color: rgb(255, 176, 29);
+   cursor: pointer;
+}
+
+#thAlign {
+  text-align: right;
+}
+
+</style>
+
+{% extends "base.html" %}
+{% import "bootstrap/wtf.html" as wtf%}
+
+{% block title %}
+
+    <title>Liste des tables disponnibles</title>
+
+{% endblock %}
+
+
+{% block content %}
+
+<div class="container">
+
+{% for table in dictTable %}
+
+{{ table }}
+
+
+    {% set tableData = dictTable[table] %}
+    {% set joueurs = tableData["joueurs"] %}
+    {% set infoTable = tableData["infoTable"] %}
+
+    <br>
+    <table class="table table-hover">
+        <h3> Table de {{ infoTable[1] }} du {{ infoTable[0] }} à {{ infoTable[2] }} </h3>
+        <thead>
+            <tr>
+              <th scope="col">Participants </th>
+              <th scope="col" id="thAlign">Note</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for joueur in joueurs %}
+                <tr>
+                    <td> {{ joueur }}</td>
+                {% if joueurs[joueur][0] != None %}
+                {% set j = joueurs[joueur][0] %}
+                    <td>
+                        <div class="rate">
+                            {% if j["note"] == 1 %}
+                                ⚀
+                            {% endif %}
+                            {% if j["note"] == 2 %}
+                                ⚁
+                            {% endif %}
+                            {% if j["note"] == 3 %}
+                                ⚂
+                            {% endif %}
+                            {% if j["note"] == 4 %}
+                                ⚃
+                            {% endif %}
+                            {% if j["note"] == 5 %}
+                                ⚄
+                            {% endif %}
+                        </div>
+                    </td>
+                {% else %}                    
+                    <td>
+                        <div class="rating">
+                            <a href="/evaluation/evaluerJoueur?note=5&idPlayer={{ joueurs[joueur][1] }}&idTable={{ table }}" title="Donner 5 étoiles">⚄</a>
+                            <a href="/evaluation/evaluerJoueur?note=4&idPlayer={{ joueurs[joueur][1] }}&idTable={{ table }}" data-value=4 title="Donner 4 étoiles">⚃</a>
+                            <a href="/evaluation/evaluerJoueur?note=3&idPlayer={{ joueurs[joueur][1] }}&idTable={{ table }}" data-value=3 title="Donner 3 étoiles">⚂</a>
+                            <a href="/evaluation/evaluerJoueur?note=2&idPlayer={{ joueurs[joueur][1] }}&idTable={{ table }}" data-value=2 title="Donner 2 étoiles">⚁</a>
+                            <a href="/evaluation/evaluerJoueur?note=1&idPlayer={{ joueurs[joueur][1] }}&idTable={{ table }}" data-value=1 title="Donner 1 étoile">⚀</a>
+                        </div>
+                    </td>
+                {% endif %}
+                </tr>                
+            {% endfor %}
+          </tbody>
+    </table>
+{% endfor %}
+
+</div>
+
+{% endblock %}

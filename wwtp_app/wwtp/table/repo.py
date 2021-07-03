@@ -112,6 +112,16 @@ class RepoTable:
 
         tableColl.update(find, save)
 
+    def findTableByIdJoueur(id):
+        print("id ---")
+        print(id)
+        query = {"$or" : [{"hote.idJoueur": ObjectId(id)}, {"joueurs.idJoueur": ObjectId(id)}]}
+
+        result = tableColl.find(query)
+
+        return result
+
+
 
 
 

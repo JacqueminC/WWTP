@@ -1,10 +1,10 @@
 from flask import Blueprint, render_template,session, request, redirect, url_for, flash
-from werkzeug.datastructures import T
 from werkzeug.utils import redirect
 from wwtp.table.model import Table
 from wwtp.evaluation.model import Evaluation
 from .model import Joueur
 from bson import ObjectId
+from itertools import chain
 
 bpJoueur = Blueprint("joueur", __name__, template_folder="templates")
 
@@ -51,7 +51,7 @@ def leaveTable():
             idTable = request.values["leave"]         
             Joueur.leaveTable(idJoueur, idTable)
             """eval = Evaluation(ObjectId(idTable), ObjectId(idJoueur), ObjectId(idJoueur), 0, "leave")"""
-            result = Evaluation.createEvaluation(idTable, idJoueur, idJoueur, 0, "Leave")
+            result = Evaluation.createEvaluation(idTable, idJoueur, idJoueur, 0, "leave")
             note = Evaluation.calculateNote(idJoueur)
 
             user = session.get('user')
@@ -119,3 +119,42 @@ def manageTable():
             Joueur.sendEmail(emails, subject, body)
         
     return redirect(url_for('table.tableHote'))
+
+@bpJoueur.route("/evaluer", methods=["GET", "POST"])
+def evaluatePlayer():
+
+    user = session["user"]
+    idJoueur = user["idJoueur"]
+    dictJoueur = {}
+    dictTable = {}
+    dictData = {}   
+
+    tables = Table.findTableByIdJoueur(idJoueur)
+
+    for table in tables:           
+        joueurs = table["joueurs"]
+        hote = table["hote"]
+        idTable = table["_id"]
+
+        if hote["idJoueur"] != ObjectId(idJoueur):
+            eval = Evaluation.findNoteByEvaluateurAndEvalue(idJoueur, hote["idJoueur"], idTable)
+            dictJoueur[str(hote["pseudo"])] = [ eval, str(hote["idJoueur"])]
+        
+        for j in joueurs:
+            if j["idJoueur"] != ObjectId(idJoueur):
+                eval = Evaluation.findNoteByEvaluateurAndEvalue(idJoueur, j["idJoueur"], idTable)
+                dictJoueur[str(j["pseudo"])] = [ eval, str(j["idJoueur"])]
+
+        if len(dictJoueur) >= 1:
+
+            infoTable = [ str(table["date"]), table["hote"]["pseudo"], table["ville"], str(table["hote"]["idJoueur"]) ]
+
+            dictData["joueurs"] = dictJoueur
+            dictData["infoTable"] = infoTable
+
+
+            dictTable[str(idTable)] = dictData
+
+    return render_template("evaluer.html", dictTable=dictTable)
+
+
