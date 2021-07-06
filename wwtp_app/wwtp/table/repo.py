@@ -116,9 +116,10 @@ class RepoTable:
         now = datetime.today()
 
         query = {"$or" : [{"hote.idJoueur": ObjectId(id)}, {"joueurs.idJoueur": ObjectId(id)}], 
-                "date": {"$gte": now - timedelta(days=60), "$lte": now - timedelta(hours=12) }}
+                "date": {"$gte": now - timedelta(days=60), "$lte": now - timedelta(hours=12) },
+                "estValide": True, "estAnnule": False}
 
-        result = tableColl.find(query)
+        result = tableColl.find(query).sort([("date", pymongo.ASCENDING)])
 
         return result
 
