@@ -149,6 +149,6 @@ class Table:
     def saveTable(table):
         return RepoTable.saveTable(table)
 
-    def findTableByIdJoueur(id):
-        return RepoTable.findTableByIdJoueur(id)
+    def findTableForNoteByIdJoueurAndPast(id):
+        return RepoTable.findTableForNoteByIdJoueurAndPast(id)
 

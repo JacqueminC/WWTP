@@ -112,10 +112,11 @@ class RepoTable:
 
         tableColl.update(find, save)
 
-    def findTableByIdJoueur(id):
-        print("id ---")
-        print(id)
-        query = {"$or" : [{"hote.idJoueur": ObjectId(id)}, {"joueurs.idJoueur": ObjectId(id)}]}
+    def findTableForNoteByIdJoueurAndPast(id):
+        now = datetime.today()
+
+        query = {"$or" : [{"hote.idJoueur": ObjectId(id)}, {"joueurs.idJoueur": ObjectId(id)}], 
+                "date": {"$gte": now - timedelta(days=60), "$lte": now - timedelta(hours=12) }}
 
         result = tableColl.find(query)
 

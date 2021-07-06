@@ -125,13 +125,15 @@ def evaluatePlayer():
 
     user = session["user"]
     idJoueur = user["idJoueur"]
-    dictJoueur = {}
     dictTable = {}
-    dictData = {}   
+       
 
-    tables = Table.findTableByIdJoueur(idJoueur)
+    tables = Table.findTableForNoteByIdJoueurAndPast(idJoueur)
 
-    for table in tables:           
+    for table in tables:
+        dictJoueur = {}    
+        dictData = {}  
+
         joueurs = table["joueurs"]
         hote = table["hote"]
         idTable = table["_id"]

@@ -40,7 +40,16 @@
             <a class="nav-link" href="#">TODO</a>
           </li>
           <li class="nav-item">
-            <p class="nav-link">{{ session["user"].note }} - ...</p>
+            <p class="nav-link">
+              {% if session.get("user") == True %}
+                {% if session["user"].note != None %}
+                  {{ session["user"].note }}
+                {% endif %}
+                {% if session["user"].pseudo != None %}
+                  - {{ session["user"].pseudo }}
+                {% endif %}
+              {% endif %}
+            </p>
           </li>
           
         </ul>
