@@ -8,6 +8,8 @@ repositoryTable = RepoTable()
 class Table:
 
     def __init__(self, hote , jeuxLibre, nbPlace, jeux, date, ville, ageMin, age, regle, noteMin, note):
+        now = datetime.today()
+
         self.hote = hote
 
         if isinstance(jeuxLibre, bool):
@@ -81,6 +83,7 @@ class Table:
         self.joueurs = []
         self.estValide = False
         self.estAnnule = False
+        self.dateCreation = now
 
     def canCreateTable(hoteId, date, heure):
 
