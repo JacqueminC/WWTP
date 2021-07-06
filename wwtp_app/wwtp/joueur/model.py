@@ -1,5 +1,4 @@
 from datetime import datetime
-
 from werkzeug.datastructures import Headers
 from wwtp.table.repo import RepoTable
 from .repo import *
@@ -62,20 +61,8 @@ class Joueur:
 
     def closeTable(idTable, idJoueur, nbJoueurs):
         joueur = RepoJoueur.findPlayerById(idJoueur)
-        table = RepoTable.findTable(idTable)
 
         RepoTable.closeTable(idTable)  
-
-        if nbJoueurs != 0:
-            nbJoueurs = nbJoueurs +1
-
-        for j in range(nbJoueurs):
-            if joueur["noteGlobale"] >= 5:
-                joueur["noteGlobale"] = joueur["noteGlobale"] - 5 
-                note = Joueur.decreaseNote(joueur["noteGlobale"], joueur["noteMax"])
-                joueur["note"] = note
-            else:
-                joueur["noteMax"] = joueur["noteMax"] + 5
         
         RepoJoueur.updatePlayer(joueur)
 

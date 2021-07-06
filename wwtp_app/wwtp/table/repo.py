@@ -3,7 +3,6 @@ from datetime import datetime, timedelta
 from pymongo import MongoClient, results
 import pymongo
 from bson import ObjectId
-from pymongo.message import query
 
 client = MongoClient('mongodb://localhost:27017/')
 db = client["wwtp"]
@@ -112,6 +111,18 @@ class RepoTable:
         save = {"$set" : {"estAnnule": True, "dateAnnule": datetime.today()}}
 
         tableColl.update(find, save)
+
+    def findTableForNoteByIdJoueurAndPast(id):
+        now = datetime.today()
+
+        query = {"$or" : [{"hote.idJoueur": ObjectId(id)}, {"joueurs.idJoueur": ObjectId(id)}], 
+                "date": {"$gte": now - timedelta(days=60), "$lte": now - timedelta(hours=12) },
+                "estValide": True, "estAnnule": False}
+
+        result = tableColl.find(query).sort([("date", pymongo.ASCENDING)])
+
+        return result
+
 
 
 

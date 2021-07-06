@@ -1,14 +1,10 @@
 from flask import Blueprint, render_template,session, request, redirect, url_for, flash
-from flask_wtf import FlaskForm
-from pymongo import message
 from werkzeug.utils import redirect
-from wtforms import StringField, IntegerField, BooleanField, FormField, FieldList
-from wtforms.fields.html5 import IntegerRangeField, DateField, TimeField
-from wtforms.form import Form
-from wtforms.validators import InputRequired, ValidationError
-from datetime import datetime, timedelta
 from wwtp.table.model import Table
+from wwtp.evaluation.model import Evaluation
 from .model import Joueur
+from bson import ObjectId
+from itertools import chain
 
 bpJoueur = Blueprint("joueur", __name__, template_folder="templates")
 
@@ -51,8 +47,16 @@ def leaveTable():
 
         if request.form.get("leave"):
             user = session["user"]
-            idJoueur = user["idJoueur"]           
-            Joueur.leaveTable(idJoueur, request.values["leave"])
+            idJoueur = user["idJoueur"]
+            idTable = request.values["leave"]         
+            Joueur.leaveTable(idJoueur, idTable)
+            """eval = Evaluation(ObjectId(idTable), ObjectId(idJoueur), ObjectId(idJoueur), 0, "leave")"""
+            result = Evaluation.createEvaluation(idTable, idJoueur, idJoueur, 0, "leave")
+            note = Evaluation.calculateNote(idJoueur)
+
+            user = session.get('user')
+            user["note"] = round(note, 2)
+            session.update(user)
 
             flash("Vous avez quitter la table, vous avez subit un malus sur votre note !")        
             return redirect(url_for('table.tableJoueur'))
@@ -89,10 +93,20 @@ def manageTable():
                 flash("Vous ne pouvez pas valider une table pour laquelle il n'y a aucun joueur.", "error")
 
         elif request.form.get("close"): 
-            table = Table.findTable(request.values["close"])
+            idTable = request.values["close"]
+            table = Table.findTable(idTable)
             hote = table["hote"]
 
             Joueur.closeTable(request.values["close"], idJoueur, len(table["joueurs"]))
+
+            for player in table["players"]:
+                result = Evaluation.createEvaluation(idTable, idJoueur, idJoueur, 0, "close")
+
+            note = Evaluation.calculateNote(idJoueur)
+
+            user = session.get('user')
+            user["note"] = round(note, 2)
+            session.update(user)
 
             subject = "Une table a été annulée"
             body = f"La table de {hote['nom']} du {table['date']} a été annulée !\n\nWWTP"
@@ -105,3 +119,44 @@ def manageTable():
             Joueur.sendEmail(emails, subject, body)
         
     return redirect(url_for('table.tableHote'))
+
+@bpJoueur.route("/evaluer", methods=["GET", "POST"])
+def evaluatePlayer():
+
+    user = session["user"]
+    idJoueur = user["idJoueur"]
+    dictTable = {}
+       
+
+    tables = Table.findTableForNoteByIdJoueurAndPast(idJoueur)
+
+    for table in tables:
+        dictJoueur = {}    
+        dictData = {}  
+
+        joueurs = table["joueurs"]
+        hote = table["hote"]
+        idTable = table["_id"]
+
+        if hote["idJoueur"] != ObjectId(idJoueur):
+            eval = Evaluation.findNoteByEvaluateurAndEvalue(idJoueur, hote["idJoueur"], idTable)
+            dictJoueur[str(hote["pseudo"])] = [ eval, str(hote["idJoueur"])]
+        
+        for j in joueurs:
+            if j["idJoueur"] != ObjectId(idJoueur):
+                eval = Evaluation.findNoteByEvaluateurAndEvalue(idJoueur, j["idJoueur"], idTable)
+                dictJoueur[str(j["pseudo"])] = [ eval, str(j["idJoueur"])]
+
+        if len(dictJoueur) >= 1:
+
+            infoTable = [ str(table["date"]), table["hote"]["pseudo"], table["ville"], str(table["hote"]["idJoueur"]) ]
+
+            dictData["joueurs"] = dictJoueur
+            dictData["infoTable"] = infoTable
+
+
+            dictTable[str(idTable)] = dictData
+
+    return render_template("evaluer.html", dictTable=dictTable)
+
+
