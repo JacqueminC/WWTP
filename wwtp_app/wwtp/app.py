@@ -38,7 +38,8 @@ def index():
         "idJoueur": "60c86295cbbfd4f430693f17",
         "dateDeNaissance" : datetime(1988, 10, 8, 0,0,0),        
         "note" : 0,
-        "nom" : "Random Guy"
+        "nom" : "Random Guy",
+        "pseudo" : "Cédric"
         }
 
     return render_template("index.html")
