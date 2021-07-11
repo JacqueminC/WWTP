@@ -1,5 +1,6 @@
 from .repo import *
 from bson import ObjectId
+from datetime import datetime
 
 
 repositoryEvaluation = RepoEvaluation()
@@ -7,6 +8,8 @@ repositoryEvaluation = RepoEvaluation()
 class Evaluation:
 
     def __init__(self, idTable, idJoueur, idEvaluateur, note, info):
+        now = datetime.today()
+
         if isinstance(note, int):
             if note <= 5:
                 if note >=0:
@@ -26,6 +29,7 @@ class Evaluation:
         self.idTable = idTable
         self.idJoueur= idJoueur
         self.idEvaluateur = idEvaluateur
+        self.date = now
 
     def createEvaluation(idTable, idJoueur, idEvaluateur, note, info):
         eval = Evaluation(ObjectId(idTable), ObjectId(idJoueur), ObjectId(idEvaluateur), note, info)

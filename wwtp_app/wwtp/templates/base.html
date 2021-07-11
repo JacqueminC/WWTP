@@ -41,7 +41,7 @@
           </li>
           <li class="nav-item">
             <p class="nav-link">
-              {% if session.get("user") == True %}
+              {% if session.get("user") != None %}
                 {% if session["user"].note != None %}
                   {{ session["user"].note }}
                 {% endif %}
