@@ -15,12 +15,6 @@ class RepoEvaluation:
 
     def CalculateNote(idJoueur):
 
-        query = {
-            "idJoueur": ObjectId(idJoueur)
-        }
-
-        sumEval = evaluationColl.count_documents(query)
-
         pipeline = [
             { "$match" : { "idJoueur": ObjectId(idJoueur) } },
             { "$group" : { 
