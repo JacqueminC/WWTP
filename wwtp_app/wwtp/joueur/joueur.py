@@ -50,8 +50,11 @@ def leaveTable():
             idJoueur = user["idJoueur"]
             idTable = request.values["leave"]         
             Joueur.leaveTable(idJoueur, idTable)
-            """eval = Evaluation(ObjectId(idTable), ObjectId(idJoueur), ObjectId(idJoueur), 0, "leave")"""
-            result = Evaluation.createEvaluation(idTable, idJoueur, idJoueur, 0, "leave")
+
+            table = Table.findTable(idTable)
+            hote = table["hote"]
+            Evaluation.createEvaluation(idTable, idJoueur, hote["idJoueur"], 0, "leave")
+
             note = Evaluation.calculateNote(idJoueur)
 
             user = session.get('user')
@@ -100,7 +103,7 @@ def manageTable():
             Joueur.closeTable(request.values["close"], idJoueur, len(table["joueurs"]))
 
             for player in table["players"]:
-                result = Evaluation.createEvaluation(idTable, idJoueur, idJoueur, 0, "close")
+                Evaluation.createEvaluation(idTable, idJoueur, player["idJoueur"], 0, "close")
 
             note = Evaluation.calculateNote(idJoueur)
 

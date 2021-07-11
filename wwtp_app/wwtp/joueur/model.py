@@ -43,18 +43,7 @@ class Joueur:
 
     def leaveTable(idJoueur, idTable):
         RepoTable.leaveTable(idJoueur, idTable)
-        joueur = RepoJoueur.findPlayerById(idJoueur)
-
-        if "noteGlobale" in joueur:
-
-            if joueur["noteGlobale"] >= 5:
-                joueur["noteGlobale"] = joueur["noteGlobale"] - 5 
-                note = Joueur.decreaseNote(joueur["noteGlobale"], joueur["noteMax"])
-                joueur["note"] = note
-            else:
-                joueur["noteMax"] = joueur["noteMax"] + 5
-                
-            RepoJoueur.updatePlayer(joueur)
+        
 
     def validateTable(idTable):
         RepoTable.validateTable(idTable)
