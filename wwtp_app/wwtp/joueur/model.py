@@ -3,8 +3,6 @@ from werkzeug.datastructures import Headers
 from wwtp.table.repo import RepoTable
 from .repo import *
 import smtplib
-from email.mime.text import MIMEText
-from email.header import Header
 from email.message import EmailMessage
 
 repositoryTable = RepoTable()
@@ -12,8 +10,7 @@ repositoryJoueur = RepoJoueur()
 
 class Joueur:
 
-    def __init__(self, idJoueur, pseudo, email, motDePasse, nom, prenom, rue, numero, ville, codePostal, dateDeNaissance, note):
-        self.idJoueur = idJoueur
+    def __init__(self, pseudo, email, motDePasse, nom, prenom, rue, numero, boite, ville, codePostal, dateDeNaissance):
         self.pseudo = pseudo
         self.email = email
         self.motDePasse = motDePasse
@@ -21,14 +18,12 @@ class Joueur:
         self.prenom = prenom
         self.rue = rue
         self.numero = numero
+        self.boite = boite
         self.ville = ville
         self.codePostal = codePostal
         self.dateDeNaissance = dateDeNaissance
         self.dateDeCreation = datetime.today()
         self.estBloque = False
-        self.note = note
-        self.noteGlobale = 0
-        self.noteMax = 0
 
     def findPlayerById(id):
         return RepoJoueur.findPlayerById(id)

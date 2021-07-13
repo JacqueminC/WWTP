@@ -1,12 +1,31 @@
 from flask import Blueprint, render_template,session, request, redirect, url_for, flash
 from werkzeug.utils import redirect
+from wtforms.fields.core import DateField, IntegerField, StringField
+from wtforms.fields.html5 import EmailField
+from wtforms.fields.simple import PasswordField
 from wwtp.table.model import Table
 from wwtp.evaluation.model import Evaluation
 from .model import Joueur
 from bson import ObjectId
-from itertools import chain
+from flask_wtf import FlaskForm
+from wtforms.validators import InputRequired, ValidationError
 
 bpJoueur = Blueprint("joueur", __name__, template_folder="templates")
+
+class registerForm(FlaskForm):
+    nom = StringField("Nom", validators=[InputRequired()])
+    prenom = StringField("Prénom", validators=[InputRequired()])
+    rue = StringField("Rue", validators=[InputRequired()])
+    numero = IntegerField("Numéro", validators=[InputRequired()])
+    boite = StringField("Boite")
+    codePostal = StringField("Code postal", validators=[InputRequired()])
+    ville = StringField("Ville", validators=[InputRequired()])
+    dateDeNaissance = DateField("Date de naissance", format='%Y-%m-%d', validators=[InputRequired()])
+    pseudo = StringField("Pseudo", validators=[InputRequired()])
+    email = EmailField("Email", validators=[InputRequired()])
+    motDePasse = PasswordField("Mot de passe", validators=[InputRequired()])
+    confMDP = PasswordField("Confirmation du mot de passe", validators=[InputRequired()])
+
 
 @bpJoueur.route("/joinTable", methods=["GET", "POST"])
 def joinTable():
