@@ -9,7 +9,7 @@ tableColl = db["joueur"]
 
 dateNow = datetime.today()
 
-def new_player_test():
+def test_new_player():
     try:
         joueur = Joueur("Cadarik", "cadarik@gmail.com", "testmdp123", "nom", "prénom", "rue des rues", 10, "b10", "city", "1111", datetime(1988, 10, 8, 0,0,0))
     except Exception as e:
