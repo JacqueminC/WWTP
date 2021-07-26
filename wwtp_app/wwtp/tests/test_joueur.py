@@ -11,20 +11,20 @@ dateNow = datetime.today()
 
 def test_new_player():
     try:
-        joueur = Joueur("Cadarik", "cadarik@gmail.com", "testmdp123", "nom", "prénom", "rue des rues", 10, "b10", "city", "1111", datetime(1988, 10, 8, 0,0,0))
+        joueur = Joueur("Cadarik", "cadarik@gmail.com", "Testmdp123", "nom", "prénom", "rue des rues", 10, "b10", "city", "1111", datetime(1988, 10, 8, 0,0,0))
     except Exception as e:
         pytest.fail("Aucune erreur ne doit être retournéé - " + str(e))
 
     with pytest.raises(Exception) as e:
-        joueur = Joueur("", "cadarik@gmail.com", "testmdp123", "nom", "prénom", "rue des rues", 10, "b10", "city", "1111", datetime(1988, 10, 8, 0,0,0))
+        joueur = Joueur("", "cadarik@gmail.com", "Testmdp123", "nom", "prénom", "rue des rues", 10, "b10", "city", "1111", datetime(1988, 10, 8, 0,0,0))
     assert "Le pseudo ne doit pas être vide" in str(e.value)
 
     with pytest.raises(Exception) as e:
-        joueur = Joueur("Cadarik", "cadarik@gmail", "testmdp123", "nom", "prénom", "rue des rues", 10, "b10", "city", "1111", datetime(1988, 10, 8, 0,0,0))
+        joueur = Joueur("Cadarik", "cadarik@gmail", "Testmdp123", "nom", "prénom", "rue des rues", 10, "b10", "city", "1111", datetime(1988, 10, 8, 0,0,0))
     assert "L'email n'est pas valide" in str(e.value)
 
     with pytest.raises(Exception) as e:
-        joueur = Joueur("Cadarik", "cadarikgmail.com", "testmdp123", "nom", "prénom", "rue des rues", 10, "b10", "city", "1111", datetime(1988, 10, 8, 0,0,0))
+        joueur = Joueur("Cadarik", "cadarikgmail.com", "Testmdp123", "nom", "prénom", "rue des rues", 10, "b10", "city", "1111", datetime(1988, 10, 8, 0,0,0))
     assert "L'email n'est pas valide" in str(e.value)
 
     with pytest.raises(Exception) as e:
@@ -32,40 +32,55 @@ def test_new_player():
     assert "Le mot de passe ne doit pas être vide" in str(e.value)
 
     with pytest.raises(Exception) as e:
-        joueur = Joueur("Cadarik", "cadarik@gmail.com", "testmdp", "nom", "prénom", "rue des rues", 10, "b10", "city", "1111", datetime(1988, 10, 8, 0,0,0))
+        joueur = Joueur("Cadarik", "cadarik@gmail.com", "Testmdp", "nom", "prénom", "rue des rues", 10, "b10", "city", "1111", datetime(1988, 10, 8, 0,0,0))
     assert "Le mot de passe doit contenir des chiffres" in str(e.value)
 
     with pytest.raises(Exception) as e:
-        joueur = Joueur("Cadarik", "cadarik@gmail.com", "testmdp123", "", "prénom", "rue des rues", 10, "b10", "city", "1111", datetime(1988, 10, 8, 0,0,0))
-    assert "Lenom ne doit pas être vide" in str(e.value)
+        joueur = Joueur("Cadarik", "cadarik@gmail.com", "testmdp123", "nom", "prénom", "rue des rues", 10, "b10", "city", "1111", datetime(1988, 10, 8, 0,0,0))
+    assert "Le mot de passe doit contenir au moins une majuscule" in str(e.value)
 
     with pytest.raises(Exception) as e:
-        joueur = Joueur("Cadarik", "cadarik@gmail.com", "testmdp123", "nom", "", "rue des rues", 10, "b10", "city", "1111", datetime(1988, 10, 8, 0,0,0))
+        joueur = Joueur("Cadarik", "cadarik@gmail.com", "Testmdp123", "", "prénom", "rue des rues", 10, "b10", "city", "1111", datetime(1988, 10, 8, 0,0,0))
+    assert "Le nom ne doit pas être vide" in str(e.value)
+
+    with pytest.raises(Exception) as e:
+        joueur = Joueur("Cadarik", "cadarik@gmail.com", "Testmdp123", "nom", "", "rue des rues", 10, "b10", "city", "1111", datetime(1988, 10, 8, 0,0,0))
     assert "Le prénom ne doit pas être vide" in str(e.value)
 
     with pytest.raises(Exception) as e:
-        joueur = Joueur("Cadarik", "cadarik@gmail.com", "testmdp123", "nom", "prénom", "", 10, "b10", "city", "1111", datetime(1988, 10, 8, 0,0,0))
+        joueur = Joueur("Cadarik", "cadarik@gmail.com", "Testmdp123", "nom", "prénom", "", 10, "b10", "city", "1111", datetime(1988, 10, 8, 0,0,0))
     assert "La rue ne doit pas être vide" in str(e.value)
 
     with pytest.raises(Exception) as e:
-        joueur = Joueur("Cadarik", "cadarik@gmail.com", "testmdp123", "nom", "prénom", "rue des rues", "10", "b10", "city", "1111", datetime(1988, 10, 8, 0,0,0))
+        joueur = Joueur("Cadarik", "cadarik@gmail.com", "Testmdp123", "nom", "prénom", "rue des rues", "10", "b10", "city", "1111", datetime(1988, 10, 8, 0,0,0))
     assert "Le numéro de rue n'est pas valide" in str(e.value)
 
     with pytest.raises(Exception) as e:
-        joueur = Joueur("Cadarik", "cadarik@gmail.com", "testmdp123", "nom", "prénom", "rue des rues", 0, "b10", "city", "1111", datetime(1988, 10, 8, 0,0,0))
+        joueur = Joueur("Cadarik", "cadarik@gmail.com", "Testmdp123", "nom", "prénom", "rue des rues", 0, "b10", "city", "1111", datetime(1988, 10, 8, 0,0,0))
     assert "Le numéro de rue n'est pas valide" in str(e.value)
 
     with pytest.raises(Exception) as e:
-        joueur = Joueur("Cadarik", "cadarik@gmail.com", "testmdp123", "nom", "prénom", "rue des rues", 10, "b10", "", "1111", datetime(1988, 10, 8, 0,0,0))
+        joueur = Joueur("Cadarik", "cadarik@gmail.com", "Testmdp123", "nom", "prénom", "rue des rues", 10, "b10", "", "1111", datetime(1988, 10, 8, 0,0,0))
     assert "La ville ne doit pas être vide" in str(e.value)
 
     with pytest.raises(Exception) as e:
-        joueur = Joueur("Cadarik", "cadarik@gmail.com", "testmdp123", "nom", "prénom", "rue des rues", 10, "b10", "city", "", datetime(1988, 10, 8, 0,0,0))
+        joueur = Joueur("Cadarik", "cadarik@gmail.com", "Testmdp123", "nom", "prénom", "rue des rues", 10, "b10", "city", "", datetime(1988, 10, 8, 0,0,0))
     assert "Le code postalne doit pas être vide" in str(e.value)
 
     with pytest.raises(Exception) as e:
-        joueur = Joueur("Cadarik", "cadarik@gmail.com", "testmdp123", "nom", "prénom", "rue des rues", 10, "b10", "city", "1111", dateNow - timedelta(weeks=780))
+        joueur = Joueur("Cadarik", "cadarik@gmail.com", "Testmdp123", "nom", "prénom", "rue des rues", 10, "b10", "city", "1111", dateNow - timedelta(weeks=780))
     assert "Il faut avoir au minimum 15 ans pour s'inscrire sur le site" in str(e.value)
+
+def test_hash_and_verify_password():
+
+    joueur = Joueur("Cadarik", "cadarik@gmail.com", "Gandalf06", "nom", "prénom", "rue des rues", 10, "b10", "city", "1111", datetime(1988, 10, 8, 0,0,0))
+    result = Joueur.verifyPassword(joueur.motDePasse, "Gandalf06")
+    assert result == True, "Le mot de passe doit matcher"
+
+    joueur = Joueur("Cadarik", "cadarik@gmail.com", "Gandalf06", "nom", "prénom", "rue des rues", 10, "b10", "city", "1111", datetime(1988, 10, 8, 0,0,0))
+    result = Joueur.verifyPassword(joueur.motDePasse, "Gandalf05")
+    assert result == False, "Le mot de passe ne doit pas matcher"
+    
     
 
 def test_decrease_note():
