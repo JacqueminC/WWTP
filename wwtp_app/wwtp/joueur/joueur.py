@@ -1,8 +1,7 @@
 from flask import Blueprint, render_template,session, request, redirect, url_for, flash
 from werkzeug.utils import redirect
-from wtforms.fields.core import DateField, IntegerField, StringField
-from wtforms.fields.html5 import EmailField
-from wtforms.fields.simple import PasswordField
+from wtforms import StringField, IntegerField, PasswordField
+from wtforms.fields.html5 import EmailField, DateField
 from wwtp.table.model import Table
 from wwtp.evaluation.model import Evaluation
 from .model import Joueur
@@ -20,7 +19,7 @@ class registerForm(FlaskForm):
     boite = StringField("Boite")
     codePostal = StringField("Code postal", validators=[InputRequired()])
     ville = StringField("Ville", validators=[InputRequired()])
-    dateDeNaissance = DateField("Date de naissance", format='%Y-%m-%d', validators=[InputRequired()])
+    dateDeNaissance = DateField('Date de naissance', format='%Y-%m-%d', validators=[InputRequired()])
     pseudo = StringField("Pseudo", validators=[InputRequired()])
     email = EmailField("Email", validators=[InputRequired()])
     motDePasse = PasswordField("Mot de passe", validators=[InputRequired()])
@@ -180,5 +179,11 @@ def evaluatePlayer():
             dictTable[str(idTable)] = dictData
 
     return render_template("evaluer.html", dictTable=dictTable)
+
+@bpJoueur.route("/inscription", methods=["GET", "POSTS"])
+def formInscription():
+    form = registerForm()
+
+    return render_template("formInscription.html", form=form)
 
 
