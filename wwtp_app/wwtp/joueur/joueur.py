@@ -1,3 +1,4 @@
+import re
 from flask import Blueprint, render_template,session, request, redirect, url_for, flash
 from werkzeug.utils import redirect
 from wtforms import StringField, IntegerField, PasswordField
@@ -8,6 +9,8 @@ from .model import Joueur
 from bson import ObjectId
 from flask_wtf import FlaskForm
 from wtforms.validators import InputRequired, ValidationError
+from datetime import datetime
+from dateutil.relativedelta import relativedelta
 
 bpJoueur = Blueprint("joueur", __name__, template_folder="templates")
 
@@ -24,6 +27,36 @@ class registerForm(FlaskForm):
     email = EmailField("Email", validators=[InputRequired()])
     motDePasse = PasswordField("Mot de passe", validators=[InputRequired()])
     confMDP = PasswordField("Confirmation du mot de passe", validators=[InputRequired()])
+
+    def validate_dateDeNaissance(self, dateDeNaissance):
+        now = datetime.today()
+        ageCalcule = relativedelta(now, dateDeNaissance.data).years
+
+        if ageCalcule < 15:
+            flash("Il faut avoir 15 ans pour s'inscrire sur le site", ("ddn"))
+            return ValidationError()
+
+    def validate_confMDP(self, confMDP):
+        if confMDP.data != self.motDePasse.data:
+            flash("La validation n'est pas correcte", "confmdp")
+            return ValidationError()
+
+    def validate_email(self, email):
+        result = Joueur.findEmailExist(email.data)
+
+        if result != 0:
+            flash("L'email est déjà utilisé", "email")
+            return ValidationError()
+
+
+    def validate_pseudo(self, pseudo):
+        p = Joueur.findPseudoExist(pseudo)
+
+        if p != pseudo:
+            flash("Le pseudo n'est pas disponible, essayé " + p)
+            return ValidationError()
+
+    
 
 
 @bpJoueur.route("/joinTable", methods=["GET", "POST"])
@@ -180,9 +213,22 @@ def evaluatePlayer():
 
     return render_template("evaluer.html", dictTable=dictTable)
 
-@bpJoueur.route("/inscription", methods=["GET", "POSTS"])
+@bpJoueur.route("/inscription", methods=["GET", "POST"])
 def formInscription():
     form = registerForm()
+
+    if form.validate_on_submit():
+
+        try:
+            Joueur.createPlayer(form)
+            return render_template("formInscription.html", form=form)
+            
+        except Exception as ex:
+            flash(ex, 'error')
+            return ValidationError()
+
+        
+
 
     return render_template("formInscription.html", form=form)
 

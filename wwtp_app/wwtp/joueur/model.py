@@ -1,4 +1,5 @@
 from datetime import datetime
+from itertools import count
 from attr import has
 from dateutil.relativedelta import relativedelta
 from wwtp.table.repo import RepoTable
@@ -24,8 +25,7 @@ class Joueur:
         else:
             raise Exception("L'email n'est pas valide")
         
-        if len(motDePasse) > 0:    
-            
+        if len(motDePasse) > 0:               
 
             if self.hasNumbers(motDePasse):
                 capital = bool(re.match(r'\w*[A-Z]\w*', motDePasse))
@@ -162,5 +162,44 @@ class Joueur:
             return True
         else:
             return False
+
+    def findEmailExist(email):
+        return RepoJoueur.findEmailExist(email)
+
+
+    def findPseudoExist(pseudo):
+        result = RepoJoueur.findPseudoExist(pseudo)
+        count = 0
+
+        while result != 0:
+            count = count + 1
+            result = RepoJoueur.findPseudoExist(pseudo + str(count))
+
+        if count == 0:
+            return pseudo
+        else:
+            return pseudo + str(count)
+
+    def createPlayer(form):
+        """"pseudo, email, motDePasse, nom, prenom, rue, numero, boite, ville, codePostal, dateDeNaissance"""
+        try:
+            joueur = Joueur(
+                form.pseudo,
+                form.email,
+                form.motDePasse,
+                form.nom,
+                form.prenom,
+                form.rue,
+                form.numero,
+                form.boite,
+                form.ville,
+                form.codePostal,
+                form.dateDeNaissance
+            )
+
+            RepoJoueur.createPlayer(joueur)
+        except Exception as ex:
+            return ex
+
 
 
