@@ -50,10 +50,10 @@ class registerForm(FlaskForm):
 
 
     def validate_pseudo(self, pseudo):
-        p = Joueur.findPseudoExist(pseudo)
+        p, find = Joueur.findPseudoExist(pseudo.data)
 
-        if p != pseudo:
-            flash("Le pseudo n'est pas disponible, essayé " + p)
+        if not find:
+            flash("Le pseudo n'est pas disponible, essayé " + p, "pseudo")
             return ValidationError()
 
     
@@ -130,9 +130,7 @@ def manageTable():
         joueur = Joueur.findPlayerById(idJoueur)
         emails = []
         subject = ""
-        body = ""
-
-        
+        body = ""        
 
         if request.form.get("validate"):
             table = Table.findTable(request.values["validate"])
@@ -179,8 +177,7 @@ def evaluatePlayer():
 
     user = session["user"]
     idJoueur = user["idJoueur"]
-    dictTable = {}
-       
+    dictTable = {}       
 
     tables = Table.findTableForNoteByIdJoueurAndPast(idJoueur)
 
@@ -208,7 +205,6 @@ def evaluatePlayer():
             dictData["joueurs"] = dictJoueur
             dictData["infoTable"] = infoTable
 
-
             dictTable[str(idTable)] = dictData
 
     return render_template("evaluer.html", dictTable=dictTable)
@@ -221,12 +217,12 @@ def formInscription():
 
         try:
             Joueur.createPlayer(form)
-            return render_template("formInscription.html", form=form)
+            flash("Inscription Réussi", 'registerDone')
+            return render_template("formInscription.html", form=registerForm())
             
         except Exception as ex:
             flash(ex, 'error')
-            return ValidationError()
-
+            return render_template("formInscription.html", form=form, ve=ValidationError())
         
 
 

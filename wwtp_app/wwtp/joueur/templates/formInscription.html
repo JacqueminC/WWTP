@@ -56,9 +56,33 @@
 
         {{ wtf.form_field(form.pseudo) }}
 
+        {% if messages %}
+            {% for category, message in messages %}        
+                {% if category == "pseudo" %}
+                <p style="color: red; font-weight: bold;">{{ message }}</p>
+                {% endif %}                
+            {% endfor %}
+        {% endif %}
+
         {{ wtf.form_field(form.email) }}
 
+        {% if messages %}
+            {% for category, message in messages %}        
+                {% if category == "email" %}
+                <p style="color: red; font-weight: bold;">{{ message }}</p>
+                {% endif %}                
+            {% endfor %}
+        {% endif %}
+
         {{ wtf.form_field(form.motDePasse) }}
+
+        {% if messages %}
+            {% for category, message in messages %}        
+                {% if category == "error" %}
+                <p style="color: red; font-weight: bold;">{{ message }}</p>
+                {% endif %}                
+            {% endfor %}
+        {% endif %}
 
         {{ wtf.form_field(form.confMDP) }}
 
@@ -74,6 +98,15 @@
 
 
     </form>
+
+    {% if messages %}
+        {% for category, message in messages %}
+        {% if category == "registerDone" %}
+            <p style="color: green; font: bold;">{{ message }}</p>
+        {% endif %}        
+        {% endfor %}
+    {% endif %}
+
 
 
 </div>

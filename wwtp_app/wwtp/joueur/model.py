@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, date
 from itertools import count
 from attr import has
 from dateutil.relativedelta import relativedelta
@@ -21,11 +21,11 @@ class Joueur:
             raise Exception("Le pseudo ne doit pas être vide")
 
         if self.checkEmail(email):
-            self.email = email
+            self.email =  email.lower()
         else:
             raise Exception("L'email n'est pas valide")
         
-        if len(motDePasse) > 0:               
+        if len(motDePasse) >= 8:               
 
             if self.hasNumbers(motDePasse):
                 capital = bool(re.match(r'\w*[A-Z]\w*', motDePasse))
@@ -37,9 +37,8 @@ class Joueur:
                     raise Exception("Le mot de passe doit contenir au moins une majuscule")
             else:
                 raise Exception("Le mot de passe doit contenir des chiffres")
-
         else:
-            raise Exception("Le mot de passe ne doit pas être vide")
+            raise Exception("Le mot de passe doit être de minimum 8 caratères")
 
         if len(nom) > 0:
             self.nom = nom
@@ -73,11 +72,14 @@ class Joueur:
         else:
             raise Exception("Le code postalne doit pas être vide")
 
-        dateNow = datetime.today()
+
+        dateNow = date.today()
+
         ageCalcule = relativedelta(dateNow, dateDeNaissance).years
 
+
         if ageCalcule > 15:
-            self.dateDeNaissance = dateDeNaissance
+            self.dateDeNaissance = str(dateDeNaissance)
         else:
             raise  Exception("Il faut avoir au minimum 15 ans pour s'inscrire sur le site")
 
@@ -176,30 +178,31 @@ class Joueur:
             result = RepoJoueur.findPseudoExist(pseudo + str(count))
 
         if count == 0:
-            return pseudo
+            return "", True
         else:
-            return pseudo + str(count)
+            return pseudo + str(count), False
 
     def createPlayer(form):
-        """"pseudo, email, motDePasse, nom, prenom, rue, numero, boite, ville, codePostal, dateDeNaissance"""
+        """pseudo, email, motDePasse, nom, prenom, rue, numero, boite, ville, codePostal, dateDeNaissance"""
+        print(type(form.dateDeNaissance.data))
         try:
             joueur = Joueur(
-                form.pseudo,
-                form.email,
-                form.motDePasse,
-                form.nom,
-                form.prenom,
-                form.rue,
-                form.numero,
-                form.boite,
-                form.ville,
-                form.codePostal,
-                form.dateDeNaissance
+                form.pseudo.data,
+                form.email.data,
+                form.motDePasse.data,
+                form.nom.data,
+                form.prenom.data,
+                form.rue.data,
+                form.numero.data,
+                form.boite.data,
+                form.ville.data,
+                form.codePostal.data,
+                form.dateDeNaissance.data
             )
 
             RepoJoueur.createPlayer(joueur)
         except Exception as ex:
-            return ex
+            raise ex
 
 
 
