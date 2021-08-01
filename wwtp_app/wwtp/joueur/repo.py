@@ -18,6 +18,13 @@ class RepoJoueur():
 
         return joueurColl.find_one(query)
 
+    def findPlayerByEmail(email):
+        query = {
+            "email" : email
+        }
+
+        return joueurColl.find_one(query)
+
     def updatePlayer(joueur):
         joueurColl.save(joueur)
 

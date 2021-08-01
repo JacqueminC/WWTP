@@ -2,15 +2,18 @@
 
 from datetime import datetime
 from flask import Flask, render_template, session, make_response
+from flask_login import LoginManager 
 import flask
 from flask_pymongo import PyMongo
 from wwtp.table.table import bpTable
 from wwtp.home.home import bpHome
 from wwtp.joueur.joueur import bpJoueur
 from wwtp.evaluation.evaluation import bpEvaluation
+from wwtp.auth.auth import bpAuth
 from flask_bootstrap import Bootstrap
 
 app = Flask(__name__)
+login_manager = LoginManager()
 
 
 app.config['SECRET_KEY'] = "secretkey"
@@ -25,6 +28,7 @@ app.register_blueprint(bpTable, url_prefix="/table")
 app.register_blueprint(bpHome, ulr_prefix="/home")
 app.register_blueprint(bpJoueur, url_prefix="/joueur")
 app.register_blueprint(bpEvaluation, url_prefix="/evaluation")
+app.register_blueprint(bpAuth, url_prefix="/auth")
 
 @app.route("/")
 @app.route("/index")
@@ -46,3 +50,5 @@ def index():
 
 if __name__ == "wwtp.app":
     app.run(debug=True)
+    login_manager.login_view = "auth.login"
+    login_manager.init_app(app)
