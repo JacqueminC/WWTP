@@ -1,0 +1,126 @@
+{% extends "base.html" %}
+{% import "bootstrap/wtf.html" as wtf%}
+
+{% block title %}
+
+    <title>Inscription</title>
+
+{% endblock %}
+
+{% block content %}
+{% with messages = get_flashed_messages(with_categories=true) %}
+
+<div class="container">
+    <h2>Formulaire d'inscription</h2>
+
+    <form action="{{url_for('joueur.formInscription')}}" method="POST">
+        {{form.csrf_token}}
+        {{ form.hidden_tag() }}
+
+        {{ wtf.form_field(form.nom) }}
+
+        {{ wtf.form_field(form.prenom) }}
+        
+        <ul class="form-group row" style="list-style:none; margin-left:0; padding-left:0;">
+            <li class="col-md-4">
+                {{ wtf.form_field(form.rue) }}
+            </li>
+            <li class="col-md-2">
+                {{ wtf.form_field(form.numero) }}
+            </li>
+            <li class="col-md-2">
+                {{ wtf.form_field(form.boite) }}
+            </li>
+        </ul> 
+
+        <ul class="form-group row" style="list-style:none; margin-left:0; padding-left:0;">
+            <li class="col-md-2">
+                {{ wtf.form_field(form.codePostal) }}
+            </li>
+            <li class="col-md-6">
+                {{ wtf.form_field(form.ville) }}
+            </li>
+        </ul>
+
+        <div>
+            {{wtf.form_field(form.dateDeNaissance)}}
+
+            {% if messages %}
+                {% for category, message in messages %}        
+                    {% if category == "ddn" %}
+                    <p style="color: red; font-weight: bold;">{{ message }}</p>
+                    {% endif %}                
+                {% endfor %}
+            {% endif %}
+        </div>
+
+        {{ wtf.form_field(form.pseudo) }}
+
+        {% if messages %}
+            {% for category, message in messages %}        
+                {% if category == "pseudo" %}
+                <p style="color: red; font-weight: bold;">{{ message }}</p>
+                {% endif %}                
+            {% endfor %}
+        {% endif %}
+
+        {{ wtf.form_field(form.email) }}
+
+        {% if messages %}
+            {% for category, message in messages %}        
+                {% if category == "email" %}
+                <p style="color: red; font-weight: bold;">{{ message }}</p>
+                {% endif %}                
+            {% endfor %}
+        {% endif %}
+
+        {{ wtf.form_field(form.motDePasse) }}
+
+        {% if messages %}
+            {% for category, message in messages %}        
+                {% if category == "error" %}
+                <p style="color: red; font-weight: bold;">{{ message }}</p>
+                {% endif %}                
+            {% endfor %}
+        {% endif %}
+
+        {{ wtf.form_field(form.confMDP) }}
+
+        {% if messages %}
+            {% for category, message in messages %}        
+                {% if category == "confmdp" %}
+                <p style="color: red; font-weight: bold;">{{ message }}</p>
+                {% endif %}                
+            {% endfor %}
+        {% endif %}
+
+        <input type="submit" value="S'inscrire" class="btn btn-primary">
+
+
+    </form>
+
+    {% if messages %}
+        {% for category, message in messages %}
+        {% if category == "registerDone" %}
+            <p style="color: green; font: bold;">{{ message }}</p>
+        {% endif %}        
+        {% endfor %}
+    {% endif %}
+
+
+
+</div>
+
+{% endwith %}
+{% endblock %}
+
+{% block scripts %}
+  {{ super() }}
+  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.18.1/moment.min.js"></script>
+  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.47/js/bootstrap-datetimepicker.min.js"></script>
+  <script type="text/javascript">
+    $(function () {
+      $('#datepick').datetimepicker();
+    });
+  </script>
+{% endblock %}

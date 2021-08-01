@@ -1,12 +1,63 @@
+import re
 from flask import Blueprint, render_template,session, request, redirect, url_for, flash
 from werkzeug.utils import redirect
+from wtforms import StringField, IntegerField, PasswordField
+from wtforms.fields.html5 import EmailField, DateField
 from wwtp.table.model import Table
 from wwtp.evaluation.model import Evaluation
 from .model import Joueur
 from bson import ObjectId
-from itertools import chain
+from flask_wtf import FlaskForm
+from wtforms.validators import InputRequired, ValidationError
+from datetime import datetime
+from dateutil.relativedelta import relativedelta
 
 bpJoueur = Blueprint("joueur", __name__, template_folder="templates")
+
+class registerForm(FlaskForm):
+    nom = StringField("Nom", validators=[InputRequired()])
+    prenom = StringField("Prénom", validators=[InputRequired()])
+    rue = StringField("Rue", validators=[InputRequired()])
+    numero = IntegerField("Numéro", validators=[InputRequired()])
+    boite = StringField("Boite")
+    codePostal = StringField("Code postal", validators=[InputRequired()])
+    ville = StringField("Ville", validators=[InputRequired()])
+    dateDeNaissance = DateField('Date de naissance', format='%Y-%m-%d', validators=[InputRequired()])
+    pseudo = StringField("Pseudo", validators=[InputRequired()])
+    email = EmailField("Email", validators=[InputRequired()])
+    motDePasse = PasswordField("Mot de passe", validators=[InputRequired()])
+    confMDP = PasswordField("Confirmation du mot de passe", validators=[InputRequired()])
+
+    def validate_dateDeNaissance(self, dateDeNaissance):
+        now = datetime.today()
+        ageCalcule = relativedelta(now, dateDeNaissance.data).years
+
+        if ageCalcule < 15:
+            flash("Il faut avoir 15 ans pour s'inscrire sur le site", ("ddn"))
+            return ValidationError()
+
+    def validate_confMDP(self, confMDP):
+        if confMDP.data != self.motDePasse.data:
+            flash("La validation n'est pas correcte", "confmdp")
+            return ValidationError()
+
+    def validate_email(self, email):
+        result = Joueur.findEmailExist(email.data)
+
+        if result != 0:
+            flash("L'email est déjà utilisé", "email")
+            return ValidationError()
+
+
+    def validate_pseudo(self, pseudo):
+        p, find = Joueur.findPseudoExist(pseudo.data)
+
+        if not find:
+            flash("Le pseudo n'est pas disponible, essayé " + p, "pseudo")
+            return ValidationError()
+
+    
+
 
 @bpJoueur.route("/joinTable", methods=["GET", "POST"])
 def joinTable():
@@ -79,9 +130,7 @@ def manageTable():
         joueur = Joueur.findPlayerById(idJoueur)
         emails = []
         subject = ""
-        body = ""
-
-        
+        body = ""        
 
         if request.form.get("validate"):
             table = Table.findTable(request.values["validate"])
@@ -128,8 +177,7 @@ def evaluatePlayer():
 
     user = session["user"]
     idJoueur = user["idJoueur"]
-    dictTable = {}
-       
+    dictTable = {}       
 
     tables = Table.findTableForNoteByIdJoueurAndPast(idJoueur)
 
@@ -157,9 +205,27 @@ def evaluatePlayer():
             dictData["joueurs"] = dictJoueur
             dictData["infoTable"] = infoTable
 
-
             dictTable[str(idTable)] = dictData
 
     return render_template("evaluer.html", dictTable=dictTable)
+
+@bpJoueur.route("/inscription", methods=["GET", "POST"])
+def formInscription():
+    form = registerForm()
+
+    if form.validate_on_submit():
+
+        try:
+            Joueur.createPlayer(form)
+            flash("Inscription Réussi", 'registerDone')
+            return render_template("formInscription.html", form=registerForm())
+            
+        except Exception as ex:
+            flash(ex, 'error')
+            return render_template("formInscription.html", form=form, ve=ValidationError())
+        
+
+
+    return render_template("formInscription.html", form=form)
 
 

@@ -11,7 +11,7 @@ dateAfter1 = datetime.today() + timedelta(days=60)
 datePlus7 = dateNow + timedelta(days=7)
 
 joueur1 = {"1", "Bilbo", }
-joueur2 = Joueur("Duke1", "Duke", "duke@gmail.com", "HASHPWD", "Duke", "Nukem", "rue Street", 10, "Mons", 7000, dateNow-timedelta(weeks=1040), 3)
+"""joueur2 = Joueur("Duke1", "Duke", "duke@gmail.com", "HASHPWD", "Duke", "Nukem", "rue Street", 10, "Mons", 7000, dateNow-timedelta(weeks=1040), 3)"""
 Joueur3 = {
         "idJoueur": 99,
         "dateDeNaissance" : datetime(1988, 10, 8, 0,0,0),        

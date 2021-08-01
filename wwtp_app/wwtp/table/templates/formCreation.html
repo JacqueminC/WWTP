@@ -17,7 +17,6 @@
     <form method="POST" action="{{url_for('table.formCreation')}}">
         {{form.csrf_token}}
         {{ form.hidden_tag() }}
-
                 
         {{wtf.form_field(form.jeuxLibre)}}
         {{wtf.form_field(form.nbPlace)}}
