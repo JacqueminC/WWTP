@@ -2,7 +2,6 @@
 
 from datetime import datetime
 from flask import Flask, render_template, session, make_response
-from flask_login import LoginManager 
 import flask
 from flask_pymongo import PyMongo
 from wwtp.table.table import bpTable
@@ -13,7 +12,6 @@ from wwtp.auth.auth import bpAuth
 from flask_bootstrap import Bootstrap
 
 app = Flask(__name__)
-login_manager = LoginManager()
 
 
 app.config['SECRET_KEY'] = "secretkey"
@@ -38,17 +36,18 @@ def index():
     """resp.set_cookie('idUser', 'the username')"""
     resp.set_cookie('idUser', '', expires=0)
     """session.pop("idUser", None)"""
-    session["user"] = {
+    """session["user"] = {
         "idJoueur": "60c86295cbbfd4f430693f17",
         "dateDeNaissance" : datetime(1988, 10, 8, 0,0,0),        
         "note" : 0,
         "nom" : "Random Guy",
         "pseudo" : "Cédric"
-        }
+        }"""
+
+    session.pop("user", None)
+    session["isLogged"] = False
 
     return render_template("index.html")
 
 if __name__ == "wwtp.app":
     app.run(debug=True)
-    login_manager.login_view = "auth.login"
-    login_manager.init_app(app)

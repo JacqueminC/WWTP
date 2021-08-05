@@ -16,7 +16,7 @@
 
     <h2>Authentification</h2>
 
-    <form action="{{url_for('auth.logPost')}}" method="POST">
+    <form action="{{url_for('auth.login')}}" method="POST">
 
         {{ form.csrf_token }}
         {{ form.hidden_tag() }}
@@ -26,9 +26,19 @@
             {{ wtf.form_field(form.mdp) }}
 
             <input type="submit" value="S'authentifier" class="btn btn-success">
-        </div>    
-        
+        </div>           
     </form>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+        {% for category, message in messages %}    
+            {% if category == "errLog" %}
+                <p style="color: red; font-weight: bold;">{{ message }}</p>
+            {% endif %}            
+        {% endfor %}
+    {% endif %}
+
+    {% endwith %}
 
 </div>
 

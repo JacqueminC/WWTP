@@ -25,6 +25,8 @@ class RepoEvaluation:
 
         result = evaluationColl.aggregate(pipeline)
 
+        noteMoyenne = 0
+
         for doc in result:
             noteMoyenne = doc["total"] / (doc["count"])
 
