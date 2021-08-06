@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, request, flash, session, url_for
+from flask import Blueprint, render_template, request, flash, session, redirect
 from flask_wtf.form import FlaskForm
 from wtforms.fields.core import StringField
 from wtforms import PasswordField
@@ -45,9 +45,10 @@ def login():
             session["user"] = {
                 "pseudo": user["pseudo"],
                 "lastName": user["prenom"],
-                "note": note
+                "note": note,
+                "idJoueur": str(user["_id"])
             }
-            return render_template("home.html")
+            return redirect("/home")
         else:
             flash("Email et / ou mot de passe incorrect !", "errLog")
             return render_template("auth.html", form=form)
@@ -56,7 +57,8 @@ def login():
 
 @bpAuth.route("/logout", methods=["GET", "POST"])
 def logout():
+    
     session.pop("user", None)
     session["isLogged"] = False
-    print(session)
-    return render_template("home.html")
+
+    return redirect("/")

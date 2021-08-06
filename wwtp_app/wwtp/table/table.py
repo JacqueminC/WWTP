@@ -66,51 +66,64 @@ class CreationTableForm(FlaskForm):
 
 @bpTable.route("/formCreation", methods=["GET", "POST"])
 def formCreation():
-    form = CreationTableForm()
-    done = "ko"
+    if session.get("isLogged"):
+        form = CreationTableForm()
+        done = "ko"
 
-    if form.validate_on_submit():
+        if form.validate_on_submit():
 
-       user = session["user"]
-       idJoueur = user["idJoueur"]
+            user = session["user"]
+            idJoueur = user["idJoueur"]
 
-       result = Table.canCreateTable(idJoueur, form.date.data, form.heure.data)
+            result = Table.canCreateTable(idJoueur, form.date.data, form.heure.data)
 
-       if result >= 1:
-           ve = ValidationError()
-           flash("Impossible de créer une table car vous participez déjà à une table pour le moment choisi !!!", 'error')
-           return render_template("formCreation.html", form=form, ve=ve, done=done)
-       else:
-           Table.createTable(form)
-           done = "ok"
-           flash('Votre table à bien été créé !', 'info')
-           return render_template("formCreation.html",form=form, done=done) 
-       
+            if result >= 1:
+                ve = ValidationError()
+                flash("Impossible de créer une table car vous participez déjà à une table pour le moment choisi !!!", 'error')
+                return render_template("formCreation.html", form=form, ve=ve, done=done)
+            else:
+                Table.createTable(form)
+                done = "ok"
+                flash('Votre table à bien été créé !', 'info')
+                return render_template("formCreation.html",form=form, done=done) 
+        
 
-    return render_template("formCreation.html", form=form, done=done)
+        return render_template("formCreation.html", form=form, done=done)
+    else:
+        return redirect("/")
+
 
 @bpTable.route("/listeTable", methods=["GET", "POST"])
 def listeTable():
-    user = session["user"]
-    
-    tables = Table.findAvalaibleTable(user["idJoueur"])
+    if session.get("isLogged"):
+        user = session["user"]
+        
+        tables = Table.findAvalaibleTable(user["idJoueur"])
 
-    return render_template("listeTable.html", tables=tables)
+        return render_template("listeTable.html", tables=tables)
+    else:
+        return redirect("/")
 
 
 @bpTable.route("/tableJoueur", methods=["GET", "POST"])
 def tableJoueur():
-    user = session["user"]
-    id = user["idJoueur"]
-    result = Table.findTableByPlayer(id)
-    return render_template("tablesJoueur.html", result=result)
+    if session.get("isLogged"):
+        user = session["user"]
+        id = user["idJoueur"]
+        result = Table.findTableByPlayer(id)
+        return render_template("tablesJoueur.html", result=result)
+    else:
+        return redirect("/")
 
 @bpTable.route("/tableHote", methods=["GET", "POST"])
 def tableHote():
-    user = session["user"]
-    id = user["idJoueur"]
-    result = Table.findTableByHost(id)
-    return render_template("tablesHote.html", result=result)
+    if session.get("isLogged"):
+        user = session["user"]
+        id = user["idJoueur"]
+        result = Table.findTableByHost(id)
+        return render_template("tablesHote.html", result=result)
+    else:
+        return redirect("/")
 
 
         

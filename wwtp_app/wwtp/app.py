@@ -44,8 +44,8 @@ def index():
         "pseudo" : "Cédric"
         }"""
 
-    session.pop("user", None)
-    session["isLogged"] = False
+    """session.pop("user", None)
+    session["isLogged"] = False"""
 
     return render_template("index.html")
 

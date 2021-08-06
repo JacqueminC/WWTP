@@ -7,15 +7,18 @@ bpEvaluation = Blueprint("evaluation", __name__, template_folder="templates")
 
 @bpEvaluation.route("/evaluerJoueur", methods=["GET", "POST"])
 def notePlayer():
-    note = request.args.get('note')
-    idPlayer = request.args.get('idPlayer')
-    idTable = request.args.get('idTable')
+    if session.get("isLogged"):
+        note = request.args.get('note')
+        idPlayer = request.args.get('idPlayer')
+        idTable = request.args.get('idTable')
 
-    user = session["user"]
-    idJoueur = user["idJoueur"]
+        user = session["user"]
+        idJoueur = user["idJoueur"]
 
-    Evaluation.createEvaluation(idTable, idPlayer, idJoueur, int(note), "dice")
+        Evaluation.createEvaluation(idTable, idPlayer, idJoueur, int(note), "dice")
 
-    return redirect(url_for('joueur.evaluatePlayer'))
+        return redirect(url_for('joueur.evaluatePlayer'))
+    else:
+        return redirect("/")
 
 

@@ -175,57 +175,65 @@ def manageTable():
 @bpJoueur.route("/evaluer", methods=["GET", "POST"])
 def evaluatePlayer():
 
-    user = session["user"]
-    idJoueur = user["idJoueur"]
-    dictTable = {}       
+    if session.get("isLogged"):
 
-    tables = Table.findTableForNoteByIdJoueurAndPast(idJoueur)
+        user = session["user"]
+        idJoueur = user["idJoueur"]
+        dictTable = {}       
 
-    for table in tables:
-        dictJoueur = {}    
-        dictData = {}  
+        tables = Table.findTableForNoteByIdJoueurAndPast(idJoueur)
 
-        joueurs = table["joueurs"]
-        hote = table["hote"]
-        idTable = table["_id"]
+        for table in tables:
+            dictJoueur = {}    
+            dictData = {}  
 
-        if hote["idJoueur"] != ObjectId(idJoueur):
-            eval = Evaluation.findNoteByEvaluateurAndEvalue(idJoueur, hote["idJoueur"], idTable)
-            dictJoueur[str(hote["pseudo"])] = [ eval, str(hote["idJoueur"])]
-        
-        for j in joueurs:
-            if j["idJoueur"] != ObjectId(idJoueur):
-                eval = Evaluation.findNoteByEvaluateurAndEvalue(idJoueur, j["idJoueur"], idTable)
-                dictJoueur[str(j["pseudo"])] = [ eval, str(j["idJoueur"])]
+            joueurs = table["joueurs"]
+            hote = table["hote"]
+            idTable = table["_id"]
 
-        if len(dictJoueur) >= 1:
+            if hote["idJoueur"] != ObjectId(idJoueur):
+                eval = Evaluation.findNoteByEvaluateurAndEvalue(idJoueur, hote["idJoueur"], idTable)
+                dictJoueur[str(hote["pseudo"])] = [ eval, str(hote["idJoueur"])]
+            
+            for j in joueurs:
+                if j["idJoueur"] != ObjectId(idJoueur):
+                    eval = Evaluation.findNoteByEvaluateurAndEvalue(idJoueur, j["idJoueur"], idTable)
+                    dictJoueur[str(j["pseudo"])] = [ eval, str(j["idJoueur"])]
 
-            infoTable = [ str(table["date"]), table["hote"]["pseudo"], table["ville"], str(table["hote"]["idJoueur"]) ]
+            if len(dictJoueur) >= 1:
 
-            dictData["joueurs"] = dictJoueur
-            dictData["infoTable"] = infoTable
+                infoTable = [ str(table["date"]), table["hote"]["pseudo"], table["ville"], str(table["hote"]["idJoueur"]) ]
 
-            dictTable[str(idTable)] = dictData
+                dictData["joueurs"] = dictJoueur
+                dictData["infoTable"] = infoTable
 
-    return render_template("evaluer.html", dictTable=dictTable)
+                dictTable[str(idTable)] = dictData
+
+        return render_template("evaluer.html", dictTable=dictTable)
+    else:
+        return redirect("/")
 
 @bpJoueur.route("/inscription", methods=["GET", "POST"])
 def formInscription():
     form = registerForm()
 
-    if form.validate_on_submit():
+    if session.get("isLogged") != True:
 
-        try:
-            Joueur.createPlayer(form)
-            flash("Inscription Réussi", 'registerDone')
-            return render_template("formInscription.html", form=registerForm())
+        if form.validate_on_submit():
+
+            try:
+                Joueur.createPlayer(form)
+                flash("Inscription Réussi", 'registerDone')
+                return render_template("formInscription.html", form=registerForm())
+                
+            except Exception as ex:
+                flash(ex, 'error')
+                return render_template("formInscription.html", form=form, ve=ValidationError())
             
-        except Exception as ex:
-            flash(ex, 'error')
-            return render_template("formInscription.html", form=form, ve=ValidationError())
-        
 
 
-    return render_template("formInscription.html", form=form)
+        return render_template("formInscription.html", form=form)
+    else:
+        return redirect("/")
 
 
