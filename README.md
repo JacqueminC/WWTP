@@ -15,6 +15,7 @@ pip install flask-bootstrap
 pip install flask_admin
 pip install python-dateutil
 pip install Flask-Mail
+pip install flask-login
 
 pip list
 python .\main.py

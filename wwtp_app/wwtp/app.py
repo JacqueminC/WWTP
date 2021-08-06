@@ -8,6 +8,7 @@ from wwtp.table.table import bpTable
 from wwtp.home.home import bpHome
 from wwtp.joueur.joueur import bpJoueur
 from wwtp.evaluation.evaluation import bpEvaluation
+from wwtp.auth.auth import bpAuth
 from flask_bootstrap import Bootstrap
 
 app = Flask(__name__)
@@ -25,6 +26,7 @@ app.register_blueprint(bpTable, url_prefix="/table")
 app.register_blueprint(bpHome, ulr_prefix="/home")
 app.register_blueprint(bpJoueur, url_prefix="/joueur")
 app.register_blueprint(bpEvaluation, url_prefix="/evaluation")
+app.register_blueprint(bpAuth, url_prefix="/auth")
 
 @app.route("/")
 @app.route("/index")
@@ -34,13 +36,16 @@ def index():
     """resp.set_cookie('idUser', 'the username')"""
     resp.set_cookie('idUser', '', expires=0)
     """session.pop("idUser", None)"""
-    session["user"] = {
+    """session["user"] = {
         "idJoueur": "60c86295cbbfd4f430693f17",
         "dateDeNaissance" : datetime(1988, 10, 8, 0,0,0),        
         "note" : 0,
         "nom" : "Random Guy",
         "pseudo" : "Cédric"
-        }
+        }"""
+
+    """session.pop("user", None)
+    session["isLogged"] = False"""
 
     return render_template("index.html")
 

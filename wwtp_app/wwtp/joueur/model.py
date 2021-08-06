@@ -89,6 +89,9 @@ class Joueur:
     def findPlayerById(id):
         return RepoJoueur.findPlayerById(id)
 
+    def findPlayerByEmailAndAccess(email):
+        return RepoJoueur.findPlayerByEmailAndAccess(email)
+
     def decreaseNote(noteGlobale, max):
         average = (noteGlobale/max) * 5
         return round(average, 5)

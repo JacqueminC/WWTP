@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+{% import "bootstrap/wtf.html" as wtf%}
+
+{% block title %}
+
+    <title>Authentification</title>
+
+{% endblock %}
+
+{% block content %}
+{% with messages = get_flashed_messages(with_categories=true) %}
+
+
+
+<div class="container">
+
+    <h2>Authentification</h2>
+
+    <form action="{{url_for('auth.login')}}" method="POST">
+
+        {{ form.csrf_token }}
+        {{ form.hidden_tag() }}
+
+        <div class="col-md-6">
+            {{ wtf.form_field(form.email) }}
+            {{ wtf.form_field(form.mdp) }}
+
+            <input type="submit" value="S'authentifier" class="btn btn-success">
+        </div>           
+    </form>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+        {% for category, message in messages %}    
+            {% if category == "errLog" %}
+                <p style="color: red; font-weight: bold;">{{ message }}</p>
+            {% endif %}            
+        {% endfor %}
+    {% endif %}
+
+    {% endwith %}
+
+</div>
+
+
+{% endwith %}
+{% endblock %}
