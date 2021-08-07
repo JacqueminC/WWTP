@@ -3,8 +3,8 @@ from flask_wtf.form import FlaskForm
 from wtforms.fields.core import StringField
 from wtforms import PasswordField
 from wtforms.validators import InputRequired, ValidationError
-from wwtp.joueur.model import Joueur
-from wwtp.evaluation.model import Evaluation
+from joueur.model import Joueur
+from evaluation.model import Evaluation
 
 bpAuth = Blueprint("auth", __name__, template_folder="templates")
 

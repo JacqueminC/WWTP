@@ -2,7 +2,7 @@ from datetime import datetime, date
 from itertools import count
 from attr import has
 from dateutil.relativedelta import relativedelta
-from wwtp.table.repo import RepoTable
+from table.repo import RepoTable
 from .repo import *
 from email.message import EmailMessage
 import re, os, hashlib, smtplib

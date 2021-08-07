@@ -3,8 +3,8 @@ from flask import Blueprint, render_template,session, request, redirect, url_for
 from werkzeug.utils import redirect
 from wtforms import StringField, IntegerField, PasswordField
 from wtforms.fields.html5 import EmailField, DateField
-from wwtp.table.model import Table
-from wwtp.evaluation.model import Evaluation
+from table.model import Table
+from evaluation.model import Evaluation
 from .model import Joueur
 from bson import ObjectId
 from flask_wtf import FlaskForm

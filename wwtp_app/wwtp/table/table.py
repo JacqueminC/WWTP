@@ -6,7 +6,7 @@ from wtforms.form import Form
 from wtforms.validators import InputRequired, ValidationError
 from datetime import datetime, timedelta
 from .model import Table
-from wwtp.joueur.model import Joueur
+from joueur.model import Joueur
 
 bpTable = Blueprint("table", __name__, template_folder="templates")
 

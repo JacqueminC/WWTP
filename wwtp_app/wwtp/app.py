@@ -4,11 +4,11 @@ from datetime import datetime
 from flask import Flask, render_template, session, make_response
 import flask
 from flask_pymongo import PyMongo
-from wwtp.table.table import bpTable
-from wwtp.home.home import bpHome
-from wwtp.joueur.joueur import bpJoueur
-from wwtp.evaluation.evaluation import bpEvaluation
-from wwtp.auth.auth import bpAuth
+from table.table import bpTable
+from home.home import bpHome
+from joueur.joueur import bpJoueur
+from evaluation.evaluation import bpEvaluation
+from auth.auth import bpAuth
 from flask_bootstrap import Bootstrap
 
 app = Flask(__name__)
@@ -49,5 +49,5 @@ def index():
 
     return render_template("index.html")
 
-if __name__ == "wwtp.app":
+if __name__ == "__main__":
     app.run(debug=True)
