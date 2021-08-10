@@ -186,8 +186,6 @@ class Joueur:
             return pseudo + str(count), False
 
     def createPlayer(form):
-        """pseudo, email, motDePasse, nom, prenom, rue, numero, boite, ville, codePostal, dateDeNaissance"""
-        print(type(form.dateDeNaissance.data))
         try:
             joueur = Joueur(
                 form.pseudo.data,

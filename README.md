@@ -41,3 +41,6 @@ if __name__ == "wwtp.app":
 
 mon app.py est bien dans un package mais de ce fait n'est plus comme __main__
 
+nginx start
+gunicorn app:app
+sudo mongod --fork --logpath /var/log/mongodb/mongodb.log

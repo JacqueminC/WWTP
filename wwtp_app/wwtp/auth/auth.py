@@ -44,7 +44,7 @@ def login():
             session["isLogged"] = connect
             session["user"] = {
                 "pseudo": user["pseudo"],
-                "lastName": user["prenom"],
+                "firstName": user["prenom"],
                 "note": note,
                 "idJoueur": str(user["_id"])
             }
