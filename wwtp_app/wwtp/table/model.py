@@ -138,7 +138,7 @@ class Table:
             if table["nbPlace"] == len(table["joueurs"]):
                 return False
 
-        return False
+        return True
 
     def joinTable(joueur, idTable):
         repositoryTable.joinTable(joueur, idTable)
