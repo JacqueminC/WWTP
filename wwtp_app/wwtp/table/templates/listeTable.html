@@ -65,7 +65,7 @@
    
       <tr>
         <th scope="row">{{table["hote"].nom}}</th>
-        <td>{{table["date"].strftime('%d-%m-%Y %H:%m')}}</td>
+        <td>{{table["date"].strftime('%d-%m-%Y %H:%M')}}</td>
         <td>{{table["ville"]}}</td>
         <td>{{table["nbPlace"] - table["joueurs"]|length}} / {{table["nbPlace"]}}</td>
         <td>
@@ -105,7 +105,7 @@
         <tr class="table-secondary">
           <form action="/joinTable" method="post"></form>
             <th scope="row">{{table["hote"].nom}}</th>
-            <td>{{table["date"].strftime('%d-%m-%Y %H:%m')}}</td>
+            <td>{{table["date"].strftime('%d-%m-%Y %H:%M')}}</td>
             <td>{{table["ville"]}}</td>
             <td>{{table["nbPlace"] - table["joueurs"]|length}} / {{table["nbPlace"]}}</td>
             <td>

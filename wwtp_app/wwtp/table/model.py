@@ -120,8 +120,6 @@ class Table:
 
     def canJoinTable(table, joueur):
 
-        print(joueur)
-
         arrayDate = joueur["dateDeNaissance"].split("-")
 
         bd = datetime(int(arrayDate[0]), int(arrayDate[1]), int(arrayDate[2]), 0,0,0)
