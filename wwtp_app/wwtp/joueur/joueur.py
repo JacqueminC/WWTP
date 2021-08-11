@@ -64,20 +64,23 @@ def joinTable():
 
     if request.method == "POST":
 
-        if request.form.get("join"):            
+        if request.form.get("join"): 
+            user = session["user"]
+            jFirstName = user["firstName"]
+            jId = user["idJoueur"] 
+
             table = Table.findTable(request.values["join"])
-            result = Table.canJoinTable(table, session["user"])
+            joueur = Joueur.findPlayerById(jId)
+            result = Table.canJoinTable(table, joueur)
 
             if result:
-                user = session["user"]
-                jName = user["nom"]
-                jId = user["idJoueur"]                
                 hote = table["hote"]
+                
                 joueurHote = Joueur.findPlayerById(hote["idJoueur"])
                 Joueur.joinTable(jId, table["_id"])
 
                 subject = "Un joueur à rejoints votre table"
-                body = f"{jName} a rejoint votre table du {table['date']}\n\nWWTP"
+                body = f"{jFirstName} a rejoint votre table du {table['date']}\n\nWWTP"
                 Joueur.sendEmail([joueurHote['email']], subject, body)
 
                 flash('Vous avez rejoins la table de ' + hote["nom"] + ' à ' + table["ville"] + ' le ' + str(table['date']), 'info')

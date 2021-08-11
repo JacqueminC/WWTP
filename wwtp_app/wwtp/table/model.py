@@ -120,7 +120,13 @@ class Table:
 
     def canJoinTable(table, joueur):
 
-        dtFormat = datetime.strptime(joueur["dateDeNaissance"].strftime('%Y-%m-%d %H:%M:%S.%f'), '%Y-%m-%d %H:%M:%S.%f')
+        print(joueur)
+
+        arrayDate = joueur["dateDeNaissance"].split("-")
+
+        bd = datetime(int(arrayDate[0]), int(arrayDate[1]), int(arrayDate[2]), 0,0,0)
+
+        dtFormat = datetime.strptime(bd.strftime('%Y-%m-%d %H:%M:%S.%f'), '%Y-%m-%d %H:%M:%S.%f')
 
         ageCalcule = relativedelta(datetime.today(), dtFormat).years        
         
