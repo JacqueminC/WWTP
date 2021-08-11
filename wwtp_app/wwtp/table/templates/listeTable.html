@@ -83,11 +83,13 @@
         <td style="font-weight: bold; color: #99433f;">
           {% if table["regle"] == True %}
             Connaissance des règles obligatoire
-            <br>            
-          {% elif table["ageMin"] == True %}
+            <br>   
+          {% endif %}          
+          {% if table["ageMin"] == True %}
             Age minimum : {{table["age"]}}
             <br>
-          {% elif table["noteMin"] == True %}
+          {% endif %} 
+          {% if table["noteMin"] == True %}
             Note minimum : {{table["note"]}}
             <br>
           {% endif %}
