@@ -83,7 +83,7 @@ def joinTable():
                 body = f"{jFirstName} a rejoint votre table du {table['date']}\n\nWWTP"
                 Joueur.sendEmail([joueurHote['email']], subject, body)
 
-                flash('Vous avez rejoins la table de ' + hote["nom"] + ' à ' + table["ville"] + ' le ' + str(table['date']), 'info')
+                flash('Vous avez rejoins la table de ' + hote["pseudo"] + ' à ' + table["ville"] + ' le ' + str(table['date']), 'info')
                 return redirect(url_for('table.listeTable'))    
 
             else:
@@ -142,7 +142,7 @@ def manageTable():
             if len(table["joueurs"]) != 0:
                 Joueur.validateTable(request.values["validate"])
                 subject = "Une table a été validé"
-                body = f"La table de {hote['nom']} du {table['date']} a été validée ! \n\nVous trouverez ci dessous les informations pour participer à la table :\n\t{joueur['rue']} {joueur['numero']},\n\t{joueur['codePostal']}{joueur['ville']}\n\t{joueur['nom']} {joueur['prenom']}\n\t{joueur['email']}\n\nBon amusement !" 
+                body = f"La table de {hote['pseudo']} du {table['date']} a été validée ! \n\nVous trouverez ci dessous les informations pour participer à la table :\n\t{joueur['rue']} {joueur['numero']},\n\t{joueur['codePostal']}{joueur['ville']}\n\t{joueur['nom']} {joueur['prenom']}\n\t{joueur['email']}\n\nBon amusement !" 
                 flash("La table a été validée, les joueurs receveront l'information par email.", "done")
             else:
                 flash("Vous ne pouvez pas valider une table pour laquelle il n'y a aucun joueur.", "error")
@@ -164,7 +164,7 @@ def manageTable():
             session.update(user)
 
             subject = "Une table a été annulée"
-            body = f"La table de {hote['nom']} du {table['date']} a été annulée !\n\nWWTP"
+            body = f"La table de {hote['pseudo']} du {table['date']} a été annulée !\n\nWWTP"
             flash("Votre table a bien été annulé, vous avez subit un malus sur votre note !", "done")
 
         for joueur in table["joueurs"]:
