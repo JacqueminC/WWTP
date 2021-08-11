@@ -98,7 +98,7 @@ class Table:
         dtString = str(form.date.data) + " " + str(form.heure.data) + str(".000")
         fullDate = datetime.strptime(dtString, '%Y-%m-%d %H:%M:%S.%f')
 
-        hote = {"idJoueur": ObjectId(session['user']["idJoueur"]), "nom":  session["user"]["firstName"]}
+        hote = {"idJoueur": ObjectId(session['user']["idJoueur"]), "pseudo":  session["user"]["pseudo"]}
         table = Table(
             hote, 
             form.jeuxLibre.data, 
@@ -126,19 +126,19 @@ class Table:
 
         dtFormat = datetime.strptime(bd.strftime('%Y-%m-%d %H:%M:%S.%f'), '%Y-%m-%d %H:%M:%S.%f')
 
-        ageCalcule = relativedelta(datetime.today(), dtFormat).years        
+        ageCalcule = relativedelta(datetime.today(), dtFormat).years      
         
         if table["ageMin"] == True:
             if table["age"] >= ageCalcule:
                 return False
         if table["noteMin"] == True:
-            if table["note"] >= joueur["note"]:
+            if table["note"] >= session["user"]["note"]:
                 return False
         if "joureurs" in table:
             if table["nbPlace"] == len(table["joueurs"]):
                 return False
 
-        return True
+        return False
 
     def joinTable(joueur, idTable):
         repositoryTable.joinTable(joueur, idTable)

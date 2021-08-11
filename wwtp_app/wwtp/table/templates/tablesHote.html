@@ -56,7 +56,7 @@
                     {% if vars.update({'change' : 1 }) %} {% endif %}
    
                         <tr>
-                            <th scope="row">{{table["hote"].nom}}</th>
+                            <th scope="row">{{table["hote"].pseudo}}</th>
                             <td>{{table["date"].strftime('%d-%m-%Y %H:%M')}}</td>
                             <td>{{table["ville"]}}</td>
                             <td>{{table["nbPlace"] - table["joueurs"]|length}} / {{table["nbPlace"]}}</td>
@@ -87,10 +87,12 @@
                                 {% if table["regle"] == True %}
                                 Connaissance des règles obligatoire
                                 <br>
-                                {% elif table["ageMin"] == True %}
+                                {% endif %}
+                                {% if table["ageMin"] == True %}
                                 Age minimum : {{table["age"]}}
                                 <br>
-                                {% elif table["noteMin"] == True %}
+                                {% endif %}
+                                {% if table["noteMin"] == True %}
                                 Note minimum : {{table["note"]}}
                                 <br>
                                 {% endif %}
@@ -111,7 +113,7 @@
                         <br>
                         {% set line = 0 %}
                             <tr class="table-secondary">
-                                <th scope="row">{{table["hote"].nom}}</th>
+                                <th scope="row">{{table["hote"].pseduo}}</th>
                                 <td>{{table["date"].strftime('%d-%m-%Y %H:%M')}}</td>
                                 <td>{{table["ville"]}}</td>
                                 <td>{{table["nbPlace"] - table["joueurs"]|length}} / {{table["nbPlace"]}}</td>

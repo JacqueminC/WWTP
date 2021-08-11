@@ -64,7 +64,7 @@
         {% if vars.update({'change' : 1 }) %} {% endif %}
    
       <tr>
-        <th scope="row">{{table["hote"].nom}}</th>
+        <th scope="row">{{table["hote"].pseudo}}</th>
         <td>{{table["date"].strftime('%d-%m-%Y %H:%M')}}</td>
         <td>{{table["ville"]}}</td>
         <td>{{table["nbPlace"] - table["joueurs"]|length}} / {{table["nbPlace"]}}</td>
@@ -83,7 +83,7 @@
         <td style="font-weight: bold; color: #99433f;">
           {% if table["regle"] == True %}
             Connaissance des règles obligatoire
-            <br>
+            <br>            
           {% elif table["ageMin"] == True %}
             Age minimum : {{table["age"]}}
             <br>
@@ -104,7 +104,7 @@
         {% set line = 0 %}
         <tr class="table-secondary">
           <form action="/joinTable" method="post"></form>
-            <th scope="row">{{table["hote"].nom}}</th>
+            <th scope="row">{{table["hote"].pseudo}}</th>
             <td>{{table["date"].strftime('%d-%m-%Y %H:%M')}}</td>
             <td>{{table["ville"]}}</td>
             <td>{{table["nbPlace"] - table["joueurs"]|length}} / {{table["nbPlace"]}}</td>
@@ -120,7 +120,7 @@
                 </ul> 
             {% endif %}    
             </td>
-            <td style="font-weight: bold; color: #99433f;">
+            <td style="font-weight: bold; color: #99433f;">              
               {% if table["regle"] == True %}
                 Connaissance des règles obligatoire
                 <br>
