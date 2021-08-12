@@ -66,7 +66,7 @@ def joinTable():
 
         if request.form.get("join"): 
             user = session["user"]
-            jFirstName = user["firstName"]
+            jPseudo = user["pseudo"]
             jId = user["idJoueur"] 
 
             table = Table.findTable(request.values["join"])
@@ -80,7 +80,7 @@ def joinTable():
                 Joueur.joinTable(jId, table["_id"])
 
                 subject = "Un joueur à rejoints votre table"
-                body = f"{jFirstName} a rejoint votre table du {table['date']}\n\nWWTP"
+                body = f"{jPseudo} a rejoint votre table du {table['date']}\n\nWWTP"
                 Joueur.sendEmail([joueurHote['email']], subject, body)
 
                 flash('Vous avez rejoins la table de ' + hote["pseudo"] + ' à ' + table["ville"] + ' le ' + str(table['date']), 'info')

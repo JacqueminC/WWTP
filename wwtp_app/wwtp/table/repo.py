@@ -90,7 +90,7 @@ class RepoTable:
 
     def joinTable(joueur, idTable):
         find = {"_id" : ObjectId(idTable)}
-        push = {"$push": {"joueurs": {"idJoueur": ObjectId(joueur["_id"]), "nom": joueur["nom"], "pseudo" : joueur["pseudo"]}}}
+        push = {"$push": {"joueurs": {"idJoueur": ObjectId(joueur["_id"]), "pseudo": joueur["pseudo"]}}}
 
         tableColl.update_one(find, push)
 
