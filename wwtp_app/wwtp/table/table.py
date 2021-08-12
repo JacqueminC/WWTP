@@ -85,6 +85,7 @@ def formCreation():
                 Table.createTable(form)
                 done = "ok"
                 flash('Votre table à bien été créé !', 'info')
+                return redirect(url_for('table.formCreation'))
                 return render_template("formCreation.html",form=form, done=done) 
         
 
