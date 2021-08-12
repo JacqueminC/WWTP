@@ -226,7 +226,7 @@ def formInscription():
 
             try:
                 Joueur.createPlayer(form)
-                flash("Inscription Réussi", 'registerDone')
+                flash("Inscription réussie", 'registerDone')
                 return render_template("formInscription.html", form=registerForm())
                 
             except Exception as ex:
