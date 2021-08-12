@@ -153,7 +153,7 @@ def manageTable():
             Joueur.closeTable(request.values["close"], idJoueur, len(table["joueurs"]))
 
             for joueur in table["joueurs"]:
-                Evaluation.createEvaluation(idTable, idJoueur, player["idJoueur"], 0, "close")
+                Evaluation.createEvaluation(idTable, idJoueur, joueur["idJoueur"], 0, "close")
 
             note = Evaluation.calculateNote(idJoueur)
 

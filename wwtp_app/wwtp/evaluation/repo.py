@@ -11,6 +11,7 @@ evaluationColl = db["evaluation"]
 class RepoEvaluation:
 
     def createEvaluation(eval):
+        print("eval created")
         evaluationColl.insert_one(eval.__dict__)
 
     def CalculateNote(idJoueur):
