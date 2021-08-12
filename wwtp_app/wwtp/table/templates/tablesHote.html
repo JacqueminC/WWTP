@@ -37,7 +37,6 @@
         <table class="table table-hover">
             <thead>
               <tr>
-                <th scope="col">Table de ...</th>
                 <th scope="col">Date</th>
                 <th scope="col">Lieu</th>
                 <th scope="col">Place libre</th>
@@ -56,7 +55,6 @@
                     {% if vars.update({'change' : 1 }) %} {% endif %}
    
                         <tr>
-                            <th scope="row">{{table["hote"].pseudo}}</th>
                             <td>{{table["date"].strftime('%d-%m-%Y %H:%M')}}</td>
                             <td>{{table["ville"]}}</td>
                             <td>{{table["nbPlace"] - table["joueurs"]|length}} / {{table["nbPlace"]}}</td>
@@ -113,7 +111,6 @@
                         <br>
                         {% set line = 0 %}
                             <tr class="table-secondary">
-                                <th scope="row">{{table["hote"].pseduo}}</th>
                                 <td>{{table["date"].strftime('%d-%m-%Y %H:%M')}}</td>
                                 <td>{{table["ville"]}}</td>
                                 <td>{{table["nbPlace"] - table["joueurs"]|length}} / {{table["nbPlace"]}}</td>

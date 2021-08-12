@@ -89,6 +89,9 @@ class Joueur:
     def findPlayerById(id):
         return RepoJoueur.findPlayerById(id)
 
+    def findEmailById(id):
+        return RepoJoueur.findEmailById(id)
+
     def findPlayerByEmailAndAccess(email):
         return RepoJoueur.findPlayerByEmailAndAccess(email)
 
