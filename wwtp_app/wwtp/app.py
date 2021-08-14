@@ -16,8 +16,6 @@ app = Flask(__name__)
 
 app.config['SECRET_KEY'] = "secretkey"
 app.config["MONGO_URI"] = "mongodb://localhost:27017/wwtp"
-gunicorn_logger = logging.getLogger('/var/log/gunicorn/gunicorn.error')
-app.logger.handlers = gunicorn_logger.handlers
 
 Bootstrap(app)
 
@@ -58,3 +56,7 @@ def index():
 
 if __name__ == "__main__":
     app.run(debug=True)
+
+    gunicorn_logger = logging.getLogger('/var/log/gunicorn/gunicorn.error')
+    app.logger.handlers = gunicorn_logger.handlers
+    app.logger.setLevel(gunicorn_logger.level)
