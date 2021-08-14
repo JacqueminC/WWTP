@@ -2,7 +2,7 @@
 
 from datetime import datetime
 from flask import Flask, render_template, session, make_response
-import flask
+import logging
 from flask_pymongo import PyMongo
 from table.table import bpTable
 from home.home import bpHome
@@ -16,6 +16,8 @@ app = Flask(__name__)
 
 app.config['SECRET_KEY'] = "secretkey"
 app.config["MONGO_URI"] = "mongodb://localhost:27017/wwtp"
+gunicorn_logger = logging.getLogger('/var/log/gunicorn/gunicorn.error')
+app.logger.handlers = gunicorn_logger.handlers
 
 Bootstrap(app)
 
@@ -46,6 +48,11 @@ def index():
 
     """session.pop("user", None)
     session["isLogged"] = False"""
+    app.logger.debug("I'm a DEBUG message")
+    app.logger.info("I'm an INFO message")
+    app.logger.warning("I'm a WARNING message")
+    app.logger.error("I'm a ERROR message")
+    app.logger.critical("I'm a CRITICAL message")
 
     return render_template("index.html")
 
