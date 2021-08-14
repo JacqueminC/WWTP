@@ -28,8 +28,8 @@ class accountForm(FlaskForm):
     motDePasse = PasswordField("Mot de passe")
     confMDP = PasswordField("Confirmation du mot de passe")
 
-    def validate_confMDP(self, confMDP, motDePasse):
-        if motDePasse.data != None and motDePasse.data != "":
+    def validate_confMDP(self, confMDP):
+        if self.motDePasse.data != None and self.motDePasse.data != "":
             if confMDP.data != self.motDePasse.data:
                 flash("La validation n'est pas correcte", "confmdp")
                 return ValidationError()
@@ -267,16 +267,26 @@ def account():
 
     joueur = Joueur.findPlayerById(session["user"]["idJoueur"])
 
-    form.nom.data = joueur["nom"]
-    form.prenom.data = joueur["prenom"]
-    form.rue.data = joueur["rue"]
-    form.numero.data = joueur["numero"]
-    form.boite.data = joueur["boite"]
-    form.codePostal.data = joueur["codePostal"]
-    form.ville.data = joueur["ville"]
-    form.email.data = joueur["email"]
-    form.pseudo.data = joueur["pseudo"]
-    form.dateDeNaissance.data = joueur["dateDeNaissance"]
+    if not form.is_submitted():       
+
+        form.nom.data = joueur["nom"]
+        form.prenom.data = joueur["prenom"]
+        form.rue.data = joueur["rue"]
+        form.numero.data = joueur["numero"]
+        form.boite.data = joueur["boite"]
+        form.codePostal.data = joueur["codePostal"]
+        form.ville.data = joueur["ville"]
+        form.email.data = joueur["email"]
+        form.pseudo.data = joueur["pseudo"]
+        form.dateDeNaissance.data = joueur["dateDeNaissance"]
+        print("test post CTL")
+
+    if form.validate_on_submit():
+        print("CTL")
+        print(form.numero.data)
+        Joueur.updatePlayer(form, joueur)
+        return redirect(url_for("joueur.account"))
+
 
     return render_template("account.html", form=form)
 

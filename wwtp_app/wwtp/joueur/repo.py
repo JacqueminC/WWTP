@@ -35,6 +35,8 @@ class RepoJoueur():
         return joueurColl.find_one(query, project)
 
     def updatePlayer(joueur):
+        print("test repo")
+        print(joueur)
         joueurColl.save(joueur)
 
     def findEmailExist(email):
