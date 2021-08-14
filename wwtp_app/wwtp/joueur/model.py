@@ -181,6 +181,7 @@ class Joueur:
 
         while result != 0:
             count = count + 1
+            print(count)
             result = RepoJoueur.findPseudoExist(pseudo + str(count))
 
         if count == 0:
@@ -191,7 +192,7 @@ class Joueur:
     def createPlayer(form):
         fullDate = datetime.strptime(str(form.dateDeNaissance.data), '%Y-%m-%d')
 
-        try:
+        try:   
             joueur = Joueur(
                 form.pseudo.data,
                 form.email.data,

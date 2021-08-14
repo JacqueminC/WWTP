@@ -37,19 +37,27 @@
           <li class="nav-item">
             <a class="nav-link" href="/joueur/evaluer">Evaluer</a>
           </li>
-          {% endif %}
           <li class="nav-item">
-            <a class="nav-link" href="#">TODO</a>
+            <a class="nav-link" href="/joueur/account">Mon compte</a>
           </li>
           <li class="nav-item">
-            <p class="nav-link">
+            <a class="nav-link" href="/joueur/account">
               {% if session.get("user") != None and session.get("isLogged") == True %}
                 {% if session["user"].note != None %}
                   {{ session["user"].note }} - {{ session["user"].pseudo }}
                 {% endif %}
               {% endif %}
-            </p>
-          </li>          
+            </a>
+          </li>
+
+
+
+
+          {% endif %}
+          <li class="nav-item">
+            <a class="nav-link" href="#">TODO</a>
+          </li>
+                    
         </ul>
 
         {% if session.get("isLogged") != True %}   

@@ -3,7 +3,7 @@
 
 {% block title %}
 
-    <title>Inscription</title>
+    <title>compte</title>
 
 {% endblock %}
 
@@ -11,9 +11,9 @@
 {% with messages = get_flashed_messages(with_categories=true) %}
 
 <div class="container">
-    <h2>Formulaire d'inscription</h2>
+    <h2>Gestion du compte</h2>
 
-    <form action="{{url_for('joueur.formInscription')}}" method="POST">
+    <form action="{{url_for('joueur.account')}}" method="POST">
         {{form.csrf_token}}
         {{ form.hidden_tag() }}
 
@@ -69,24 +69,31 @@
         {% if messages %}
             {% for category, message in messages %}        
                 {% if category == "email" %}
-                {{ category }}
                 <p style="color: red; font-weight: bold;">{{ message }}</p>
                 {% endif %}                
             {% endfor %}
         {% endif %}
 
-        {{ wtf.form_field(form.motDePasse) }}
+        
+
+        <ul class="form-group" style="list-style:none; margin-left:0; padding-left:0;">
+            <li class="col-md-4">
+                {{ wtf.form_field(form.motDePasse) }}
+            </li>
+            <li class="col-md-4">
+                {{ wtf.form_field(form.confMDP) }}
+            </li>
+        </ul> 
 
         {% if messages %}
             {% for category, message in messages %}        
                 {% if category == "error" %}
-                {{ category }}
                 <p style="color: red; font-weight: bold;">{{ message }}</p>
                 {% endif %}                
             {% endfor %}
         {% endif %}
 
-        {{ wtf.form_field(form.confMDP) }}
+        
 
         {% if messages %}
             {% for category, message in messages %}        
@@ -96,22 +103,13 @@
             {% endfor %}
         {% endif %}
 
-        <input type="submit" value="S'inscrire" class="btn btn-primary">
+        <input type="submit" value="Enregistrer" class="btn btn-primary">
 
     </form>
+
+
 
 </div>
 
 {% endwith %}
-{% endblock %}
-
-{% block scripts %}
-  {{ super() }}
-  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.18.1/moment.min.js"></script>
-  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.47/js/bootstrap-datetimepicker.min.js"></script>
-  <script type="text/javascript">
-    $(function () {
-      $('#datepick').datetimepicker();
-    });
-  </script>
 {% endblock %}
