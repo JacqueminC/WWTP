@@ -6,7 +6,7 @@ from wtforms.form import Form
 from wtforms.validators import InputRequired, ValidationError
 from datetime import datetime, timedelta
 from .model import Table
-from wwtp.joueur.model import Joueur
+from joueur.model import Joueur
 
 bpTable = Blueprint("table", __name__, template_folder="templates")
 
@@ -20,7 +20,9 @@ class CreationTableForm(FlaskForm):
     jeux = FieldList(FormField(JeuxListeForm), min_entries=1)
     date = DateField('Date', format='%Y-%m-%d', validators=[InputRequired()])
     heure = TimeField('Heure', validators=[InputRequired()])
-    ville = StringField('Ville', validators=[InputRequired()])
+    ville = StringField('Ville',
+        render_kw={'disabled':''},
+        validators=[InputRequired()])
     ageMin = BooleanField('Définir un âge minimum ?')
     age = IntegerField(' Age minimum ?', default=0)
     regle = BooleanField(' Connaissance des règles requises ?')
@@ -68,6 +70,7 @@ class CreationTableForm(FlaskForm):
 def formCreation():
     if session.get("isLogged"):
         form = CreationTableForm()
+        form.ville.data = session["user"]["ville"]
         done = "ko"
 
         if form.validate_on_submit():
@@ -82,10 +85,14 @@ def formCreation():
                 flash("Impossible de créer une table car vous participez déjà à une table pour le moment choisi !!!", 'error')
                 return render_template("formCreation.html", form=form, ve=ve, done=done)
             else:
-                Table.createTable(form)
-                done = "ok"
-                flash('Votre table à bien été créé !', 'info')
-                return render_template("formCreation.html",form=form, done=done) 
+                try:
+                    Table.createTable(form)
+                    done = "ok"
+                    flash('Votre table à bien été créé !', 'info')
+                    return redirect(url_for('table.formCreation'))
+                except Exception as ex:
+                    flash(ex)
+                    return render_template("formCreation.html", form=form)
         
 
         return render_template("formCreation.html", form=form, done=done)
@@ -110,7 +117,7 @@ def tableJoueur():
     if session.get("isLogged"):
         user = session["user"]
         id = user["idJoueur"]
-        result = Table.findTableByPlayer(id)
+        result = Table.findTableByPlayerAndValidity(id)
         return render_template("tablesJoueur.html", result=result)
     else:
         return redirect("/")
@@ -120,7 +127,7 @@ def tableHote():
     if session.get("isLogged"):
         user = session["user"]
         id = user["idJoueur"]
-        result = Table.findTableByHost(id)
+        result = Table.findTableByHostAndValidity(id)
         return render_template("tablesHote.html", result=result)
     else:
         return redirect("/")

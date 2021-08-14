@@ -3,8 +3,8 @@ from flask_wtf.form import FlaskForm
 from wtforms.fields.core import StringField
 from wtforms import PasswordField
 from wtforms.validators import InputRequired, ValidationError
-from wwtp.joueur.model import Joueur
-from wwtp.evaluation.model import Evaluation
+from joueur.model import Joueur
+from evaluation.model import Evaluation
 
 bpAuth = Blueprint("auth", __name__, template_folder="templates")
 
@@ -18,7 +18,8 @@ def login():
 
     if form.validate_on_submit():
         data = request.form.to_dict()
-        user = Joueur.findPlayerByEmailAndAccess(data.get("email"))
+        email = data.get("email").replace(" ", "")
+        user = Joueur.findPlayerByEmailAndAccess(email)
 
         connect = False
 
@@ -44,9 +45,10 @@ def login():
             session["isLogged"] = connect
             session["user"] = {
                 "pseudo": user["pseudo"],
-                "lastName": user["prenom"],
+                "firstName": user["prenom"],
                 "note": note,
-                "idJoueur": str(user["_id"])
+                "idJoueur": str(user["_id"]),
+                "ville": user["ville"]
             }
             return redirect("/home")
         else:

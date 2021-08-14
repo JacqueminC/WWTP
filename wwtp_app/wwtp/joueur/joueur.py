@@ -3,8 +3,8 @@ from flask import Blueprint, render_template,session, request, redirect, url_for
 from werkzeug.utils import redirect
 from wtforms import StringField, IntegerField, PasswordField
 from wtforms.fields.html5 import EmailField, DateField
-from wwtp.table.model import Table
-from wwtp.evaluation.model import Evaluation
+from table.model import Table
+from evaluation.model import Evaluation
 from .model import Joueur
 from bson import ObjectId
 from flask_wtf import FlaskForm
@@ -56,31 +56,32 @@ class registerForm(FlaskForm):
             flash("Le pseudo n'est pas disponible, essayé " + p, "pseudo")
             return ValidationError()
 
-    
-
 
 @bpJoueur.route("/joinTable", methods=["GET", "POST"])
 def joinTable():
 
     if request.method == "POST":
 
-        if request.form.get("join"):            
+        if request.form.get("join"): 
+            user = session["user"]
+            jPseudo = user["pseudo"]
+            jId = user["idJoueur"] 
+
             table = Table.findTable(request.values["join"])
-            result = Table.canJoinTable(table, session["user"])
+            joueur = Joueur.findPlayerById(jId)
+            result = Table.canJoinTable(table, joueur)
 
             if result:
-                user = session["user"]
-                jName = user["nom"]
-                jId = user["idJoueur"]                
                 hote = table["hote"]
+                
                 joueurHote = Joueur.findPlayerById(hote["idJoueur"])
                 Joueur.joinTable(jId, table["_id"])
 
                 subject = "Un joueur à rejoints votre table"
-                body = f"{jName} a rejoint votre table du {table['date']}\n\nWWTP"
+                body = f"{jPseudo} a rejoint votre table du {table['date']}\n\nWWTP"
                 Joueur.sendEmail([joueurHote['email']], subject, body)
 
-                flash('Vous avez rejoins la table de ' + hote["nom"] + ' à ' + table["ville"] + ' le ' + str(table['date']), 'info')
+                flash('Vous avez rejoins la table de ' + hote["pseudo"] + ' à ' + table["ville"] + ' le ' + str(table['date']), 'info')
                 return redirect(url_for('table.listeTable'))    
 
             else:
@@ -139,7 +140,7 @@ def manageTable():
             if len(table["joueurs"]) != 0:
                 Joueur.validateTable(request.values["validate"])
                 subject = "Une table a été validé"
-                body = f"La table de {hote['nom']} du {table['date']} a été validée ! \n\nVous trouverez ci dessous les informations pour participer à la table :\n\t{joueur['rue']} {joueur['numero']},\n\t{joueur['codePostal']}{joueur['ville']}\n\t{joueur['nom']} {joueur['prenom']}\n\t{joueur['email']}\n\nBon amusement !" 
+                body = f"La table de {hote['pseudo']} du {table['date']} a été validée ! \n\nVous trouverez ci dessous les informations pour participer à la table :\n\t{joueur['rue']} {joueur['numero']},\n\t{joueur['codePostal']} {joueur['ville']}\n\t{joueur['nom']} {joueur['prenom']}\n\t{joueur['email']}\n\nBon amusement !" 
                 flash("La table a été validée, les joueurs receveront l'information par email.", "done")
             else:
                 flash("Vous ne pouvez pas valider une table pour laquelle il n'y a aucun joueur.", "error")
@@ -152,7 +153,7 @@ def manageTable():
             Joueur.closeTable(request.values["close"], idJoueur, len(table["joueurs"]))
 
             for joueur in table["joueurs"]:
-                Evaluation.createEvaluation(idTable, idJoueur, player["idJoueur"], 0, "close")
+                Evaluation.createEvaluation(idTable, idJoueur, joueur["idJoueur"], 0, "close")
 
             note = Evaluation.calculateNote(idJoueur)
 
@@ -161,11 +162,14 @@ def manageTable():
             session.update(user)
 
             subject = "Une table a été annulée"
-            body = f"La table de {hote['nom']} du {table['date']} a été annulée !\n\nWWTP"
+            body = f"La table de {hote['pseudo']} du {table['date']} a été annulée !\n\nWWTP"
             flash("Votre table a bien été annulé, vous avez subit un malus sur votre note !", "done")
 
         for joueur in table["joueurs"]:
-            emails = emails + [joueur["email"]]
+            jEmail = Joueur.findEmailById(joueur["idJoueur"])
+            emails = []
+
+            emails = emails + [jEmail["email"]]
 
         if len(emails) > 0:
             Joueur.sendEmail(emails, subject, body)
@@ -223,8 +227,8 @@ def formInscription():
 
             try:
                 Joueur.createPlayer(form)
-                flash("Inscription Réussi", 'registerDone')
-                return render_template("formInscription.html", form=registerForm())
+                flash("Inscription réussie", 'registerDone')
+                return redirect(url_for("auth.login"))
                 
             except Exception as ex:
                 flash(ex, 'error')

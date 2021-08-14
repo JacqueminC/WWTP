@@ -19,9 +19,12 @@ class Table:
 
 
         if nbPlace < 1:
-            raise Exception("Il doit y avoir au moins une place de libre")
+            raise Exception("Il doit y avoir au moins une place de libre")        
         else:
-            self.nbPlace = nbPlace
+            if nbPlace > 10:
+                raise Exception("Le nombre maximum de place est de 10")
+            else:
+                self.nbPlace = nbPlace
 
         if isinstance(jeuxLibre, bool):
             if jeuxLibre == True:
@@ -98,14 +101,14 @@ class Table:
         dtString = str(form.date.data) + " " + str(form.heure.data) + str(".000")
         fullDate = datetime.strptime(dtString, '%Y-%m-%d %H:%M:%S.%f')
 
-        hote = {"idJoueur": ObjectId(session['user']['idJoueur']), "nom":  session['user']['nom']}
+        hote = {"idJoueur": ObjectId(session['user']["idJoueur"]), "pseudo":  session["user"]["pseudo"]}
         table = Table(
             hote, 
             form.jeuxLibre.data, 
             form.nbPlace.data, 
             form.jeux.data, 
             fullDate, 
-            form.ville.data, 
+            session['user']["ville"], 
             form.ageMin.data, 
             form.age.data, 
             form.regle.data, 
@@ -120,15 +123,13 @@ class Table:
 
     def canJoinTable(table, joueur):
 
-        dtFormat = datetime.strptime(joueur["dateDeNaissance"].strftime('%Y-%m-%d %H:%M:%S.%f'), '%Y-%m-%d %H:%M:%S.%f')
-
-        ageCalcule = relativedelta(datetime.today(), dtFormat).years        
+        ageCalcule = relativedelta(datetime.today(), joueur["dateDeNaissance"]).years
         
         if table["ageMin"] == True:
             if table["age"] >= ageCalcule:
                 return False
         if table["noteMin"] == True:
-            if table["note"] >= joueur["note"]:
+            if table["note"] >= session["user"]["note"]:
                 return False
         if "joureurs" in table:
             if table["nbPlace"] == len(table["joueurs"]):
@@ -143,11 +144,11 @@ class Table:
     def findTable(id):
         return  RepoTable.findTable(str(id))
 
-    def findTableByPlayer(id):
-        return RepoTable.findTableByPlayer(id)
+    def findTableByPlayerAndValidity(id):
+        return RepoTable.findTableByPlayerAndValidity(id)
 
-    def findTableByHost(id):
-        return RepoTable.findTableByHost(id)
+    def findTableByHostfindTableByHostAndValidity(id):
+        return RepoTable.findTableByHostAndValidity(id)
 
     def saveTable(table):
         return RepoTable.saveTable(table)

@@ -26,6 +26,14 @@ class RepoJoueur():
 
         return joueurColl.find_one(query)
 
+    def findEmailById(id):
+        query = {
+            "_id" : ObjectId(id)
+            }
+        project = {"_id": 0, "email": 1}
+
+        return joueurColl.find_one(query, project)
+
     def updatePlayer(joueur):
         joueurColl.save(joueur)
 

@@ -17,13 +17,22 @@ class RepoTable:
 
         return tableColl.find_one(query)
 
-    def findTableByPlayer(id):
-        query = {"joueurs.idJoueur": ObjectId(id), "estAnnule": False}
+    def findTableByPlayerAndValidity(id):
+        date = datetime.today() + timedelta(hours=2)
+
+        query = {
+            "joueurs.idJoueur": ObjectId(id),
+            "estAnnule": False,
+            "date": {"$gt": date}}
 
         return tableColl.find(query)
 
-    def findTableByHost(id):
-        query = {"hote.idJoueur": ObjectId(id), "estAnnule": False}
+    def findTableByHostAndValidity(id):
+        date = datetime.today() + timedelta(hours=2)
+
+        query = {
+            "hote.idJoueur": ObjectId(id), 
+            "date": {"$gt": date}}
 
         return tableColl.find(query)
 
@@ -90,7 +99,7 @@ class RepoTable:
 
     def joinTable(joueur, idTable):
         find = {"_id" : ObjectId(idTable)}
-        push = {"$push": {"joueurs": {"idJoueur": ObjectId(joueur["_id"]), "nom": joueur["nom"], "pseudo" : joueur["pseudo"]}}}
+        push = {"$push": {"joueurs": {"idJoueur": ObjectId(joueur["_id"]), "pseudo": joueur["pseudo"]}}}
 
         tableColl.update_one(find, push)
 

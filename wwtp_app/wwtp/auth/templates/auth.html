@@ -10,9 +10,21 @@
 {% block content %}
 {% with messages = get_flashed_messages(with_categories=true) %}
 
-
-
 <div class="container">
+    {% if messages %}
+        {% for category, message in messages %}
+        {% if category == "registerDone" %}
+        <div class="alert alert-success alert-dismissible fade show col-md-6" role="alert">
+            <span style="color: white; font: bold;">{{ message }}</span>
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        <!-- <p style="color: green; font: bold;">{{ message }}</p> -->
+            
+        {% endif %}        
+        {% endfor %}
+    {% endif %}
 
     <h2>Authentification</h2>
 

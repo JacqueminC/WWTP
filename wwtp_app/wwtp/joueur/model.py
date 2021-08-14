@@ -2,7 +2,7 @@ from datetime import datetime, date
 from itertools import count
 from attr import has
 from dateutil.relativedelta import relativedelta
-from wwtp.table.repo import RepoTable
+from table.repo import RepoTable
 from .repo import *
 from email.message import EmailMessage
 import re, os, hashlib, smtplib
@@ -79,7 +79,7 @@ class Joueur:
 
 
         if ageCalcule > 15:
-            self.dateDeNaissance = str(dateDeNaissance)
+            self.dateDeNaissance = dateDeNaissance
         else:
             raise  Exception("Il faut avoir au minimum 15 ans pour s'inscrire sur le site")
 
@@ -88,6 +88,9 @@ class Joueur:
 
     def findPlayerById(id):
         return RepoJoueur.findPlayerById(id)
+
+    def findEmailById(id):
+        return RepoJoueur.findEmailById(id)
 
     def findPlayerByEmailAndAccess(email):
         return RepoJoueur.findPlayerByEmailAndAccess(email)
@@ -186,8 +189,8 @@ class Joueur:
             return pseudo + str(count), False
 
     def createPlayer(form):
-        """pseudo, email, motDePasse, nom, prenom, rue, numero, boite, ville, codePostal, dateDeNaissance"""
-        print(type(form.dateDeNaissance.data))
+        fullDate = datetime.strptime(str(form.dateDeNaissance.data), '%Y-%m-%d')
+
         try:
             joueur = Joueur(
                 form.pseudo.data,
@@ -200,7 +203,7 @@ class Joueur:
                 form.boite.data,
                 form.ville.data,
                 form.codePostal.data,
-                form.dateDeNaissance.data
+                fullDate
             )
 
             RepoJoueur.createPlayer(joueur)
