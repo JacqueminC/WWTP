@@ -20,9 +20,7 @@ class CreationTableForm(FlaskForm):
     jeux = FieldList(FormField(JeuxListeForm), min_entries=1)
     date = DateField('Date', format='%Y-%m-%d', validators=[InputRequired()])
     heure = TimeField('Heure', validators=[InputRequired()])
-    ville = StringField('Ville',
-        render_kw={'disabled':''},
-        validators=[InputRequired()])
+    ville = StringField('Ville', render_kw={'disabled':''})
     ageMin = BooleanField('Définir un âge minimum ?')
     age = IntegerField(' Age minimum ?', default=0)
     regle = BooleanField(' Connaissance des règles requises ?')
