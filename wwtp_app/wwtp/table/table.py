@@ -82,10 +82,14 @@ def formCreation():
                 flash("Impossible de créer une table car vous participez déjà à une table pour le moment choisi !!!", 'error')
                 return render_template("formCreation.html", form=form, ve=ve, done=done)
             else:
-                Table.createTable(form)
-                done = "ok"
-                flash('Votre table à bien été créé !', 'info')
-                return redirect(url_for('table.formCreation'))
+                try:
+                    Table.createTable(form)
+                    done = "ok"
+                    flash('Votre table à bien été créé !', 'info')
+                    return redirect(url_for('table.formCreation'))
+                except Exception as ex:
+                    flash(ex)
+                    return render_template("formCreation.html", form=form)
         
 
         return render_template("formCreation.html", form=form, done=done)

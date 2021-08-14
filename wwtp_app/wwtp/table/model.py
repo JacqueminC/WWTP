@@ -19,9 +19,12 @@ class Table:
 
 
         if nbPlace < 1:
-            raise Exception("Il doit y avoir au moins une place de libre")
+            raise Exception("Il doit y avoir au moins une place de libre")        
         else:
-            self.nbPlace = nbPlace
+            if nbPlace > 10:
+                raise Exception("Le nombre maximum de place est de 10")
+            else:
+                self.nbPlace = nbPlace
 
         if isinstance(jeuxLibre, bool):
             if jeuxLibre == True:
