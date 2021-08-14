@@ -47,7 +47,8 @@ def login():
                 "pseudo": user["pseudo"],
                 "firstName": user["prenom"],
                 "note": note,
-                "idJoueur": str(user["_id"])
+                "idJoueur": str(user["_id"]),
+                "ville": user["ville"]
             }
             return redirect("/home")
         else:

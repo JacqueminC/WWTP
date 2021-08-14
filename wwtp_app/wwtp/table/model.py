@@ -108,7 +108,7 @@ class Table:
             form.nbPlace.data, 
             form.jeux.data, 
             fullDate, 
-            form.ville.data, 
+            session['user']["ville"], 
             form.ageMin.data, 
             form.age.data, 
             form.regle.data, 
