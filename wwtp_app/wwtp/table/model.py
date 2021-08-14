@@ -120,13 +120,7 @@ class Table:
 
     def canJoinTable(table, joueur):
 
-        arrayDate = joueur["dateDeNaissance"].split("-")
-
-        bd = datetime(int(arrayDate[0]), int(arrayDate[1]), int(arrayDate[2]), 0,0,0)
-
-        dtFormat = datetime.strptime(bd.strftime('%Y-%m-%d %H:%M:%S.%f'), '%Y-%m-%d %H:%M:%S.%f')
-
-        ageCalcule = relativedelta(datetime.today(), dtFormat).years      
+        ageCalcule = relativedelta(datetime.today(), joueur["dateDeNaissance"]).years
         
         if table["ageMin"] == True:
             if table["age"] >= ageCalcule:
@@ -147,11 +141,11 @@ class Table:
     def findTable(id):
         return  RepoTable.findTable(str(id))
 
-    def findTableByPlayer(id):
-        return RepoTable.findTableByPlayer(id)
+    def findTableByPlayerAndValidity(id):
+        return RepoTable.findTableByPlayerAndValidity(id)
 
-    def findTableByHost(id):
-        return RepoTable.findTableByHost(id)
+    def findTableByHostfindTableByHostAndValidity(id):
+        return RepoTable.findTableByHostAndValidity(id)
 
     def saveTable(table):
         return RepoTable.saveTable(table)

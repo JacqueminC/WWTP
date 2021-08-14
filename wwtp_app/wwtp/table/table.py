@@ -110,7 +110,7 @@ def tableJoueur():
     if session.get("isLogged"):
         user = session["user"]
         id = user["idJoueur"]
-        result = Table.findTableByPlayer(id)
+        result = Table.findTableByPlayerAndValidity(id)
         return render_template("tablesJoueur.html", result=result)
     else:
         return redirect("/")
@@ -120,7 +120,7 @@ def tableHote():
     if session.get("isLogged"):
         user = session["user"]
         id = user["idJoueur"]
-        result = Table.findTableByHost(id)
+        result = Table.findTableByHostAndValidity(id)
         return render_template("tablesHote.html", result=result)
     else:
         return redirect("/")

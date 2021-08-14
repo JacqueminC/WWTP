@@ -79,7 +79,7 @@ class Joueur:
 
 
         if ageCalcule > 15:
-            self.dateDeNaissance = str(dateDeNaissance)
+            self.dateDeNaissance = dateDeNaissance
         else:
             raise  Exception("Il faut avoir au minimum 15 ans pour s'inscrire sur le site")
 
@@ -189,6 +189,8 @@ class Joueur:
             return pseudo + str(count), False
 
     def createPlayer(form):
+        fullDate = datetime.strptime(str(form.dateDeNaissance.data), '%Y-%m-%d')
+
         try:
             joueur = Joueur(
                 form.pseudo.data,
@@ -201,7 +203,7 @@ class Joueur:
                 form.boite.data,
                 form.ville.data,
                 form.codePostal.data,
-                form.dateDeNaissance.data
+                fullDate
             )
 
             RepoJoueur.createPlayer(joueur)
