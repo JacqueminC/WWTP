@@ -147,7 +147,7 @@ class Table:
     def findTableByPlayerAndValidity(id):
         return RepoTable.findTableByPlayerAndValidity(id)
 
-    def findTableByHostfindTableByHostAndValidity(id):
+    def findTableByHostAndValidity(id):
         return RepoTable.findTableByHostAndValidity(id)
 
     def saveTable(table):
