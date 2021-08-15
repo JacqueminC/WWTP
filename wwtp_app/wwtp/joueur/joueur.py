@@ -281,11 +281,8 @@ def account():
         form.email.data = joueur["email"]
         form.pseudo.data = joueur["pseudo"]
         form.dateDeNaissance.data = joueur["dateDeNaissance"]
-        print("test post CTL")
 
     if form.validate_on_submit():
-        print("CTL")
-        print(form.numero.data)
         Joueur.updatePlayer(form, joueur)
         return redirect(url_for("joueur.account"))
 

@@ -217,13 +217,7 @@ class Joueur:
         if form.motDePasse.data != "":
             mdp = Joueur.hashPassword(form.motDePasse.data)
             joueur["motDePasse"] = mdp
-
-        print("test")
-        print(form.numero.data)
-
-        
-
-
+   
         joueur["nom"] = form.nom.data
         joueur["prenom"] = form.prenom.data 
         joueur["rue"] = form.rue.data 
