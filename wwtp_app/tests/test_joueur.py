@@ -1,11 +1,12 @@
+from hashlib import new
 import pytest
-from pymongo import MongoClient
 from datetime import datetime, timedelta
-from wwtp.joueur.model import Joueur
+import os
 
-client = MongoClient('mongodb://localhost:27017/')
-db = client["wwtp"]
-tableColl = db["joueur"]
+"""print("test")
+print('__file__={0:<35} | __name__={1:<25} | __package__={2:<25}'.format(__file__,__name__,str(__package__)))"""
+
+from wwtp.joueur.model import Joueur
 
 dateNow = datetime.today()
 

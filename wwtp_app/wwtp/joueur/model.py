@@ -2,14 +2,15 @@ from datetime import datetime, date
 from itertools import count
 from attr import has
 from dateutil.relativedelta import relativedelta
-from table.repo import RepoTable
+import re, os, hashlib, smtplib
+
+if __package__ == "wwtp.joueur":
+    from wwtp.table.repo import RepoTable
+else: 
+    from table.repo import RepoTable
+
 from .repo import *
 from email.message import EmailMessage
-import re, os, hashlib, smtplib
-import base64
-
-repositoryTable = RepoTable()
-repositoryJoueur = RepoJoueur()
 
 class Joueur:
 
@@ -31,7 +32,7 @@ class Joueur:
                 capital = bool(re.match(r'\w*[A-Z]\w*', motDePasse))
 
                 if capital:
-                    hash = self.hashPassword(motDePasse)
+                    hash = Joueur.hashPassword(motDePasse)
                     self.motDePasse = hash
                 else:
                     raise Exception("Le mot de passe doit contenir au moins une majuscule")
@@ -147,7 +148,7 @@ class Joueur:
         return any(char.isdigit() for char in inputString)
 
 
-    def hashPassword(self, mdp):
+    def hashPassword(mdp):
         salt = os.urandom(32)
         key = hashlib.pbkdf2_hmac('sha256', mdp.encode('UTF-8'), salt, 100000)
 
@@ -181,6 +182,7 @@ class Joueur:
 
         while result != 0:
             count = count + 1
+            print(count)
             result = RepoJoueur.findPseudoExist(pseudo + str(count))
 
         if count == 0:
@@ -191,7 +193,7 @@ class Joueur:
     def createPlayer(form):
         fullDate = datetime.strptime(str(form.dateDeNaissance.data), '%Y-%m-%d')
 
-        try:
+        try:   
             joueur = Joueur(
                 form.pseudo.data,
                 form.email.data,
@@ -210,5 +212,27 @@ class Joueur:
         except Exception as ex:
             raise ex
 
+    def updatePlayer(form, joueur):
 
+        if form.motDePasse.data != "":
+            mdp = Joueur.hashPassword(form.motDePasse.data)
+            joueur["motDePasse"] = mdp
+
+        print("test")
+        print(form.numero.data)
+
+        
+
+
+        joueur["nom"] = form.nom.data
+        joueur["prenom"] = form.prenom.data 
+        joueur["rue"] = form.rue.data 
+        joueur["numero"] = form.numero.data
+        joueur["boite"] = form.boite.data 
+        joueur["codePostal"] = form.codePostal.data 
+        joueur["ville"] = form.ville.data  
+        
+
+        RepoJoueur.updatePlayer(joueur)
+    
 

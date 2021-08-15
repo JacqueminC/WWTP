@@ -1,14 +1,25 @@
 from os import truncate
+from bson import objectid
+from bson.objectid import ObjectId
 import pytest
 from datetime import datetime, timedelta
 from pymongo import MongoClient
 from wwtp.table.model import Table
 from wwtp.joueur.model import Joueur
+from flask import session
 
 dateBefore1 = datetime.today() - timedelta(days=60)
 dateNow = datetime.today()
 dateAfter1 = datetime.today() + timedelta(days=60)
 datePlus7 = dateNow + timedelta(days=7)
+
+gandalf = ObjectId()
+bob = ObjectId()
+lenon = ObjectId()
+jimmy = ObjectId()
+hendrickx = ObjectId()
+duke = ObjectId()
+
 
 joueur1 = {"1", "Bilbo", }
 """joueur2 = Joueur("Duke1", "Duke", "duke@gmail.com", "HASHPWD", "Duke", "Nukem", "rue Street", 10, "Mons", 7000, dateNow-timedelta(weeks=1040), 3)"""
@@ -56,7 +67,7 @@ def init_db_1():
     value = [{
             "test": "delete",
             "hote" : {
-                "idJoueur": "Gandalf",
+                "idJoueur": gandalf,
                 "pseudo": "Test"
             },
             "jeuxLibre" : True,
@@ -71,7 +82,7 @@ def init_db_1():
         {
             "test": "delete",
             "hote" : {
-                "idJoueur": "Bob",
+                "idJoueur": bob,
                 "pseudo": "Test"
             },
             "jeuxLibre" : True,
@@ -83,7 +94,7 @@ def init_db_1():
             "regle" : False,
             "noteMin" : False,
             "joueurs" : [{
-                "idJoueur": "Lenon",
+                "idJoueur": lenon,
                 "pseudo": "Test"
                 }]
         }]
@@ -92,11 +103,10 @@ def init_db_1():
 
 def init_db_2():
     value = [{
-                "_id" : "test1",
                 "test" : "delete",
                 "count": "join",
                 "hote" : {
-                    "idJoueur": "Jimmy",
+                    "idJoueur": jimmy,
                     "pseudo": "Test"
                 },
                 "jeuxLibre" : True,
@@ -109,17 +119,18 @@ def init_db_2():
                 "regle" : False,
                 "noteMin" : True,
                 "note" : 3,
+                "estValide" : False,
+                "estAnnule" : False,
                 "joueurs" : [{
-                    "idJoueur": "Hendrickx",
+                    "idJoueur": hendrickx,
                     "pseudo": "Test"
                     }]
             },
             {
-                "_id" : "test2",
                 "test": "delete",
                 "count": "join",
                 "hote" : {
-                    "idJoueur": "Jimmy",
+                    "idJoueur": jimmy,
                     "pseudo": "Test"
                 },
                 "jeuxLibre" : True,
@@ -131,17 +142,18 @@ def init_db_2():
                 "regle" : False,
                 "noteMin" : True,
                 "note" : 3,
+                "estValide" : False,
+                "estAnnule" : False,
                 "joueurs" : [{
-                    "idJoueur": "Hendrickx",
+                    "idJoueur": hendrickx,
                     "pseudo": "Test"
                     }]
             },
             {
-                "_id" : "test3",
                 "test": "delete",
                 "count": "join",
                 "hote" : {
-                    "idJoueur": "Jimmy",
+                    "idJoueur": jimmy,
                     "pseudo": "Test"
                 },
                 "jeuxLibre" : True,
@@ -152,17 +164,18 @@ def init_db_2():
                 "ageMin" : False,
                 "regle" : False,
                 "noteMin" : False,
+                "estValide" : False,
+                "estAnnule" : False,
                 "joueurs" : [{
-                    "idJoueur": "Hendrickx",
+                    "idJoueur": hendrickx,
                     "pseudo": "Test"
                     }]
             },
             {
-                "_id" : "test4",
                 "test": "delete",
                 "count": "join",
                 "hote" : {
-                    "idJoueur": "Jimmy",
+                    "idJoueur": jimmy,
                     "pseudo": "Test"
                 },
                 "jeuxLibre" : True,
@@ -173,11 +186,13 @@ def init_db_2():
                 "ageMin" : False,
                 "regle" : False,
                 "noteMin" : False,
+                "estValide" : False,
+                "estAnnule" : False,
                 "joueurs" : [{
-                    "idJoueur": "Hendrickx",
+                    "idJoueur": hendrickx,
                     "pseudo": "Test"
                     },{
-                    "idJoueur": "Duke1",
+                    "idJoueur": duke,
                     "pseudo": "Test"
                     }]
             }]
@@ -225,20 +240,20 @@ def test_canCreateTable():
     init_db_1()  
     try:
         dateTest1 = datePlus7 + timedelta(days=2)
-        dateStr = str(dateTest1)
+        dateStr = str(dateTest1)        
 
-        result = Table.canCreateTable("Gandalf", dateStr[:10], dateStr[11:19])
+        result = Table.canCreateTable(gandalf, dateStr[:10], dateStr[11:19])
 
         assert result == 0, "Une table peut être créée"
 
         dateTest2 = datePlus7 + timedelta(hours=4)
         dateStr = str(dateTest2)
 
-        result = Table.canCreateTable("Gandalf", dateStr[:10], dateStr[11:19])
+        result = Table.canCreateTable(gandalf, dateStr[:10], dateStr[11:19])
 
-        assert result >= 1, "Une table ne doit pas être créée, l'hôte à déjà une table"
+        assert result >= 1, "Une table ne doit pas être créée, l'hôte à déjà une table"        
 
-        result = Table.canCreateTable("Lenon", dateStr[:10], dateStr[11:19])
+        result = Table.canCreateTable(lenon, dateStr[:10], dateStr[11:19])
 
         assert result >= 1, "Une table ne doit pas être créée, l'hôte est joueur à une autre table"
     finally:
@@ -251,10 +266,9 @@ def test_findAvalaibleTable():
     init_db_2()
 
     try:
-        result = Table.findAvalaibleTable("Duke1")
-
+        result = Table.findAvalaibleTable(duke)
         
-        for r in result:
+        for r in result:            
             if "count" in r:
                 count += 1
 
@@ -264,20 +278,21 @@ def test_findAvalaibleTable():
 
 def test_canJoinTable():
     
-    assert Table.canJoinTable(table1, Joueur3) == True, "Le joueur peut rejoindre la table"
+    assert Table.canJoinTable(table1, Joueur3, Joueur3["note"]) == True, "Le joueur peut rejoindre la table"
 
     table1['ageMin'] = True
     table1['age'] = 70
 
-    assert Table.canJoinTable(table1, Joueur3) == False, "Le joueur n'a pas l'age requis"
+    assert Table.canJoinTable(table1, Joueur3, Joueur3["note"]) == False, "Le joueur n'a pas l'age requis"
 
     table1['ageMin'] = False
-    table1['noteMin'] = True
-    table1['note'] = 4
+    table1['noteMin'] = True 
+    table1['note'] = 4   
 
-    assert Table.canJoinTable(table1, Joueur3) == False, "Le joueur n'a pas une note suffisante"
+    assert Table.canJoinTable(table1, Joueur3, Joueur3["note"]) == False, "Le joueur n'a pas une note suffisante"
 
     table1['ageMin'] = True
 
-    assert Table.canJoinTable(table1, Joueur3) == False, "Le joueur n'a pas l'age requis et n'a pas une note suffisante"
+    assert Table.canJoinTable(table1, Joueur3, Joueur3["note"]) == False, "Le joueur n'a pas l'age requis et n'a pas une note suffisante"
+    
 

@@ -7,12 +7,34 @@ from table.model import Table
 from evaluation.model import Evaluation
 from .model import Joueur
 from bson import ObjectId
-from flask_wtf import FlaskForm
+from flask_wtf import FlaskForm, form
 from wtforms.validators import InputRequired, ValidationError
 from datetime import datetime
 from dateutil.relativedelta import relativedelta
 
 bpJoueur = Blueprint("joueur", __name__, template_folder="templates")
+
+class accountForm(FlaskForm):
+    nom = StringField("Nom", validators=[InputRequired()])
+    prenom = StringField("Prénom", validators=[InputRequired()])
+    rue = StringField("Rue", validators=[InputRequired()])
+    numero = IntegerField("Numéro", validators=[InputRequired()])
+    boite = StringField("Boite")
+    codePostal = StringField("Code postal", validators=[InputRequired()])
+    ville = StringField("Ville", validators=[InputRequired()])
+    dateDeNaissance = DateField('Date de naissance', format='%Y-%m-%d', render_kw={'disabled':''})
+    pseudo = StringField("Pseudo", render_kw={'disabled':''})
+    email = EmailField("Email", render_kw={'disabled':''})
+    motDePasse = PasswordField("Mot de passe")
+    confMDP = PasswordField("Confirmation du mot de passe")
+
+    def validate_confMDP(self, confMDP):
+        if self.motDePasse.data != None and self.motDePasse.data != "":
+            if confMDP.data != self.motDePasse.data:
+                flash("La validation n'est pas correcte", "confmdp")
+                return ValidationError()
+
+    
 
 class registerForm(FlaskForm):
     nom = StringField("Nom", validators=[InputRequired()])
@@ -27,6 +49,7 @@ class registerForm(FlaskForm):
     email = EmailField("Email", validators=[InputRequired()])
     motDePasse = PasswordField("Mot de passe", validators=[InputRequired()])
     confMDP = PasswordField("Confirmation du mot de passe", validators=[InputRequired()])
+    
 
     def validate_dateDeNaissance(self, dateDeNaissance):
         now = datetime.today()
@@ -45,14 +68,15 @@ class registerForm(FlaskForm):
         result = Joueur.findEmailExist(email.data)
 
         if result != 0:
+            email.data = ""
             flash("L'email est déjà utilisé", "email")
             return ValidationError()
-
 
     def validate_pseudo(self, pseudo):
         p, find = Joueur.findPseudoExist(pseudo.data)
 
         if not find:
+            pseudo.data = p
             flash("Le pseudo n'est pas disponible, essayé " + p, "pseudo")
             return ValidationError()
 
@@ -66,10 +90,12 @@ def joinTable():
             user = session["user"]
             jPseudo = user["pseudo"]
             jId = user["idJoueur"] 
+            jNote = user["note"]
 
             table = Table.findTable(request.values["join"])
             joueur = Joueur.findPlayerById(jId)
-            result = Table.canJoinTable(table, joueur)
+
+            result = Table.canJoinTable(table, joueur, jNote)
 
             if result:
                 hote = table["hote"]
@@ -224,20 +250,46 @@ def formInscription():
     if session.get("isLogged") != True:
 
         if form.validate_on_submit():
-
             try:
                 Joueur.createPlayer(form)
                 flash("Inscription réussie", 'registerDone')
                 return redirect(url_for("auth.login"))
                 
             except Exception as ex:
-                flash(ex, 'error')
+                flash(ex, "error")
                 return render_template("formInscription.html", form=form, ve=ValidationError())
-            
-
 
         return render_template("formInscription.html", form=form)
     else:
         return redirect("/")
+
+@bpJoueur.route("/account", methods=["GET", "POST"])
+def account():
+    form = accountForm()
+
+    joueur = Joueur.findPlayerById(session["user"]["idJoueur"])
+
+    if not form.is_submitted():       
+
+        form.nom.data = joueur["nom"]
+        form.prenom.data = joueur["prenom"]
+        form.rue.data = joueur["rue"]
+        form.numero.data = joueur["numero"]
+        form.boite.data = joueur["boite"]
+        form.codePostal.data = joueur["codePostal"]
+        form.ville.data = joueur["ville"]
+        form.email.data = joueur["email"]
+        form.pseudo.data = joueur["pseudo"]
+        form.dateDeNaissance.data = joueur["dateDeNaissance"]
+        print("test post CTL")
+
+    if form.validate_on_submit():
+        print("CTL")
+        print(form.numero.data)
+        Joueur.updatePlayer(form, joueur)
+        return redirect(url_for("joueur.account"))
+
+
+    return render_template("account.html", form=form)
 
 
