@@ -1,6 +1,4 @@
 from datetime import datetime, date
-from itertools import count
-from attr import has
 from dateutil.relativedelta import relativedelta
 import re, os, hashlib, smtplib
 
