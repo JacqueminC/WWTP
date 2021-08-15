@@ -119,9 +119,10 @@ class Table:
 
     def findAvalaibleTable(idJoueur):
         result = RepoTable.findAvalaibleTable(idJoueur)
+
         return result
 
-    def canJoinTable(table, joueur):
+    def canJoinTable(table, joueur, note):
 
         ageCalcule = relativedelta(datetime.today(), joueur["dateDeNaissance"]).years
         
@@ -129,8 +130,8 @@ class Table:
             if table["age"] >= ageCalcule:
                 return False
         if table["noteMin"] == True:
-            if table["note"] >= session["user"]["note"]:
-                return False
+                if table["note"] >= note:
+                    return False
         if "joureurs" in table:
             if table["nbPlace"] == len(table["joueurs"]):
                 return False

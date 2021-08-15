@@ -90,10 +90,12 @@ def joinTable():
             user = session["user"]
             jPseudo = user["pseudo"]
             jId = user["idJoueur"] 
+            jNote = user["note"]
 
             table = Table.findTable(request.values["join"])
             joueur = Joueur.findPlayerById(jId)
-            result = Table.canJoinTable(table, joueur)
+
+            result = Table.canJoinTable(table, joueur, jNote)
 
             if result:
                 hote = table["hote"]

@@ -2,14 +2,15 @@ from datetime import datetime, date
 from itertools import count
 from attr import has
 from dateutil.relativedelta import relativedelta
-from table.repo import RepoTable
+import re, os, hashlib, smtplib
+
+if __package__ == "wwtp.joueur":
+    from wwtp.table.repo import RepoTable
+else: 
+    from table.repo import RepoTable
+
 from .repo import *
 from email.message import EmailMessage
-import re, os, hashlib, smtplib
-import base64
-
-repositoryTable = RepoTable()
-repositoryJoueur = RepoJoueur()
 
 class Joueur:
 
