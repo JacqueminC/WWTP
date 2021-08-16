@@ -1,4 +1,38 @@
 from bson import ObjectId
+from flask.helpers import flash
+from flask_wtf import FlaskForm
+from wtforms import StringField, IntegerField, BooleanField
+from wtforms.validators import InputRequired, ValidationError
+
+class GameForm(FlaskForm):
+    nom = StringField("", validators=[InputRequired()], render_kw={"placeholder": "Nom"})
+    version = StringField("", validators=[InputRequired()], render_kw={"placeholder": "Version"})
+    min = IntegerField("", validators=[InputRequired(IntegerField)], render_kw={"placeholder": "min"})
+    max = IntegerField("", validators=[InputRequired()], render_kw={"placeholder": "max"})
+    age = IntegerField("", validators=[InputRequired()], render_kw={"placeholder": "Age"})
+    favori = BooleanField("Favori")
+
+    def validate_nom(self, nom):
+        if len(nom.data) < 1:
+            flash("Le nom ne doit pas être vide", "error")
+            return ValidationError()
+
+    def validate_version(self, version):
+        if len(version.data) < 1:
+            flash("La version ne doit pas être vide", "error")
+            return ValidationError()
+
+    def validate_min(self, min):
+        print("test")
+        if min.data < 1:
+            flash("Min doit être supérieur à zéro", "error")
+            return ValidationError()
+        elif self.max.data < min.data:
+            flash("Max ne doit pas être plus petit que min", "error")
+            return ValidationError()
+
+        return super().validate_on_submit()
+
 
 class Ludo:
 

@@ -1,0 +1,92 @@
+{% extends "base.html" %}
+{% import "bootstrap/wtf.html" as wtf%}
+
+{% block title %}
+
+    <title>Ludothèque</title>
+
+{% endblock %}
+
+{% block content %}
+
+<style>
+    .has_errors { border: 1px solid #ff0000 }
+</style>
+{% with messages = get_flashed_messages(with_categories=true) %}
+
+<div class="container">
+    <div>
+        <form action="{{url_for('ludo.myLudo')}}" method="POST">
+            {{ form.csrf_token }}            
+            {{ form.hidden_tag() }}
+
+            <ul class="form-group row" style="list-style:none; margin-left:0; padding-left:0;">
+                <li class="col-md-2 is-invalid" id="inputInvalid">
+                    {{ wtf.form_field(form.nom) }}
+                </li>
+                <li class="col-md-2">
+                    {{ wtf.form_field(form.version) }}
+                </li>
+                <li class="col-md-1">
+                    {{ wtf.form_field(form.min) }}
+                </li>
+                <li class="col-md-1">
+                    {{ wtf.form_field(form.max) }}
+                </li>
+                <li class="col-md-1">
+                    {{ wtf.form_field(form.age) }}
+                </li>
+                <li class="col-md-1">
+                    {{ wtf.form_field(form.favori) }}
+                </li>
+                <li>
+                    <input type="submit" value="+" class="btn btn-primary">
+                </li>
+            </ul>
+        </form>
+        {% if messages %}
+            {% for category, message in messages %}        
+                {% if category == "error" %}
+                <p style="color: red; font-weight: bold;">{{ message }}</p>
+                {% endif %}                
+            {% endfor %}
+        {% endif %}
+    </div>
+
+    <div class="table-responsive">
+        <table class="table table-striped">
+            <thead>
+              <tr>
+                <th scope="col" colspan="5">Favoris</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <th scope="row">nom</th>
+                <td>version</td>
+                <td>min max</td>
+                <td>age</td>
+                <td>favori</td>
+              </tr>
+              <tr>
+                <th scope="row">nom</th>
+                <td>version</td>
+                <td>min max</td>
+                <td>age</td>
+                <td>favori</td>
+              </tr>
+              <tr>
+                <th scope="row">nom</th>
+                <td>version</td>
+                <td>min max</td>
+                <td>age</td>
+                <td>favori</td>
+              </tr>
+            </tbody>
+        </table>
+    </div> 
+</div>
+
+
+{% endwith %}
+{% endblock %}
