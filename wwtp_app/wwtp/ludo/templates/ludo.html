@@ -1,3 +1,21 @@
+{% block scripts %}
+  <script>
+    const whiteHeart = '\u2661';
+    const blackHeart = '\u2665';
+    const button = document.querySelector('button');
+    button.addEventListener('click', toggle);
+
+    function toggle() {
+        const like = button.textContent;
+        if(like==whiteHeart) {
+            button.textContent = blackHeart;
+        } else {
+            button.textContent = whiteHeart;
+        }
+    }
+  </script>
+{% endblock %}
+
 {% extends "base.html" %}
 {% import "bootstrap/wtf.html" as wtf%}
 
@@ -56,32 +74,69 @@
     <div class="table-responsive">
         <table class="table table-striped">
             <thead>
+                <tr>
+                    <th scope="col" >Jeux favoris</th>
+                    <th scope="col" >Joueurs</th>
+                    <th scope="col" >Age</th>
+                  </tr>
+            </thead>
+            <tbody>     
+
+              {% for gameF in gamesF %}
+
               <tr>
-                <th scope="col" colspan="5">Favoris</th>
+                <th scope="row">
+                    {{ gameF["nom"] }}
+                    {% if gameF["version"] != "" %}
+                        - {{ gameF["version"] }}
+                    {% endif %}
+                </th>
+                <td>{{ gameF["minJ"] }} - {{ gameF["maxJ"] }}</td>
+                <td>{{ gameF["age"] }}</td>
+                <td class="col-md-2">
+                    <form method ="post" action="/myludo/action">
+                        <button type="submit" name="favorite" value="{{ gameF['_id'] }}" class="btn btn-light">🖤</button>
+                        <button type="submit" name="trash" value="{{ gameF['_id'] }}" class="btn btn-danger">🗑</button>
+                    </form>                                       
+                </td>
+              </tr>
+
+              {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <div class="table-responsive">
+        <table class="table table-striped">
+            <thead>
+              <tr>
+                <th scope="col" >Jeux</th>
+                <th scope="col" >Joueurs</th>
+                <th scope="col" >Age</th>
               </tr>
             </thead>
-            <tbody>
+            <tbody>              
+
+              {% for game in games %}
+
               <tr>
-                <th scope="row">nom</th>
-                <td>version</td>
-                <td>min max</td>
-                <td>age</td>
-                <td>favori</td>
+                <th scope="row">
+                    {{ game["nom"] }}
+                    {% if game["version"] != "" %}
+                        - {{ game["version"] }}
+                    {% endif %}
+                </th>
+                <td>{{ game["minJ"] }} - {{ game["maxJ"] }}</td>
+                <td>{{ game["age"] }}</td>
+                <td class="col-md-2">   
+                    <form method ="post" action="/myludo/action">
+                        <button type="submit" name="favorite" value="{{ game['_id'] }}" class="btn btn-light">❤️</button>
+                        <button type="submit" name="trash" value="{{ game['_id'] }}" class="btn btn-danger">🗑</button>
+                    </form>
+                </td>
               </tr>
-              <tr>
-                <th scope="row">nom</th>
-                <td>version</td>
-                <td>min max</td>
-                <td>age</td>
-                <td>favori</td>
-              </tr>
-              <tr>
-                <th scope="row">nom</th>
-                <td>version</td>
-                <td>min max</td>
-                <td>age</td>
-                <td>favori</td>
-              </tr>
+
+              {% endfor %}
             </tbody>
         </table>
     </div> 

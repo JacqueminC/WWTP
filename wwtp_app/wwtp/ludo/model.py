@@ -3,10 +3,13 @@ from flask.helpers import flash
 from flask_wtf import FlaskForm
 from wtforms import StringField, IntegerField, BooleanField
 from wtforms.validators import InputRequired, ValidationError
+from .repo import RepoLudo
+
+repo = RepoLudo()
 
 class GameForm(FlaskForm):
     nom = StringField("", validators=[InputRequired()], render_kw={"placeholder": "Nom"})
-    version = StringField("", validators=[InputRequired()], render_kw={"placeholder": "Version"})
+    version = StringField("", render_kw={"placeholder": "Version"})
     min = IntegerField("", validators=[InputRequired(IntegerField)], render_kw={"placeholder": "min"})
     max = IntegerField("", validators=[InputRequired()], render_kw={"placeholder": "max"})
     age = IntegerField("", validators=[InputRequired()], render_kw={"placeholder": "Age"})
@@ -17,13 +20,7 @@ class GameForm(FlaskForm):
             flash("Le nom ne doit pas être vide", "error")
             return ValidationError()
 
-    def validate_version(self, version):
-        if len(version.data) < 1:
-            flash("La version ne doit pas être vide", "error")
-            return ValidationError()
-
     def validate_min(self, min):
-        print("test")
         if min.data < 1:
             flash("Min doit être supérieur à zéro", "error")
             return ValidationError()
@@ -34,7 +31,7 @@ class GameForm(FlaskForm):
         return super().validate_on_submit()
 
 
-class Ludo:
+class Ludo:    
 
     def __init__(self, idJoueur, nom, version, minJ, maxJ, age, favori):
         if len(nom) > 0:
@@ -79,3 +76,30 @@ class Ludo:
 
     def set_favorite(self, favorite):
         self.favorite = favorite
+
+    def createLudo(self):
+        RepoLudo.createLudo(self)
+
+    def findLudoByPlayer(id):
+        return RepoLudo.findLudoByPlayer(id)
+
+    def findLudoFavoriteByPlayer(id):
+        return RepoLudo.findLudoFavoriteByPlayer(id)
+    
+    def deleteLudo(id):
+        RepoLudo.deleteLudo(id)
+
+    def updateFavorite(id):
+        r = RepoLudo.findLudoById(id)
+
+        print(r)
+
+        if r["favori"] == True:
+            r["favori"] = False
+        else:
+            print("test")
+            r["favori"] = True
+
+        print(r["favori"])
+
+        RepoLudo.updateLudo(r)

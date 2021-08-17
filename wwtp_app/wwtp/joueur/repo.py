@@ -1,4 +1,4 @@
-from pymongo import MongoClient, results
+from pymongo import MongoClient
 import pymongo
 from bson import ObjectId
 from bson.json_util import dumps
@@ -35,8 +35,6 @@ class RepoJoueur():
         return joueurColl.find_one(query, project)
 
     def updatePlayer(joueur):
-        print("test repo")
-        print(joueur)
         joueurColl.save(joueur)
 
     def findEmailExist(email):

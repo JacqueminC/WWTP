@@ -216,7 +216,6 @@ class Joueur:
             mdp = Joueur.hashPassword(form.motDePasse.data)
             joueur["motDePasse"] = mdp
 
-        print("test")
         print(form.numero.data)
 
         
