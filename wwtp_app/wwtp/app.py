@@ -14,7 +14,6 @@ from flask_bootstrap import Bootstrap
 
 app = Flask(__name__)
 
-
 app.config['SECRET_KEY'] = "secretkey"
 app.config["MONGO_URI"] = "mongodb://localhost:27017/wwtp"
 

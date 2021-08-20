@@ -1,14 +1,21 @@
 from bson.objectid import ObjectId
 from flask import Blueprint, render_template,session, request, redirect, url_for, flash
-from wtforms import StringField, IntegerField, BooleanField
-from wtforms.validators import DataRequired, InputRequired, ValidationError
+from flask_cors.decorator import cross_origin
+from flask_wtf.recaptcha.widgets import JSONEncoder
+from werkzeug.utils import header_property
+from wtforms.validators import ValidationError
 from flask_wtf import FlaskForm
 from .model import GameForm, Ludo
+import requests
 
 bpLudo = Blueprint("ludo", __name__, template_folder="templates")
 
+
 @bpLudo.route("/", methods=["GET", "POST"])
-def myLudo():    
+def myLudo():  
+
+    """print(requests.get('https://www.boardgamegeek.com/xmlapi/search?search=Catane').content)"""
+
     form = GameForm()
     idJ = ObjectId(session["user"]["idJoueur"])    
 
@@ -30,7 +37,7 @@ def myLudo():
 
 
 @bpLudo.route("/action", methods=["GET", "POST"])
-def actionh():
+def action():
     if request.form.get("trash"):
         print(request.values["trash"])
         Ludo.deleteLudo(request.values["trash"])
