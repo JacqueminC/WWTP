@@ -9,10 +9,10 @@ from home.home import bpHome
 from joueur.joueur import bpJoueur
 from evaluation.evaluation import bpEvaluation
 from auth.auth import bpAuth
+from ludo.ludo import bpLudo
 from flask_bootstrap import Bootstrap
 
 app = Flask(__name__)
-
 
 app.config['SECRET_KEY'] = "secretkey"
 app.config["MONGO_URI"] = "mongodb://localhost:27017/wwtp"
@@ -27,6 +27,7 @@ app.register_blueprint(bpHome, ulr_prefix="/home")
 app.register_blueprint(bpJoueur, url_prefix="/joueur")
 app.register_blueprint(bpEvaluation, url_prefix="/evaluation")
 app.register_blueprint(bpAuth, url_prefix="/auth")
+app.register_blueprint(bpLudo, url_prefix="/myludo")
 
 @app.route("/")
 @app.route("/index")

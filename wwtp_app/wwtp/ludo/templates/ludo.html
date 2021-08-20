@@ -1,0 +1,226 @@
+
+<style>
+    * {
+      box-sizing: border-box;
+    }
+    
+    #myInput {
+      background-image: url('/css/searchicon.png');
+      background-position: 10px 12px;
+      background-repeat: no-repeat;
+      width: 100%;
+      font-size: 16px;
+      padding: 12px 20px 12px 40px;
+      border: 1px solid #ddd;
+      margin-bottom: 12px;
+    }
+    
+    #myUL {
+      list-style-type: none;
+      padding: 0;
+      margin: 0;
+    }
+    
+    #myUL li a {
+      border: 1px solid #ddd;
+      margin-top: -1px; /* Prevent double borders */
+      background-color: #f6f6f6;
+      padding: 12px;
+      text-decoration: none;
+      font-size: 18px;
+      color: black;
+      display: block
+    }
+    
+    #myUL li a:hover:not(.header) {
+      background-color: #eee;
+    }
+    </style>
+
+{% block scripts %}
+
+<script type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/moment.js/2.18.1/moment.min.js"></script>
+<script> 
+
+    
+    function myFunction() {
+        
+        var input, filter, ul, li, a, i, txtValue, urlApi;
+        var xhr = new XMLHttpRequest();
+        urlApi = "https://www.boardgamegeek.com/xmlapi/search?search=Catane"
+        
+        input = document.getElementById("myInput");
+        console.log(input);
+
+        xhr.open('GET', urlApi, true);
+        xhr.withCredentials = true;
+        xhr.setRequestHeader('Access-Control-Allow-Origin', "*");
+        xhr.send();
+
+        console.log(xhr.responseXML);
+
+
+
+        var input, filter, ul, li, a, i, txtValue;
+        input = document.getElementById("myInput");
+        filter = input.value.toUpperCase();
+        ul = document.getElementById("myUL");
+        li = ul.getElementsByTagName("li");
+        for (i = 0; i < li.length; i++) {
+            a = li[i].getElementsByTagName("a")[0];
+            txtValue = a.textContent || a.innerText;
+            if (txtValue.toUpperCase().indexOf(filter) > -1) {
+                li[i].style.display = "";
+            } else {
+                li[i].style.display = "none";
+            }
+        }
+    }
+</script>
+{% endblock %}
+
+{% extends "base.html" %}
+{% import "bootstrap/wtf.html" as wtf%}
+
+{% block title %}
+
+    <title>Ludothèque</title>
+
+{% endblock %}
+
+{% block content %}
+
+
+{% with messages = get_flashed_messages(with_categories=true) %}
+
+<div class="container">
+    <div>
+        <form action="{{url_for('ludo.myLudo')}}" method="POST">
+            {{ form.csrf_token }}            
+            {{ form.hidden_tag() }}
+
+            <ul class="form-group row" style="list-style:none; margin-left:0; padding-left:0;">
+                <li class="col-md-2 is-invalid" id="inputInvalid">
+                    {{ wtf.form_field(form.nom) }}
+                </li>
+                <li class="col-md-2">
+                    {{ wtf.form_field(form.version) }}
+                </li>
+                <li class="col-md-1">
+                    {{ wtf.form_field(form.min) }}
+                </li>
+                <li class="col-md-1">
+                    {{ wtf.form_field(form.max) }}
+                </li>
+                <li class="col-md-1">
+                    {{ wtf.form_field(form.age) }}
+                </li>
+                <li class="col-md-1">
+                    {{ wtf.form_field(form.favori) }}
+                </li>
+                <li>
+                    <input type="submit" value="+" class="btn btn-primary">
+                </li>
+            </ul>
+        </form>
+        {% if messages %}
+            {% for category, message in messages %}        
+                {% if category == "error" %}
+                <p style="color: red; font-weight: bold;">{{ message }}</p>
+                {% endif %}                
+            {% endfor %}
+        {% endif %}
+    </div>
+
+
+
+    <div class="table-responsive">
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th scope="col" >Jeux favoris</th>
+                    <th scope="col" >Joueurs</th>
+                    <th scope="col" >Age</th>
+                  </tr>
+            </thead>
+            <tbody>     
+
+              {% for gameF in gamesF %}
+
+              <tr>
+                <th scope="row">
+                    {{ gameF["nom"] }}
+                    {% if gameF["version"] != "" %}
+                        - {{ gameF["version"] }}
+                    {% endif %}
+                </th>
+                <td>{{ gameF["minJ"] }} - {{ gameF["maxJ"] }}</td>
+                <td>{{ gameF["age"] }}</td>
+                <td class="col-md-2">
+                    <form method ="post" action="/myludo/action">
+                        <button type="submit" name="favorite" value="{{ gameF['_id'] }}" class="btn btn-light">🖤</button>
+                        <button type="submit" name="trash" value="{{ gameF['_id'] }}" class="btn btn-danger">🗑</button>
+                    </form>                                       
+                </td>
+              </tr>
+
+              {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <div class="table-responsive">
+        <table class="table table-striped">
+            <thead>
+              <tr>
+                <th scope="col" >Jeux</th>
+                <th scope="col" >Joueurs</th>
+                <th scope="col" >Age</th>
+              </tr>
+            </thead>
+            <tbody>              
+
+              {% for game in games %}
+
+              <tr>
+                <th scope="row">
+                    {{ game["nom"] }}
+                    {% if game["version"] != "" %}
+                        - {{ game["version"] }}
+                    {% endif %}
+                </th>
+                <td>{{ game["minJ"] }} - {{ game["maxJ"] }}</td>
+                <td>{{ game["age"] }}</td>
+                <td class="col-md-2">   
+                    <form method ="post" action="/myludo/action">
+                        <button type="submit" name="favorite" value="{{ game['_id'] }}" class="btn btn-light">❤️</button>
+                        <button type="submit" name="trash" value="{{ game['_id'] }}" class="btn btn-danger">🗑</button>
+                    </form>
+                </td>
+              </tr>
+
+              {% endfor %}
+            </tbody>
+        </table>
+    </div> 
+</div>
+
+<input type="text" id="myInput" onkeyup="myFunction()" placeholder="Search for names.." title="Type in a name">
+
+<ul id="myUL">
+    <li><a href="#">Adele</a></li>
+    <li><a href="#">Agnes</a></li>
+  
+    <li><a href="#">Billy</a></li>
+    <li><a href="#">Bob</a></li>
+  
+    <li><a href="#">Calvin</a></li>
+    <li><a href="#">Christina</a></li>
+    <li><a href="#">Cindy</a></li>
+  </ul>
+
+
+
+{% endwith %}
+{% endblock %}
+

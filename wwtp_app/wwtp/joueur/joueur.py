@@ -1,4 +1,3 @@
-import re
 from flask import Blueprint, render_template,session, request, redirect, url_for, flash
 from werkzeug.utils import redirect
 from wtforms import StringField, IntegerField, PasswordField
@@ -7,7 +6,7 @@ from table.model import Table
 from evaluation.model import Evaluation
 from .model import Joueur
 from bson import ObjectId
-from flask_wtf import FlaskForm, form
+from flask_wtf import FlaskForm
 from wtforms.validators import InputRequired, ValidationError
 from datetime import datetime
 from dateutil.relativedelta import relativedelta

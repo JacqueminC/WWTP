@@ -33,8 +33,8 @@
         {% endif %}
     {% endwith %}
 
-    <div>
-        <table class="table table-hover">
+    <div class="table-responsive">
+        <table class="table table-striped">
             <thead>
               <tr>
                 <th scope="col">Date</th>
@@ -55,7 +55,7 @@
                     {% if vars.update({'change' : 1 }) %} {% endif %}
    
                         <tr>
-                            <td>{{table["date"].strftime('%d-%m-%Y %H:%M')}}</td>
+                            <th scope="row">{{table["date"].strftime('%d-%m-%Y %H:%M')}}</th>
                             <td>{{table["ville"]}}</td>
                             <td>{{table["nbPlace"] - table["joueurs"]|length}} / {{table["nbPlace"]}}</td>
                             <td>
@@ -111,7 +111,7 @@
                         <br>
                         {% set line = 0 %}
                             <tr class="table-secondary">
-                                <td>{{table["date"].strftime('%d-%m-%Y %H:%M')}}</td>
+                                <th scope="row">{{table["date"].strftime('%d-%m-%Y %H:%M')}}</th>
                                 <td>{{table["ville"]}}</td>
                                 <td>{{table["nbPlace"] - table["joueurs"]|length}} / {{table["nbPlace"]}}</td>
                                 <td>
