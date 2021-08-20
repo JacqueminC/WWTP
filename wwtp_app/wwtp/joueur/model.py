@@ -85,6 +85,9 @@ class Joueur:
         self.dateDeCreation = datetime.today()
         self.estBloque = False
 
+    def getAllPlayers():
+        return RepoJoueur.getAllPlayers()
+
     def findPlayerById(id):
         return RepoJoueur.findPlayerById(id)
 
@@ -93,6 +96,9 @@ class Joueur:
 
     def findPlayerByEmailAndAccess(email):
         return RepoJoueur.findPlayerByEmailAndAccess(email)
+
+    def lockPlayer(id):
+        RepoJoueur.lockPlayer(id)
 
     def decreaseNote(noteGlobale, max):
         average = (noteGlobale/max) * 5

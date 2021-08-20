@@ -291,4 +291,25 @@ def account():
 
     return render_template("account.html", form=form)
 
+@bpJoueur.route("/adminJ", methods=["GET", "POST"])
+def adminjoueur():
+    joueurs = Joueur.getAllPlayers()
+
+    if request.form.get("lock"):
+        print(request.values["lock"])
+        Joueur.lockPlayer(request.values["lock"])
+    return render_template("adminJoueur.html", joueurs=joueurs)
+
+@bpJoueur.route("/lock", methods=["GET", "POST"])
+def lock():
+
+    if request.form.get("lock"):
+        Joueur.lockPlayer(request.values["lock"])
+
+    return redirect(url_for('joueur.adminjoueur'))
+
+@bpJoueur.route("/adminT", methods=["GET", "POST"])
+def adminTable():
+    return "admin"
+
 

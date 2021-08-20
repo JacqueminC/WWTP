@@ -19,6 +19,9 @@
         {% for value in test %}
             <h3>{{value}}</h3>
         {% endfor %}
+
+        {{ session["isAdmin"] }}
+        {{ session.get("isLogged") }}
     </div>
 
     

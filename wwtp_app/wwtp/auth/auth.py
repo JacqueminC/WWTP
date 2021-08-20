@@ -33,12 +33,8 @@ def login():
                     connect = False
 
         if connect:
-            """
-            {'_id': ObjectId('6106ab185bf4e8dec342ad2e'), 
-            'pseudo': 'Test1234', 
-            'email': 'cedjacq@outlook.com', 
-            'motDePasse': secret',
-            'nom': 'Jacquemin', 'prenom': 'Cédric', 'rue': 'rue des Sport', 'numero': 2, 'boite': '', 'ville': 'Strepy-Bracquegnies', 'codePostal': '7110', 'dateDeNaissance': '1988-10-08', 'dateDeCreation': datetime.datetime(2021, 8, 1, 16, 9, 28, 90000), 'estBloque': False}"""
+            print('----------')
+            print("estAdmin" in user)
 
             note = Evaluation.calculateNote(user["_id"])
 
@@ -50,6 +46,13 @@ def login():
                 "idJoueur": str(user["_id"]),
                 "ville": user["ville"]
             }
+
+            if "estAdmin" in user:
+                if user["estAdmin"] == True:
+                    session["isAdmin"] = user["estAdmin"]
+            else:
+                 session["isAdmin"] = False
+                
             return redirect("/home")
         else:
             flash("Email et / ou mot de passe incorrect !", "errLog")
