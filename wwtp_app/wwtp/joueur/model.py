@@ -214,7 +214,6 @@ class Joueur:
 
         while result != 0:
             count = count + 1
-            print(count)
             result = RepoJoueur.findPseudoExist(pseudo + str(count))
 
         if count == 0:
@@ -250,19 +249,13 @@ class Joueur:
             mdp = Joueur.hashPassword(form.motDePasse.data)
             joueur["motDePasse"] = mdp
 
-        print(form.numero.data)
-
-        
-
-
         joueur["nom"] = form.nom.data
         joueur["prenom"] = form.prenom.data 
         joueur["rue"] = form.rue.data 
         joueur["numero"] = form.numero.data
         joueur["boite"] = form.boite.data 
         joueur["codePostal"] = form.codePostal.data 
-        joueur["ville"] = form.ville.data  
-        
+        joueur["ville"] = form.ville.data          
 
         RepoJoueur.updatePlayer(joueur)
     

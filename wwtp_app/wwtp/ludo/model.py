@@ -92,14 +92,9 @@ class Ludo:
     def updateFavorite(id):
         r = RepoLudo.findLudoById(id)
 
-        print(r)
-
         if r["favori"] == True:
             r["favori"] = False
         else:
-            print("test")
             r["favori"] = True
-
-        print(r["favori"])
 
         RepoLudo.updateLudo(r)

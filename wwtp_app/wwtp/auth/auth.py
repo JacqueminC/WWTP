@@ -33,8 +33,6 @@ def login():
                     connect = False
 
         if connect:
-            print('----------')
-            print("estAdmin" in user)
 
             note = Evaluation.calculateNote(user["_id"])
 

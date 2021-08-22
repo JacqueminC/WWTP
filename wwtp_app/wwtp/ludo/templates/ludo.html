@@ -153,8 +153,8 @@
                         - {{ gameF["version"] }}
                     {% endif %}
                 </th>
-                <td>{{ gameF["minJ"] }} - {{ gameF["maxJ"] }}</td>
-                <td>{{ gameF["age"] }}</td>
+                <td class="col-md-2">{{ gameF["minJ"] }} - {{ gameF["maxJ"] }}</td>
+                <td class="col-md-2">{{ gameF["age"] }}</td>
                 <td class="col-md-2">
                     <form method ="post" action="/myludo/action">
                         <button type="submit" name="favorite" value="{{ gameF['_id'] }}" class="btn btn-light">🖤</button>
@@ -188,8 +188,8 @@
                         - {{ game["version"] }}
                     {% endif %}
                 </th>
-                <td>{{ game["minJ"] }} - {{ game["maxJ"] }}</td>
-                <td>{{ game["age"] }}</td>
+                <td class="col-md-2">{{ game["minJ"] }} - {{ game["maxJ"] }}</td>
+                <td class="col-md-2">{{ game["age"] }}</td>
                 <td class="col-md-2">   
                     <form method ="post" action="/myludo/action">
                         <button type="submit" name="favorite" value="{{ game['_id'] }}" class="btn btn-light">❤️</button>
@@ -203,6 +203,7 @@
         </table>
     </div> 
 </div>
+<!--
 
 <input type="text" id="myInput" onkeyup="myFunction()" placeholder="Search for names.." title="Type in a name">
 
@@ -218,6 +219,7 @@
     <li><a href="#">Cindy</a></li>
   </ul>
 
+  -->
 
 
 {% endwith %}
