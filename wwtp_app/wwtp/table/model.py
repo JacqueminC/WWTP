@@ -2,8 +2,10 @@ from .repo import *
 from datetime import datetime, timedelta
 from dateutil.relativedelta import relativedelta
 from flask import session
+from joueur.repo import RepoJoueur
 
 repositoryTable = RepoTable()
+repositoryJoueur = RepoJoueur()
 
 class Table:
 
@@ -156,4 +158,21 @@ class Table:
 
     def findTableForNoteByIdJoueurAndPast(id):
         return RepoTable.findTableForNoteByIdJoueurAndPast(id)
+
+    def getAllTables():
+        return RepoTable.getAllTables()
+
+
+    def findTableByDatePast():
+        return RepoTable.findTableByDatePast()
+
+    def findTableByDateFutur():
+        return RepoTable.findTableByDateFutur()
+
+    def closeTable(idTable):
+        """joueur = RepoJoueur.findPlayerById(idJoueur)"""
+
+        RepoTable.closeTable(idTable)  
+        
+        """RepoJoueur.updatePlayer(joueur)"""
 

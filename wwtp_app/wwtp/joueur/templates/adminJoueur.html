@@ -1,0 +1,149 @@
+<style>
+    * {
+      box-sizing: border-box;
+    }
+    
+    #myInput {
+      background-image: url('/css/searchicon.png');
+      background-position: 10px 12px;
+      background-repeat: no-repeat;
+      width: 100%;
+      font-size: 16px;
+      padding: 12px 20px 12px 40px;
+      border: 1px solid #ddd;
+      margin-bottom: 12px;
+    }
+    
+    #myUL {
+      list-style-type: none;
+      padding: 0;
+      margin: 0;
+    }
+    
+    #myUL li a {
+      border: 1px solid #ddd;
+      margin-top: -1px; /* Prevent double borders */
+      background-color: #f6f6f6;
+      padding: 12px;
+      text-decoration: none;
+      font-size: 18px;
+      color: black;
+      display: block
+    }
+    
+    #myUL li a:hover:not(.header) {
+      background-color: #eee;
+    }
+
+    .hidden {
+	display: none;
+    }
+
+    .visible {
+        display: inline;
+    }
+    </style>
+
+{% block scripts %}
+
+<script type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/moment.js/2.18.1/moment.min.js"></script>
+<script> 
+
+    function myFunction() {
+        
+        var input, filter, ul, li, a, i, txtValue;  
+
+        var input, filter, ul, li, a, i, txtValue;
+        input = document.getElementById("myInput");
+        filter = input.value.toUpperCase();
+        tr = document.getElementById("myTable");
+        th = tr.getElementsByTagName("th");
+
+        for (i = 0; i < tr.rows.length; i++) {
+            p = th[i].getElementsByTagName("p")[0];
+            txtValue = p.textContent || p.innerText;
+            
+            if (txtValue.toUpperCase().indexOf(filter) > -1) {
+                tr.rows[i].style.display = "";
+            } else {
+                tr.rows[i].style.display = "none";
+            }
+        }
+    }
+
+</script>
+{% endblock %}
+
+
+
+{% extends "base.html" %}
+
+{% block title %}
+
+    <title>Admin</title>
+
+{% endblock %}
+
+
+{% block content %}
+
+    <div class="container">
+
+        <input type="text" id="myInput" onkeyup="myFunction()" placeholder="Pseudo..." title="Type in a name">
+
+        <div class="table-responsive">
+            <table class="table table-striped">
+                <thead>
+                  <tr>
+                    <th scope="col-md-2" >Pseudo</th>
+                    <th scope="col-md-2" >Email</th>
+                    <th scope="col-md-2" >Date de naissance</th>
+                    <th scope="col-md-2" >statut</th>
+                    <th scope="col-md-1" >statut</th>
+                  </tr>
+                </thead>
+                <tbody id="myTable">              
+    
+                  {% for joueur in joueurs %}
+    
+                  <tr>
+                    <th scope="row">
+                        <p>
+                            {{ joueur['pseudo'] }}
+                        </p>                        
+                    </th>
+                    <td>
+                        {{ joueur['email'] }}
+                    </td>
+                    <td>
+                        {{ joueur['dateDeNaissance'] }}
+                    </td>
+                    <td>
+                        {% if joueur['estBloque'] %}
+                            <p style="color: red; font-weight: bold;">Bloqué</p>
+                        {% else %}
+                        <p style="color: green; font-weight: bold;">Actif</p>
+                        {% endif %}
+                    </td>
+                    <td class="col-md-1">   
+                        <form method ="post" action="/joueur/lock">
+                            {% if joueur['estBloque'] %}
+                                <button type="submit" name="" value="" class="btn btn-danger disabled" disabled> X </button>
+                            {% else %}
+                                <button type="submit" name="lock" value="{{ joueur['_id'] }}" class="btn btn-danger"> X </button>
+                            {% endif %}
+                        </form>
+                    </td>
+                  </tr>
+    
+                  {% endfor %}
+                  
+                </tbody>
+            </table>
+        </div> 
+
+
+    </div> 
+    
+
+{% endblock %}

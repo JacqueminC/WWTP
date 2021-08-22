@@ -3,12 +3,34 @@ from datetime import datetime, timedelta
 from pymongo import MongoClient, results
 import pymongo
 from bson import ObjectId
+from pymongo.message import query
 
 client = MongoClient('mongodb://localhost:27017/')
 db = client["wwtp"]
 tableColl = db["table"]
 
 class RepoTable:
+
+    def getAllTables():
+        return tableColl.find().sort([("date", pymongo.ASCENDING)])
+
+    def findTableByDatePast():
+        now = datetime.today()
+
+        query = {
+            "date" : {"$lte": now}
+        }
+
+        return tableColl.find(query)
+
+    def findTableByDateFutur():
+        now = datetime.today()
+
+        query = {
+            "date" : {"$gte": now}
+        }
+
+        return tableColl.find(query)
 
     def findTable(id):
         query = {

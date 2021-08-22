@@ -1,6 +1,7 @@
 from flask import Blueprint, render_template,session, request, redirect, url_for, flash
 from werkzeug.utils import redirect
-from wtforms import StringField, IntegerField, PasswordField
+from wtforms import StringField, IntegerField, PasswordField, RadioField
+from wtforms.fields.core import BooleanField
 from wtforms.fields.html5 import EmailField, DateField
 from table.model import Table
 from evaluation.model import Evaluation
@@ -31,9 +32,7 @@ class accountForm(FlaskForm):
         if self.motDePasse.data != None and self.motDePasse.data != "":
             if confMDP.data != self.motDePasse.data:
                 flash("La validation n'est pas correcte", "confmdp")
-                return ValidationError()
-
-    
+                return ValidationError()    
 
 class registerForm(FlaskForm):
     nom = StringField("Nom", validators=[InputRequired()])
@@ -48,6 +47,9 @@ class registerForm(FlaskForm):
     email = EmailField("Email", validators=[InputRequired()])
     motDePasse = PasswordField("Mot de passe", validators=[InputRequired()])
     confMDP = PasswordField("Confirmation du mot de passe", validators=[InputRequired()])
+
+class AdminTable(FlaskForm):
+    temps = RadioField('Label', choices=[('all','Tout'),('past','Passé'),('futur','Futur')], default='all')
     
 
     def validate_dateDeNaissance(self, dateDeNaissance):
@@ -175,7 +177,7 @@ def manageTable():
             table = Table.findTable(idTable)
             hote = table["hote"]
 
-            Joueur.closeTable(request.values["close"], idJoueur, len(table["joueurs"]))
+            Table.closeTable(request.values["close"])
 
             for joueur in table["joueurs"]:
                 Evaluation.createEvaluation(idTable, idJoueur, joueur["idJoueur"], 0, "close")
@@ -186,18 +188,9 @@ def manageTable():
             user["note"] = round(note, 2)
             session.update(user)
 
-            subject = "Une table a été annulée"
-            body = f"La table de {hote['pseudo']} du {table['date']} a été annulée !\n\nWWTP"
-            flash("Votre table a bien été annulé, vous avez subit un malus sur votre note !", "done")
+            Joueur.sendMailCloseByPlayer(hote, table)
 
-        for joueur in table["joueurs"]:
-            jEmail = Joueur.findEmailById(joueur["idJoueur"])
-            emails = []
-
-            emails = emails + [jEmail["email"]]
-
-        if len(emails) > 0:
-            Joueur.sendEmail(emails, subject, body)
+    flash("Votre table a bien été annulé, vous avez subit un malus sur votre note !", "done")
         
     return redirect(url_for('table.tableHote'))
 
@@ -264,31 +257,106 @@ def formInscription():
 
 @bpJoueur.route("/account", methods=["GET", "POST"])
 def account():
-    form = accountForm()
+    if session.get("isLogged") == True:
+        form = accountForm()
 
-    joueur = Joueur.findPlayerById(session["user"]["idJoueur"])
+        joueur = Joueur.findPlayerById(session["user"]["idJoueur"])
 
-    if not form.is_submitted():       
+        if not form.is_submitted():       
 
-        form.nom.data = joueur["nom"]
-        form.prenom.data = joueur["prenom"]
-        form.rue.data = joueur["rue"]
-        form.numero.data = joueur["numero"]
-        form.boite.data = joueur["boite"]
-        form.codePostal.data = joueur["codePostal"]
-        form.ville.data = joueur["ville"]
-        form.email.data = joueur["email"]
-        form.pseudo.data = joueur["pseudo"]
-        form.dateDeNaissance.data = joueur["dateDeNaissance"]
-        print("test post CTL")
+            form.nom.data = joueur["nom"]
+            form.prenom.data = joueur["prenom"]
+            form.rue.data = joueur["rue"]
+            form.numero.data = joueur["numero"]
+            form.boite.data = joueur["boite"]
+            form.codePostal.data = joueur["codePostal"]
+            form.ville.data = joueur["ville"]
+            form.email.data = joueur["email"]
+            form.pseudo.data = joueur["pseudo"]
+            form.dateDeNaissance.data = joueur["dateDeNaissance"]
 
-    if form.validate_on_submit():
-        print("CTL")
-        print(form.numero.data)
-        Joueur.updatePlayer(form, joueur)
-        return redirect(url_for("joueur.account"))
+        if form.validate_on_submit():
+            Joueur.updatePlayer(form, joueur)
+            return redirect(url_for("joueur.account"))
 
 
-    return render_template("account.html", form=form)
+        return render_template("account.html", form=form)
+    else:
+        return redirect("/")
+
+@bpJoueur.route("/adminJ", methods=["GET", "POST"])
+def adminjoueur():
+
+    if session.get("isLogged") == True and session.get("isAdmin") == True:
+
+        joueurs = Joueur.getAllPlayers()
+
+        if request.form.get("lock"):
+            print(request.values["lock"])
+            Joueur.lockPlayer(request.values["lock"])
+
+        return render_template("adminJoueur.html", joueurs=joueurs)
+
+    else:
+        return redirect("/")
+    
+
+@bpJoueur.route("/lock", methods=["GET", "POST"])
+def lock():
+
+    if session.get("isLogged") == True and session.get("isAdmin") == True:
+
+        if request.form.get("lock"):
+            Joueur.lockPlayer(request.values["lock"])
+
+        return redirect(url_for('joueur.adminjoueur'))
+
+    else:
+        return redirect("/")
+
+@bpJoueur.route("/adminT", methods=["GET", "POST"])
+def adminTable():   
+
+    if session.get("isLogged") == True and session.get("isAdmin") == True:
+
+        now = datetime.today()
+        tables = Table.getAllTables()
+        form = AdminTable()
+
+        if form.validate_on_submit():
+            s = form.temps.data
+            if s != "all":
+                if s == "past":
+                    tables = Table.findTableByDatePast()
+                elif s == "futur":
+                    tables = Table.findTableByDateFutur()
+                elif s == "all":
+                    tables = Table.getAllTables()
+            
+        else:
+            tables = Table.getAllTables()
+        
+
+        return render_template("adminTable.html", tables=tables, form=form, now=now)
+
+    else:
+        return redirect("/")
+
+@bpJoueur.route("/close", methods=["GET", "POST"])
+def close():
+
+    if session.get("isLogged") == True and session.get("isAdmin") == True:
+
+        if request.form.get("close"):
+            Table.closeTable(request.values["close"])
+
+            Joueur.sendMailCloseByAdmin(request.values["close"])
+
+        return redirect(url_for('joueur.adminTable'))
+
+    else:
+        return redirect("/")
+
+    
 
 

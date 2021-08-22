@@ -1,4 +1,4 @@
-from pymongo import MongoClient
+from pymongo import ASCENDING, MongoClient
 import pymongo
 from bson import ObjectId
 from bson.json_util import dumps
@@ -10,6 +10,17 @@ db = client["wwtp"]
 joueurColl = db["joueur"]
 
 class RepoJoueur():
+
+    def getAllPlayers():
+
+        project = {
+            "_id": 1,
+            "pseudo": 1,
+            "dateDeNaissance": 1,
+            "email": 1,
+            "estBloque": 1
+        }
+        return joueurColl.find({},project).sort([("pseudo", pymongo.ASCENDING)])
 
     def findPlayerById(idJoueur):
         query = {
@@ -53,3 +64,12 @@ class RepoJoueur():
 
     def createPlayer(joueur):
         joueurColl.insert_one(joueur.__dict__)
+
+    def lockPlayer(id):
+        query = {
+            "_id": ObjectId(id)
+        }
+
+        set = { "$set" : {"estBloque": True} }
+
+        joueurColl.update_one(query, set)

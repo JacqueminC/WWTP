@@ -39,7 +39,6 @@ def myLudo():
 @bpLudo.route("/action", methods=["GET", "POST"])
 def action():
     if request.form.get("trash"):
-        print(request.values["trash"])
         Ludo.deleteLudo(request.values["trash"])
     
     if request.form.get("favorite"):
