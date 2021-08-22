@@ -9,6 +9,7 @@ else:
 
 from .repo import *
 from email.message import EmailMessage
+from table.repo import RepoTable
 
 class Joueur:
 
@@ -115,12 +116,39 @@ class Joueur:
     def validateTable(idTable):
         RepoTable.validateTable(idTable)
 
-    def closeTable(idTable, idJoueur, nbJoueurs):
-        joueur = RepoJoueur.findPlayerById(idJoueur)
+    def sendMailCloseByPlayer(hote, table):
 
-        RepoTable.closeTable(idTable)  
+        subject = "Une table a été annulée"
+        body = f"La table de {hote['pseudo']} du {table['date']} a été annulée !\n\nWWTP"
         
-        RepoJoueur.updatePlayer(joueur)
+
+        for joueur in table["joueurs"]:
+            jEmail = Joueur.findEmailById(joueur["idJoueur"])
+            emails = []
+
+            emails = emails + [jEmail["email"]]
+
+        if len(emails) > 0:
+            Joueur.sendEmail(emails, subject, body)
+
+    def sendMailCloseByAdmin(id):
+
+        table = RepoTable.findTable(id)
+        hote = table["hote"]
+
+        subject = "Une table a été annulée par un administrateur"
+        body = f"La table de {hote['pseudo']} du {table['date']} a été annulée par un administrateur!\n\nWWTP"
+        
+        emails = []
+        
+        for joueur in table["joueurs"]:
+            jEmail = Joueur.findEmailById(joueur["idJoueur"])
+            
+
+            emails = emails + [jEmail["email"]]
+
+        if len(emails) > 0:
+            Joueur.sendEmail(emails, subject, body)
 
     def sendEmail(emails, subject, body):
         msg = EmailMessage()

@@ -1,4 +1,96 @@
+<style>
+    * {
+      box-sizing: border-box;
+    }
+    
+    .myInput {
+      background-image: url('/css/searchicon.png');
+      background-position: 10px 12px;
+      background-repeat: no-repeat;
+      width: 100%;
+      font-size: 16px;
+      padding: 12px 20px 12px 40px;
+      border: 1px solid #ddd;
+      margin-bottom: 12px;
+    }
+    
+    #myUL {
+      list-style-type: none;
+      padding: 0;
+      margin: 0;
+    }
+    
+    #myUL li a {
+      border: 1px solid #ddd;
+      margin-top: -1px; /* Prevent double borders */
+      background-color: #f6f6f6;
+      padding: 12px;
+      text-decoration: none;
+      font-size: 18px;
+      color: black;
+      display: block
+    }
+    
+    #myUL li a:hover:not(.header) {
+      background-color: #eee;
+    }
+
+    .hidden {
+	display: none;
+    }
+
+    .visible {
+        display: inline;
+    }
+</style>
+
+{% block scripts %}
+
+<script type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/moment.js/2.18.1/moment.min.js"></script>
+<script> 
+
+    function filtreHost() {
+        
+        var input, filter, ul, li, a, i, txtValue;  
+
+        var input, filter, ul, li, a, i, txtValue;
+        input = document.getElementById("myInputHost");
+        filter = input.value.toUpperCase();
+        tr = document.getElementById("myTable");
+        th = tr.getElementsByTagName("th");
+
+        for (i = 0; i < tr.rows.length; i++) {
+            p = th[i].getElementsByTagName("p")[0];
+            txtValue = p.textContent || p.innerText;
+            
+            if (txtValue.toUpperCase().indexOf(filter) > -1) {
+                tr.rows[i].style.display = "";
+            } else {
+                r = tr.rows[i]       
+                ul = r.getElementsByTagName("ul")
+                li = ul[0].getElementsByTagName("li")
+
+                for(j = 0; j < li.length; j++){
+                    p = li[j].getElementsByTagName("p")[0]
+                    
+                    txt = p.textContent || p.innerText; 
+
+                    if (txt.toUpperCase().indexOf(filter) > -1) {
+                        tr.rows[i].style.display = "";
+                        break;
+                    } else {
+                        tr.rows[i].style.display = "none"
+                    }
+                }
+            }
+        }
+    }
+
+</script>
+{% endblock %}
+
 {% extends "base.html" %}
+{% import "bootstrap/wtf.html" as wtf%}
 
 {% block title %}
 
@@ -11,6 +103,122 @@
 
     <div class="container">
 
+        <div>
+            <form method="POST" action="{{url_for('joueur.adminTable')}}">
+
+                {{ form.csrf_token}}
+                {{ form.hidden_tag() }}
+
+                <p>
+                    <h2>
+                        Recherche
+                    </h2>
+                </p>
+
+                <br>
+
+                {% for subfield in form.temps %}
+                    <tr>
+                        <td>{{ subfield }}</td>
+                        <td>{{ subfield.label }}</td>
+                    </tr>
+                {% endfor %}
+
+                <br><br>
+
+                <input type="submit" value="Valider" class="btn btn-primary">
+            </form>
+        </div>
+
+        <div>
+            <input type="text" class="myInput" id="myInputHost" onkeyup="filtreHost()" placeholder="Pseudo hôte ou joueur" title="Type in a name">
+        </div>
+
+
+        <table class="table table-hover">
+            <thead>
+              <tr>
+                <th scope="col">Table de ...</th>
+                <th scope="col">Date</th>
+                <th scope="col">joueurs</th>
+                <th scope="col">Place libre</th>
+                <th scope="col">Type</th>
+                <th scope="col">Conditions</th>
+                <th scope="col">Partir</th>
+              </tr>
+            </thead>
+            <tbody id="myTable"> 
+                
+                {% for table in tables %}
+                    <tr>
+                        <th scope="row">
+                            <p>
+                                {{table["hote"].pseudo}}
+                            </p>
+                        </th>
+                        <td>{{table["date"].strftime('%d-%m-%Y %H:%M')}}</td>
+                        <td>
+                            {% if table["joueurs"]|length > 0  %}
+                                <ul>
+                                {% for joueur in table["joueurs"] %}                                        
+                                        <li>
+                                            <p>
+                                                {{ joueur["pseudo"] }}
+                                            </p>
+                                        </li>                                        
+                                {% endfor %}
+                                </ul>
+                            {% else %}
+                                <ul>
+                                    <li>
+                                        <p>
+                                            VIDE
+                                        </p>
+                                    </li>
+                                </ul>
+                            {% endif %}
+                        </td>
+                        <td>{{table["nbPlace"] - table["joueurs"]|length}} / {{table["nbPlace"]}}</td>
+                        <td>
+                        {% if table["jeuxLibre"] == True %}
+                            Jeux Libre
+                        {% else %}
+                            Jeux
+                            <ul>
+                            {% for jeu in table["jeux"] %}    
+                                <li>{{ jeu["nom"] }} {% if jeu["version"] != "" %} - {{jeu["version"]}} {% endif %}</li>
+                            {% endfor %}
+                            </ul> 
+                        {% endif %}    
+                        </td>
+                        <td style="font-weight: bold; color: #99433f;">
+                        {% if table["regle"] == True %}
+                            Connaissance des règles obligatoire
+                            <br>   
+                        {% endif %}          
+                        {% if table["ageMin"] == True %}
+                            Age minimum : {{table["age"]}}
+                            <br>
+                        {% endif %} 
+                        {% if table["noteMin"] == True %}
+                            Note minimum : {{table["note"]}}
+                            <br>
+                        {% endif %}
+                        </td>
+                        <td>                        
+                        <form method ="POST" action="/joueur/close">
+                            {% if table["estAnnule"] or table["date"] < now %}
+                                <button type="submit" name="close" value="{{ table['_id'] }}" class="btn btn-danger disabled" disabled>Fermer</button>
+                            {% else %}
+                                <button type="submit" name="close" value="{{ table['_id'] }}" class="btn btn-danger">Fermer</button>                             
+                            {% endif %}
+                        </form>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+
+            
 
     </div>     
 

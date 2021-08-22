@@ -59,11 +59,6 @@
         tr = document.getElementById("myTable");
         th = tr.getElementsByTagName("th");
 
-        console.log("TR")
-        console.log(tr.rows.length)
-        console.log("TH")
-        console.log(th)
-
         for (i = 0; i < tr.rows.length; i++) {
             p = th[i].getElementsByTagName("p")[0];
             txtValue = p.textContent || p.innerText;
@@ -95,18 +90,6 @@
     <div class="container">
 
         <input type="text" id="myInput" onkeyup="myFunction()" placeholder="Pseudo..." title="Type in a name">
-
-        <!--<ul id="myUL">
-            <li><a href="#">Adele</a></li>
-            <li><a href="#">Agnes</a></li>
-
-            <li><a href="#">Billy</a></li>
-            <li><a href="#">Bob</a></li>
-
-            <li><a href="#">Calvin</a></li>
-            <li><a href="#">Christina</a></li>
-            <li><a href="#">Cindy</a></li>
-        </ul>-->
 
         <div class="table-responsive">
             <table class="table table-striped">
