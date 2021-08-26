@@ -21,6 +21,7 @@ const btnAdd = document.querySelector('#btnAdd');
 
 window.addEventListener('beforeinstallprompt', (e) => {
   console.log('beforeinstallprompt event fired');
+  console.log("beforeinstallprompt")
   e.preventDefault();
   deferredPrompt = e;
   btnAdd.style.visibility = 'visible';
