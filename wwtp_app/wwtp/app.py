@@ -1,9 +1,7 @@
 #print('__file__={0:<35} | __name__={1:<25} | __package__={2:<25}'.format(__file__,__name__,str(__package__)))
 
-from datetime import datetime
-from flask import Flask, render_template, session, make_response
+from flask import Flask, render_template, make_response, redirect
 import logging
-from flask_pymongo import PyMongo
 from table.table import bpTable
 from home.home import bpHome
 from joueur.joueur import bpJoueur
@@ -18,9 +16,6 @@ app.config['SECRET_KEY'] = "secretkey"
 app.config["MONGO_URI"] = "mongodb://localhost:27017/wwtp"
 
 Bootstrap(app)
-
-#mongodb_client = PyMongo(app)
-#db = mongodb_client.db
 
 app.register_blueprint(bpTable, url_prefix="/table")
 app.register_blueprint(bpHome, ulr_prefix="/home")
@@ -47,17 +42,19 @@ def index():
 
     """session.pop("user", None)
     session["isLogged"] = False"""
-    app.logger.debug("I'm a DEBUG message")
+    """app.logger.debug("I'm a DEBUG message")
     app.logger.info("I'm an INFO message")
     app.logger.warning("I'm a WARNING message")
     app.logger.error("I'm a ERROR message")
-    app.logger.critical("I'm a CRITICAL message")
+    app.logger.critical("I'm a CRITICAL message")"""
 
     return render_template("index.html")
 
 if __name__ == "__main__":
     app.run(debug=True)
+    """app.run(ssl_context=('cert.pem', 'key.pem'))"""
     """/var/log/gunicorn/"""
+    redirect("/index")
     gunicorn_logger = logging.getLogger('gunicorn.error')
-    app.logger.handlers = gunicorn_logger.handlers
-    app.logger.setLevel(gunicorn_logger.level)
+    """app.logger.handlers = gunicorn_logger.handlers
+    app.logger.setLevel(gunicorn_logger.level)"""
