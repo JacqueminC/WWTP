@@ -27,6 +27,7 @@ window.addEventListener('beforeinstallprompt', (e) => {
 });
 
 btnAdd.addEventListener('click', (e) => {
+  console.log("CLICK BUTTON")
   btnAdd.style.visibility = 'hidden';
   deferredPrompt.prompt();
   deferredPrompt.userChoice
