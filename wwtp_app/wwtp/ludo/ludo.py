@@ -6,15 +6,15 @@ from werkzeug.utils import header_property
 from wtforms.validators import ValidationError
 from flask_wtf import FlaskForm
 from .model import GameForm, Ludo
+from requests import get
 import requests
+import xml.etree.ElementTree as ET
 
 bpLudo = Blueprint("ludo", __name__, template_folder="templates")
 
 
 @bpLudo.route("/", methods=["GET", "POST"])
 def myLudo():  
-
-    """print(requests.get('https://www.boardgamegeek.com/xmlapi/search?search=Catane').content)"""
 
     form = GameForm()
     idJ = ObjectId(session["user"]["idJoueur"])    
@@ -34,6 +34,31 @@ def myLudo():
             return render_template("ludo.html", form=form, ve=ValidationError())
         
     return render_template("ludo.html", form = form, games=games, gamesF=gamesF)
+
+@bpLudo.route("/bgg/<value>", methods=["GET", "POST"])
+def getGameBGG(value):
+    print(value)
+    r = get('https://www.boardgamegeek.com/xmlapi/search?search=Catane', headers={"accept":"application/xml"}).content
+    """r = requests.get('https://www.boardgamegeek.com/xmlapi/search?search=Catane', headers={"accept":"application/xml"}).content"""
+
+    xml = ET.fromstring(r)
+
+    for g in xml.findall('boardgame'):
+        """boardgame"""
+        print(g.tag)
+        """{'objectid': '13'}"""
+        print(g.attrib)
+
+        game = g.find('name')
+        """Catane"""
+        print(game.text)
+
+        break
+   
+    
+
+    return r
+
 
 
 @bpLudo.route("/action", methods=["GET", "POST"])

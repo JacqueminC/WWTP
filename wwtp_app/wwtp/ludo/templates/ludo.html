@@ -46,20 +46,30 @@
         
         var input, filter, ul, li, a, i, txtValue, urlApi;
         var xhr = new XMLHttpRequest();
-        urlApi = "https://www.boardgamegeek.com/xmlapi/search?search=Catane"
+        urlApi = "http://127.0.0.1:5000/myludo/bgg/"
+        //urlApi = "https://www.boardgamegeek.com/xmlapi/search?search=Catane"
         
         input = document.getElementById("myInput");
-        console.log(input);
+        console.log(input.value);
 
+        fetch(urlApi + input.value)
+            .then(function(response){
+                return response
+            }).then(function(text){
+                console.log("get response");
+                console.log(text.text)
+            })
+/*
         xhr.open('GET', urlApi, true);
         xhr.withCredentials = true;
         xhr.setRequestHeader('Access-Control-Allow-Origin', "*");
         xhr.send();
+*/
 
-        console.log(xhr.responseXML);
+        //console.log(xhr.responseXML);
 
 
-
+/*
         var input, filter, ul, li, a, i, txtValue;
         input = document.getElementById("myInput");
         filter = input.value.toUpperCase();
@@ -74,6 +84,7 @@
                 li[i].style.display = "none";
             }
         }
+        */
     }
 </script>
 {% endblock %}
@@ -203,7 +214,7 @@
         </table>
     </div> 
 </div>
-<!--
+
 
 <input type="text" id="myInput" onkeyup="myFunction()" placeholder="Search for names.." title="Type in a name">
 
@@ -218,8 +229,6 @@
     <li><a href="#">Christina</a></li>
     <li><a href="#">Cindy</a></li>
   </ul>
-
-  -->
 
 
 {% endwith %}
