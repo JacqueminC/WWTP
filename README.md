@@ -44,3 +44,9 @@ mon app.py est bien dans un package mais de ce fait n'est plus comme __main__
 nginx start
 gunicorn app:app
 sudo mongod --fork --logpath /var/log/mongodb/mongodb.log
+
+app.logger.debug("I'm a DEBUG message")
+app.logger.info("I'm an INFO message")
+app.logger.warning("I'm a WARNING message")
+app.logger.error("I'm a ERROR message")
+app.logger.critical("I'm a CRITICAL message")

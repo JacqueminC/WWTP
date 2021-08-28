@@ -39,32 +39,14 @@ app.register_blueprint(bpLudo, url_prefix="/myludo")
 def index():
 
     resp = make_response(render_template("index.html"))
-    resp.set_cookie('idUser', '', expires=0)
-    
-    """
-    app.logger.debug("I'm a DEBUG message")
-    app.logger.info("I'm an INFO message")
-    app.logger.warning("I'm a WARNING message")
-    app.logger.error("I'm a ERROR message")
-    app.logger.critical("I'm a CRITICAL message")
-    """
+    resp.set_cookie('idUser', '', expires=0)    
 
-    """return render_template("index.html")"""
-    return render_template('index.html',
-                           title='Flask-PWA')
+    return render_template("index.html")
 
 
 
 if __name__ == "__main__":
     print("main")
-    app.run(debug=True)    
+    app.run(debug=True)
     gunicorn_logger = logging.getLogger('gunicorn.error')
 
-
-
-
-
-
-"""app.run(ssl_context=('cert.pem', 'key.pem'))"""
-"""app.logger.handlers = gunicorn_logger.handlers
-app.logger.setLevel(gunicorn_logger.level)"""

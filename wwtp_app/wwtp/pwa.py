@@ -15,3 +15,4 @@ def service_worker():
     response = make_response(send_from_directory('static', 'sw.js'))
     response.headers['Cache-Control'] = 'no-cache'
     return response
+

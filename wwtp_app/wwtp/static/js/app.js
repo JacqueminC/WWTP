@@ -21,16 +21,19 @@ const btnAdd = document.querySelector('#btnAdd');
 
 window.addEventListener('beforeinstallprompt', (e) => {
   console.log('beforeinstallprompt event fired');
-  console.log("beforeinstallprompt")
   e.preventDefault();
   deferredPrompt = e;
   btnAdd.style.visibility = 'visible';
 });
 
 btnAdd.addEventListener('click', (e) => {
-  console.log("CLICK BUTTON")
+  console.log("CLICK BUTTON ------")
   btnAdd.style.visibility = 'hidden';
-  deferredPrompt.prompt();
+  console.log("TEST")
+  console.log(deferredPrompt)
+  if(deferredPrompt){
+    deferredPrompt.prompt();
+  }  
   deferredPrompt.userChoice
     .then((choiceResult) => {
       if (choiceResult.outcome === 'accepted') {
