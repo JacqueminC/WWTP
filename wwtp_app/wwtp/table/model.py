@@ -1,7 +1,12 @@
 from .repo import *
-from datetime import datetime, timedelta
 from dateutil.relativedelta import relativedelta
-from flask import session
+from flask_wtf import FlaskForm
+from wtforms import StringField, IntegerField, BooleanField, FormField, FieldList
+from wtforms.fields.html5 import IntegerRangeField, DateField, TimeField
+from wtforms.validators import InputRequired, ValidationError
+from datetime import datetime, timedelta
+from wtforms.form import Form
+from flask import session, flash
 from joueur.repo import RepoJoueur
 
 repositoryTable = RepoTable()
@@ -139,6 +144,7 @@ class Table:
                 return False
 
         return True
+    
 
     def joinTable(joueur, idTable):
         repositoryTable.joinTable(joueur, idTable)
@@ -175,4 +181,60 @@ class Table:
         RepoTable.closeTable(idTable)  
         
         """RepoJoueur.updatePlayer(joueur)"""
+
+class JeuxListeForm(Form):
+    nom = StringField("Nom ")
+    version = StringField("Version ")
+
+class CreationTableForm(FlaskForm):
+    jeuxLibre = BooleanField(' Jeux libre ?')
+    nbPlace = IntegerField('Nombre de place disponnible', validators=[InputRequired(), ])
+    jeux = FieldList(FormField(JeuxListeForm), min_entries=1)
+    date = DateField('Date', format='%Y-%m-%d', validators=[InputRequired()])
+    heure = TimeField('Heure', validators=[InputRequired()])
+    ville = StringField('Ville', render_kw={'disabled':''})
+    ageMin = BooleanField('Définir un âge minimum ?')
+    age = IntegerField(' Age minimum ?', default=0)
+    regle = BooleanField(' Connaissance des règles requises ?')
+    noteMin = BooleanField(' Note minimum ?')
+    note = IntegerRangeField('Note', default=0)
+
+    def validate_nbPlace(self, nbPlace):
+        if not isinstance(nbPlace.data, int):
+            flash("indiquez un nombre!", "place")
+            return ValidationError()
+        if nbPlace.data < 1:
+            flash("Il doit y avoir au moins une place de libre pour créer une table", "place")
+            return ValidationError()
+        if nbPlace.data > 10:
+            flash("Le nombre de place maximum est de 10", "place")
+            return ValidationError()
+
+    def validate_jeux(self, jeux):        
+        if self.jeuxLibre.data == False:
+            if jeux[0].nom.data == None or self.jeux[0].nom.data == "":
+                flash("Vous devez indiquer un jeu si vous n'êtes pas en jeux libre!", "jeu")
+                raise ValidationError()
+     
+
+    def validate_age(self, age):
+        if self.ageMin.data == True:
+            if not isinstance(self.age.data, int):
+                flash("Veuillez entrez un age en chiffre!", 'age')
+                raise ValidationError()
+            if age.data == None:                
+                flash("Veuillez indiquer une valeur! L'age doit être entre 16 et 99!", 'age')
+                raise ValidationError()
+            if age.data < 16 or self.age.data >99:
+                flash("L'age doit être entre 16 et 99!", 'age')
+                raise ValidationError()
+    
+    def validate_heure(self, heure):
+        now = datetime.now() + timedelta(hours=2)
+        dtString = str(self.date.data) + " " + str(heure.data)
+        dtForm = datetime.strptime(dtString, '%Y-%m-%d %H:%M:%S')
+
+        if now > dtForm:
+            flash("La date doit être supérieur à maintenant PLUS 2 heures!", "date")
+            raise ValidationError()
 

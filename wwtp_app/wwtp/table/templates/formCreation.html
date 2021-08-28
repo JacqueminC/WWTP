@@ -1,3 +1,4 @@
+<link href="{{ url_for('table.static', filename='style.css') }}" rel="stylesheet" />
 {% extends "base.html" %}
 {% import "bootstrap/wtf.html" as wtf%}
 
@@ -12,7 +13,7 @@
 {% with messages = get_flashed_messages(with_categories=true) %}
 
 <div class="container">
-    <h2>formulaire de création d'une table</h2>
+    <p class="media">Création d'une table</p>
 
     <form method="POST" action="{{url_for('table.formCreation')}}">
         {{form.csrf_token}}
@@ -97,7 +98,7 @@
         {% if category == "error" %}
         <p style="color: red; font: bold;">{{ message }}</p>
         {% elif category == "info" %}
-          <p style="color: green; font: bold;">{{ message }}</p>
+          <h2 style="color: green; font-weight: bold;">{{ message }}</h2>
         {% endif %}        
       {% endfor %}
     {% endif %}

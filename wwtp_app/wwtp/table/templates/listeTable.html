@@ -41,16 +41,18 @@
     {% endif %}
   {% endwith %}
 
+  📖 = Connaissance des règles requises
+
   <table class="table table-hover">
     <thead>
       <tr>
-        <th scope="col">Table de ...</th>
-        <th scope="col">Date</th>
-        <th scope="col">Lieu</th>
-        <th scope="col">Place libre</th>
-        <th scope="col">Type</th>
-        <th scope="col">Conditions</th>
-        <th scope="col">Partir</th>
+        <th scope="col">Hôte</th>
+        <th scope="col">📅</th>
+        <th scope="col">📍</th>
+        <th scope="col">🪑</th>
+        <th scope="col">🎲</th>
+        <th scope="col">📋</th>
+        <th scope="col"></th>
       </tr>
     </thead>
     <tbody>
@@ -70,7 +72,7 @@
         <td>{{table["nbPlace"] - table["joueurs"]|length}} / {{table["nbPlace"]}}</td>
         <td>
           {% if table["jeuxLibre"] == True %}
-            Jeux Libre
+            Jeux Libres
           {% else %}
             Jeux
             <ul>
@@ -112,7 +114,7 @@
             <td>{{table["nbPlace"] - table["joueurs"]|length}} / {{table["nbPlace"]}}</td>
             <td>
               {% if table["jeuxLibre"] == True %}
-                Jeux Libre
+                Jeux Libres
               {% else %}
                 Jeux
                 <ul>

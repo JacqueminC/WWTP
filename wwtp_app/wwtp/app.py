@@ -12,8 +12,6 @@ from flask_bootstrap import Bootstrap
 
 bp = Blueprint('main', __name__)
 
-print("create app")
-
 app = Flask(__name__)
 
 app.config['SECRET_KEY'] = "secretkey"
@@ -46,7 +44,6 @@ def index():
 
 
 if __name__ == "__main__":
-    print("main")
     app.run(debug=True)
     gunicorn_logger = logging.getLogger('gunicorn.error')
 

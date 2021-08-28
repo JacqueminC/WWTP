@@ -12,7 +12,9 @@
 
 <div class="container">
 
-    <h2>Mes tables comme hôte</h2>
+    <h2>Mes tables</h2>
+
+    📖 = Connaissance des règles requises
 
     {% with messages = get_flashed_messages(with_categories=true) %}
         {% if messages %}
@@ -35,136 +37,69 @@
 
     <div class="table-responsive">
         <table class="table table-striped">
-            <thead>
+            <thead align="center">
               <tr>
-                <th scope="col">Date</th>
-                <th scope="col">Lieu</th>
-                <th scope="col">Place libre</th>
-                <th scope="col">Joueurs</th>
-                <th scope="col">Type</th>
-                <th scope="col">Conditions</th>
-                <th scope="col">Fermer</th>
+                <th scope="col">📅</th>
+                <th scope="col">📍</th>
+                <th scope="col">🪑</th>
+                <th scope="col">👥</th>
+                <th scope="col">🎲</th>
+                <th scope="col">📋</th>
+                <th scope="col"></th>
               </tr>
             </thead>
             <tbody>
-        
-            {% set vars = {'change': 0} %}
 
-            {% for table in result %}
-                {% if vars.change == 0 %}
-                    {% if vars.update({'change' : 1 }) %} {% endif %}
-   
-                        <tr>
-                            <th scope="row">{{table["date"].strftime('%d-%m-%Y %H:%M')}}</th>
-                            <td>{{table["ville"]}}</td>
-                            <td>{{table["nbPlace"] - table["joueurs"]|length}} / {{table["nbPlace"]}}</td>
-                            <td>
-                                {% if "joueurs" in table %}
-                                    <ul>
-                                    {% for joueur in table["joueurs"] %}                                        
-                                            <li>{{ joueur["pseudo"] }}</li>                                        
-                                    {% endfor %}
-                                    </ul>
-                                {% else %}
-                                    /
-                                {% endif %}
-                            </td>
-                            <td>
-                                {% if table["jeuxLibre"] == True %}
-                                Jeux Libre
-                                {% else %}
-                                Jeux
-                                <ul>
-                                {% for jeu in table["jeux"] %}    
-                                    <li>{{ jeu["nom"] }} {% if jeu["version"] != "" %} - {{jeu["version"]}} {% endif %}</li>
-                                {% endfor %}
-                                </ul> 
-                            {% endif %}    
-                            </td>
-                            <td style="font-weight: bold; color: #99433f;">
-                                {% if table["regle"] == True %}
-                                Connaissance des règles obligatoire
-                                <br>
-                                {% endif %}
-                                {% if table["ageMin"] == True %}
-                                Age minimum : {{table["age"]}}
-                                <br>
-                                {% endif %}
-                                {% if table["noteMin"] == True %}
-                                Note minimum : {{table["note"]}}
-                                <br>
-                                {% endif %}
-                            </td>
-                            <td>
-                                <form method ="post" action="/joueur/manageTable">
-                                    {% if table["estValide"] == False  %}
-                                        <button type="submit" name="validate" value="{{ table['_id'] }}" class="btn btn-success">Valider</button>
-                                    {% else %}
-                                        <button type="submit"  class="btn btn-success disabled" disabled>Valider</button>
-                                    {% endif %}
-                                    <button type="submit" name="close" value="{{ table['_id'] }}" class="btn btn-danger">Annuler</button>
-                                </form>
-                            </td>
-                        </tr>
-                    {% else %}
-                        {% if vars.update({'change' : 0 }) %} {% endif %}
-                        <br>
-                        {% set line = 0 %}
-                            <tr class="table-secondary">
-                                <th scope="row">{{table["date"].strftime('%d-%m-%Y %H:%M')}}</th>
-                                <td>{{table["ville"]}}</td>
-                                <td>{{table["nbPlace"] - table["joueurs"]|length}} / {{table["nbPlace"]}}</td>
-                                <td>
-                                    {% if "joueurs" in table %}
-                                        <ul>
-                                        {% for joueur in table["joueurs"] %}                                        
-                                                <li>{{ joueur["nom"] }}</li>                                        
-                                        {% endfor %}
-                                        </ul>
-                                    {% else %}
-                                        /
-                                    {% endif %}
-                                </td>
-                                <td>
-                                    {% if table["jeuxLibre"] == True %}
-                                    Jeux Libre
-                                    {% else %}
-                                    Jeux
-                                    <ul>
-                                    {% for jeu in table["jeux"] %}    
-                                        <li>{{ jeu["nom"] }} {% if jeu["version"] != "" %} - {{jeu["version"]}} {% endif %}</li>
-                                    {% endfor %}
-                                    </ul> 
-                                {% endif %}    
-                                </td>
-                                <td style="font-weight: bold; color: #99433f;">
-                                    {% if table["regle"] == True %}
-                                        Connaissance des règles obligatoire
-                                        <br>
-                                    {% endif %}
-                                    {% if table["ageMin"] == True %}
-                                        Age minimum : {{ table["age"] }}
-                                        <br>
-                                    {% endif %}
-                                    {% if table["noteMin"] == True %}
-                                        Note minimum : {{ table["note"] }}
-                                        <br>
-                                    {% endif %}
-                                </td>
-                                <td>
-                                    <form method ="post" action="/joueur/manageTable">
-                                        {% if table["estValide"] == False  %}
-                                            <button type="submit" name="validate" value="{{ table['_id'] }}" class="btn btn-success">Valider</button>
-                                        {% else %}
-                                            <button type="submit"  class="btn btn-success disabled" disabled>Valider</button>
-                                        {% endif %}    
-                                        <button type="submit" name="close" value="{{ table['_id'] }}" class="btn btn-danger">Annuler</button>    
-                                    </form>
-                                </td>
-                            </tr>
+            {% for table in result %}   
+                <tr>
+                    <th scope="row">{{table["date"].strftime('%d-%m-%Y %H:%M')}}</th>
+                    <td>{{table["ville"]}}</td>
+                    <td align="center">{{table["nbPlace"] - table["joueurs"]|length}} / {{table["nbPlace"]}}</td>
+                    <td align="center">
+                        {% if "joueurs" in table %}
+                            {% for joueur in table["joueurs"] %}                                        
+                                    <p>{{ joueur["pseudo"] }}</p>                                        
+                            {% endfor %}
+                        {% else %}
+                            /
                         {% endif %}
-                    </tbody>
-                {% endfor %}
+                    </td>
+                    <td align="center">
+                        {% if table["jeuxLibre"] == True %}
+                        Jeux Libres
+                        {% else %}
+                        {% for jeu in table["jeux"] %}    
+                            {{ jeu["nom"] }} {% if jeu["version"] != "" %}-{{jeu["version"]}} {% endif %}
+                        {% endfor %}
+                    {% endif %}    
+                    </td>
+                    <td style="font-weight: bold; color: #99433f;" align="center">
+                        {% if table["regle"] == True %}
+                        📖
+                        <br>
+                        {% endif %}
+                        {% if table["ageMin"] == True %}
+                        {{table["age"]}}ans /+
+                        <br>
+                        {% endif %}
+                        {% if table["noteMin"] == True %}
+                        Note {{table["note"]}} /+
+                        <br>
+                        {% endif %}
+                    </td>
+                    <td>
+                        <form method ="post" action="/joueur/manageTable">
+                            {% if table["estValide"] == False  %}
+                                <button type="submit" name="validate" value="{{ table['_id'] }}" class="btn btn-success">V</button>
+                            {% else %}
+                                <button type="submit"  class="btn btn-success disabled" disabled>V</button>
+                            {% endif %}
+                            <button type="submit" name="close" value="{{ table['_id'] }}" class="btn btn-danger">X</button>
+                        </form>
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
             </div>
         </table>
     </div>
