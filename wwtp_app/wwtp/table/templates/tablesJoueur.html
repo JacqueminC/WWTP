@@ -29,16 +29,16 @@
     {% endwith %}
 
     <div>
-        <table class="table table-hover">
-            <thead>
+        <table class="table table-striped">
+            <thead align="center">
               <tr>
-                <th scope="col">Table de ...</th>
-                <th scope="col">Date</th>
-                <th scope="col">Lieu</th>
-                <th scope="col">Place libre</th>
-                <th scope="col">Type</th>
-                <th scope="col">Conditions</th>
-                <th scope="col">Partir</th>
+                <th scope="col">Hôte</th>
+                <th scope="col">📅</th>
+                <th scope="col">📍</th>
+                <th scope="col">🪑</th>
+                <th scope="col">🎲</th>
+                <th scope="col">📋</th>
+                <th scope="col"></th>
               </tr>
             </thead>
             <tbody>
@@ -46,96 +46,49 @@
             {% set vars = {'change': 0} %}
 
             {% for table in result %}
-                {% if vars.change == 0 %}
-                    {% if vars.update({'change' : 1 }) %} {% endif %}
    
-                        <tr>
-                            <th scope="row">{{table["hote"].nom}}</th>
-                            <td>{{table["date"].strftime('%d-%m-%Y %H:%M')}}</td>
-                            <td>{{table["ville"]}}</td>
-                            <td>{{table["nbPlace"] - table["joueurs"]|length}} / {{table["nbPlace"]}}</td>
-                            <td>
-                                {% if table["jeuxLibre"] == True %}
-                                Jeux Libres
-                                {% else %}
-                                Jeux
-                                <ul>
-                                {% for jeu in table["jeux"] %}    
-                                    <li>{{ jeu["nom"] }} {% if jeu["version"] != "" %} - {{jeu["version"]}} {% endif %}</li>
-                                {% endfor %}
-                                </ul> 
-                            {% endif %}    
-                            </td>
-                            <td style="font-weight: bold; color: #99433f;">
-                                {% if table["regle"] == True %}
-                                Connaissance des règles obligatoire
-                                <br>
-                                {% elif table["ageMin"] == True %}
-                                Age minimum : {{table["age"]}}
-                                <br>
-                                {% elif table["noteMin"] == True %}
-                                Note minimum : {{table["note"]}}
-                                <br>
-                                {% endif %}
-                            </td>
-                            <td>
-                                <form method ="post" action="/joueur/leaveTable">
-                                    {% if table["estValide"] == False %}
-                                        <button type="submit" name="leave" value="{{ table['_id'] }}" class="btn btn-warning">Partir</button>
-                                    {% else %}
-                                        <button type="submit" class="btn btn-warning disabled" disabled>Partir</button>
-                                    {% endif %}
-                                </form>
-                            </td>
-                        </tr>
-                    {% else %}
-                        {% if vars.update({'change' : 0 }) %} {% endif %}
+                <tr>
+                    <th scope="row">{{table["hote"].nom}}</th>
+                    <td>{{table["date"].strftime('%d-%m-%Y %H:%M')}}</td>
+                    <td>{{table["ville"]}}</td>
+                    <td align="center">{{table["nbPlace"] - table["joueurs"]|length}} / {{table["nbPlace"]}}</td>
+                    <td align="center">
+                        {% if table["jeuxLibre"] == True %}
+                        /
+                        {% else %}
+                        Jeux
+                        <ul>
+                        {% for jeu in table["jeux"] %}    
+                            <li>{{ jeu["nom"] }} {% if jeu["version"] != "" %} - {{jeu["version"]}} {% endif %}</li>
+                        {% endfor %}
+                        </ul> 
+                    {% endif %}    
+                    </td>
+                    <td align="center" style="font-weight: bold; color: #99433f;">
+                        {% if table["regle"] == True %}
+                        Connaissance des règles obligatoire
                         <br>
-                        {% set line = 0 %}
-                            <tr class="table-secondary">
-                                <th scope="row">{{table["hote"].nom}}</th>
-                                <td>{{table["date"].strftime('%d-%m-%Y %H:%M')}}</td>
-                                <td>{{table["ville"]}}</td>
-                                <td>{{table["nbPlace"] - table["joueurs"]|length}} / {{table["nbPlace"]}}</td>
-                                <td>
-                                    {% if table["jeuxLibre"] == True %}
-                                    Jeux Libres
-                                    {% else %}
-                                    Jeux
-                                    <ul>
-                                    {% for jeu in table["jeux"] %}    
-                                        <li>{{ jeu["nom"] }} {% if jeu["version"] != "" %} - {{jeu["version"]}} {% endif %}</li>
-                                    {% endfor %}
-                                    </ul> 
-                                {% endif %}    
-                                </td>
-                                <td style="font-weight: bold; color: #99433f;">
-                                    {% if table["regle"] == True %}
-                                        Connaissance des règles obligatoire
-                                        <br>
-                                    {% endif %}
-                                    {% if table["ageMin"] == True %}
-                                        Age minimum : {{ table["age"] }}
-                                        <br>
-                                    {% endif %}
-                                    {% if table["noteMin"] == True %}
-                                        Note minimum : {{ table["note"] }}
-                                        <br>
-                                    {% endif %}
-                                </td>
-                                <td>
-                                    <form method ="post" action="/joueur/leaveTable">
-                                        {% if table["estValide"] == False %}
-                                            <button type="submit" name="leave" value="{{ table['_id'] }}" class="btn btn-warning">Partir</button>
-                                        {% else %}
-                                            <button type="submit" class="btn btn-warning disabled" disabled>Partir</button>
-                                        {% endif %}
-                                    </form>
-                                </td>
-                            </tr>
+                        {% elif table["ageMin"] == True %}
+                        Age minimum : {{table["age"]}}
+                        <br>
+                        {% elif table["noteMin"] == True %}
+                        Note minimum : {{table["note"]}}
+                        <br>
                         {% endif %}
-                    </tbody>
-                {% endfor %}
+                    </td>
+                    <td>
+                        <form method ="post" action="/joueur/leaveTable">
+                            {% if table["estValide"] == False %}
+                                <button type="submit" name="leave" value="{{ table['_id'] }}" class="btn btn-warning">Partir</button>
+                            {% else %}
+                                <button type="submit" class="btn btn-warning disabled" disabled>Partir</button>
+                            {% endif %}
+                        </form>
+                    </td>
+                </tr>
+                    
+            {% endfor %}
+            </tbody>
             </div>
         </table>
     </div>

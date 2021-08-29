@@ -1,5 +1,6 @@
 @media screen and (max-width: 768px) {
-    .media {
-        background-color: red;
+    .container {
+        font-size: 9pt;
     }
   }
+

@@ -13,27 +13,6 @@
       border: 1px solid #ddd;
       margin-bottom: 12px;
     }
-    
-    #myUL {
-      list-style-type: none;
-      padding: 0;
-      margin: 0;
-    }
-    
-    #myUL li a {
-      border: 1px solid #ddd;
-      margin-top: -1px; /* Prevent double borders */
-      background-color: #f6f6f6;
-      padding: 12px;
-      text-decoration: none;
-      font-size: 18px;
-      color: black;
-      display: block
-    }
-    
-    #myUL li a:hover:not(.header) {
-      background-color: #eee;
-    }
     </style>
 
 {% block scripts %}
@@ -50,42 +29,35 @@
         //urlApi = "https://www.boardgamegeek.com/xmlapi/search?search=Catane"
         
         input = document.getElementById("myInput");
-        console.log(input.value);
 
-        fetch(urlApi + input.value)
-            .then(function(response){
-                return response
-            }).then(function(text){
-                console.log("get response");
-                console.log(text.text)
-            })
-/*
-        xhr.open('GET', urlApi, true);
-        xhr.withCredentials = true;
-        xhr.setRequestHeader('Access-Control-Allow-Origin', "*");
-        xhr.send();
-*/
-
-        //console.log(xhr.responseXML);
-
-
-/*
-        var input, filter, ul, li, a, i, txtValue;
-        input = document.getElementById("myInput");
-        filter = input.value.toUpperCase();
-        ul = document.getElementById("myUL");
-        li = ul.getElementsByTagName("li");
-        for (i = 0; i < li.length; i++) {
-            a = li[i].getElementsByTagName("a")[0];
-            txtValue = a.textContent || a.innerText;
-            if (txtValue.toUpperCase().indexOf(filter) > -1) {
-                li[i].style.display = "";
-            } else {
-                li[i].style.display = "none";
+        xhr.onreadystatechange = function() {
+            if ( this.responseText != "" && this.readyState == 4 && this.status == 200) {
+                //If the request is 200 aka succesfull, set the text of the label to the response text of the xhttp request
+                var data = JSON.parse(this.responseText)
+                document.getElementById("bggFound").innerHTML = null;
+                for (game in data) {
+                    display(data[game])
+                }
             }
-        }
-        */
+        };
+
+        xhr.open("POST", urlApi+input.value, true);
+        xhr.send();
+        
     }
+
+    function display(item){
+        var img = document.createElement('img')
+        img.src = item.img
+        img.style.width = "100px";
+        img.style.height = "100px";
+        var p = document.createElement('p');
+        p.id = item.id;
+        p.innerHTML = item.name;
+        console.log(item.name);
+        document.getElementById('bggFound').appendChild(img)
+        document.getElementById('bggFound').appendChild(p)
+        }
 </script>
 {% endblock %}
 
@@ -110,7 +82,7 @@
             {{ form.hidden_tag() }}
 
             <ul class="form-group row" style="list-style:none; margin-left:0; padding-left:0;">
-                <li class="col-md-2 is-invalid" id="inputInvalid">
+                <li class="col-md-2">
                     {{ wtf.form_field(form.nom) }}
                 </li>
                 <li class="col-md-2">
@@ -141,6 +113,13 @@
             {% endfor %}
         {% endif %}
     </div>
+
+    <div>
+        <input type="text" id="myInput" onkeyup="myFunction()" placeholder="Trouver sur BGG" title="Type in a name">
+        <div id="bggFound">
+            <!-- result display here! -->
+        </div>
+    </div>
     
     <div class="table-responsive">
         <table class="table table-striped">
@@ -149,6 +128,7 @@
                     <th scope="col" >Jeux favoris</th>
                     <th scope="col" >Joueurs</th>
                     <th scope="col" >Age</th>
+                    <th scope="col"></th>
                   </tr>
             </thead>
             <tbody>     
@@ -173,6 +153,15 @@
               </tr>
 
               {% endfor %}
+
+              {% if gamesF.count() == 0 %}
+                <tr>
+                    <th scope="row">-</th>
+                    <td class="col-md-2">-</td>
+                    <td class="col-md-2">-</td>
+                    <td class="col-md-2"></td>
+                </tr>
+              {% endif %}
             </tbody>
         </table>
     </div>
@@ -189,34 +178,38 @@
             <tbody>              
 
               {% for game in games %}
-
-              <tr>
-                <th scope="row">
-                    {{ game["nom"] }}
-                    {% if game["version"] != "" %}
-                        - {{ game["version"] }}
-                    {% endif %}
-                </th>
-                <td class="col-md-2">{{ game["minJ"] }} - {{ game["maxJ"] }}</td>
-                <td class="col-md-2">{{ game["age"] }}</td>
+                <tr>
+                    <th scope="row">
+                        {{ game["nom"] }}
+                        {% if game["version"] != "" %}
+                            - {{ game["version"] }}
+                        {% endif %}
+                    </th>
+                    <td class="col-md-2">{{ game["minJ"] }} - {{ game["maxJ"] }}</td>
+                    <td class="col-md-2">{{ game["age"] }}</td>
+                    <td class="col-md-2">   
                 <td class="col-md-2">   
-                    <form method ="post" action="/myludo/action">
-                        <button type="submit" name="favorite" value="{{ game['_id'] }}" class="btn btn-light">❤️</button>
-                        <button type="submit" name="trash" value="{{ game['_id'] }}" class="btn btn-danger">🗑</button>
-                    </form>
-                </td>
-              </tr>
-
+                    <td class="col-md-2">   
+                        <form method ="post" action="/myludo/action">
+                            <button type="submit" name="favorite" value="{{ game['_id'] }}" class="btn btn-light">❤️</button>
+                            <button type="submit" name="trash" value="{{ game['_id'] }}" class="btn btn-danger">🗑</button>
+                        </form>
+                    </td>
+                </tr>
               {% endfor %}
+
+              {% if games.count() == 0 %}
+                <tr>
+                    <th scope="row">-</th>
+                    <td class="col-md-2">-</td>
+                    <td class="col-md-2">-</td>
+                    <td class="col-md-2"></td>
+                </tr>
+              {% endif %}
             </tbody>
         </table>
     </div> 
 </div>
-
-
-<input type="text" id="myInput" onkeyup="myFunction()" placeholder="Search for names.." title="Type in a name">
-
-
 {% endwith %}
 {% endblock %}
 

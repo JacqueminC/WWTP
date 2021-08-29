@@ -66,10 +66,10 @@
                     </td>
                     <td align="center">
                         {% if table["jeuxLibre"] == True %}
-                        Jeux Libres
+                        /
                         {% else %}
                         {% for jeu in table["jeux"] %}    
-                            {{ jeu["nom"] }} {% if jeu["version"] != "" %}-{{jeu["version"]}} {% endif %}
+                            {{ jeu["nom"] }} {% if jeu["version"] != "" %} - {{jeu["version"]}} {% endif %}
                         {% endfor %}
                     {% endif %}    
                     </td>

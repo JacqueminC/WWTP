@@ -1,9 +1,15 @@
 from bson import ObjectId
 from flask.helpers import flash
+from flask.templating import render_template
+from flask.wrappers import Response
 from flask_wtf import FlaskForm
 from wtforms import StringField, IntegerField, BooleanField
 from wtforms.validators import InputRequired, ValidationError
 from .repo import RepoLudo
+from requests import get
+import requests
+import json
+import xml.etree.ElementTree as ET
 
 repo = RepoLudo()
 
@@ -98,3 +104,80 @@ class Ludo:
             r["favori"] = True
 
         RepoLudo.updateLudo(r)
+
+    def findOnBGG(game):  
+        print("start")      
+        url = 'https://www.boardgamegeek.com/xmlapi/search?search='
+        urlGame = "https://www.boardgamegeek.com/xmlapi/boardgame/"
+        r = get(url+game, headers={"accept":"application/xml"}).content
+
+        xml = ET.fromstring(r)
+        limit = 6
+        start = 0
+
+        found = {}
+        idGame = ""
+
+        for g in xml.findall('boardgame'):
+
+            """boardgame"""
+            """print(g.tag)"""
+
+            """{'objectid': '13'}"""
+            """print(g.attrib)"""
+
+            """13"""
+            """print(g.get("objectid"))"""
+
+            """gameName = g.find('name')"""
+
+            """Catane"""
+            """print(gameName.text)"""
+
+            """found[start] = { "name": gameName.text, "id": g.get("objectid") }"""
+            idGame =  idGame + g.get("objectid")  
+
+            start = start + 1
+
+            if start < limit :
+                idGame = idGame +","
+
+            if start >= limit:
+                break  
+
+        if idGame != "":
+
+            r2 = get(urlGame+idGame, headers={"accept":"application/xml"}).content
+            
+            xml2 = ET.fromstring(r2)
+
+            loop = 0
+
+
+            print("-------------------")
+            print(xml2.findall('boardgame'))
+            print("-------------------")
+
+            for game in xml2.findall('boardgame'):
+                idGame = game.get("objectid")
+                name = game.find('name')
+                minPlayer = game.find("minplayers")
+                maxPlayer = game.find("maxplayers")
+                age = game.find("age")
+                img = game.find("image")
+
+                found[loop] = {
+                    "id" :idGame,
+                    "name" : name.text,
+                    "minPlayer" : minPlayer.text,
+                    "maxPlayer" : maxPlayer.text,
+                    "age" : age.text,
+                    "img" : img.text
+                }
+
+                loop = loop + 1
+            
+            print("end")
+
+        return found
+        

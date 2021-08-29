@@ -183,21 +183,25 @@ class Table:
         """RepoJoueur.updatePlayer(joueur)"""
 
 class JeuxListeForm(Form):
-    nom = StringField("Nom ")
-    version = StringField("Version ")
+    nom = StringField("", render_kw={"placeholder": "Nom"})
+    version = StringField("", render_kw={"placeholder": "Version"})
 
 class CreationTableForm(FlaskForm):
+
+    from wtforms.fields import html5 as h5fields
+    from wtforms.widgets import html5 as h5widgets
+
     jeuxLibre = BooleanField(' Jeux libre ?')
-    nbPlace = IntegerField('Nombre de place disponnible', validators=[InputRequired(), ])
-    jeux = FieldList(FormField(JeuxListeForm), min_entries=1)
-    date = DateField('Date', format='%Y-%m-%d', validators=[InputRequired()])
-    heure = TimeField('Heure', validators=[InputRequired()])
-    ville = StringField('Ville', render_kw={'disabled':''})
+    nbPlace = IntegerField('', validators=[InputRequired()], render_kw={"placeholder": "Places libres"})
+    jeux = FieldList(FormField(JeuxListeForm), min_entries=1,)
+    date = DateField('', format='%Y-%m-%d', validators=[InputRequired()])
+    heure = TimeField('', validators=[InputRequired()])
+    ville = StringField('', render_kw={'disabled':''})
     ageMin = BooleanField('Définir un âge minimum ?')
-    age = IntegerField(' Age minimum ?', default=0)
+    age = h5fields.IntegerField("", widget=h5widgets.NumberInput(min=15, max=100, step=1))
     regle = BooleanField(' Connaissance des règles requises ?')
-    noteMin = BooleanField(' Note minimum ?')
-    note = IntegerRangeField('Note', default=0)
+    noteMin = BooleanField('Note minimum ?')
+    note = IntegerRangeField('', default=0, render_kw={"placeholder": "Note"})
 
     def validate_nbPlace(self, nbPlace):
         if not isinstance(nbPlace.data, int):
