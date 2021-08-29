@@ -7,7 +7,7 @@ from wtforms.validators import ValidationError
 from flask_wtf import FlaskForm
 from .model import GameForm, Ludo
 
-bpLudo = Blueprint("ludo", __name__, template_folder="templates")
+bpLudo = Blueprint("ludo", __name__, template_folder="templates", static_folder='static', static_url_path='assets')
 
 
 @bpLudo.route("/", methods=["GET", "POST"])

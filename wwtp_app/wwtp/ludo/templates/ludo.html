@@ -1,19 +1,4 @@
-<style>
-    * {
-      box-sizing: border-box;
-    }
-    
-    #myInput {
-      background-image: url('/css/searchicon.png');
-      background-position: 10px 12px;
-      background-repeat: no-repeat;
-      width: 100%;
-      font-size: 16px;
-      padding: 12px 20px 12px 40px;
-      border: 1px solid #ddd;
-      margin-bottom: 12px;
-    }
-    </style>
+<link href="{{ url_for('ludo.static', filename='style.css') }}" rel="stylesheet" />
 
 {% block scripts %}
 
@@ -26,13 +11,11 @@
         var input, filter, ul, li, a, i, txtValue, urlApi;
         var xhr = new XMLHttpRequest();
         urlApi = "http://127.0.0.1:5000/myludo/bgg/"
-        //urlApi = "https://www.boardgamegeek.com/xmlapi/search?search=Catane"
         
         input = document.getElementById("myInput");
 
         xhr.onreadystatechange = function() {
             if ( this.responseText != "" && this.readyState == 4 && this.status == 200) {
-                //If the request is 200 aka succesfull, set the text of the label to the response text of the xhttp request
                 var data = JSON.parse(this.responseText)
                 document.getElementById("bggFound").innerHTML = null;
                 for (game in data) {
@@ -127,8 +110,8 @@
                 <tr>
                     <th scope="col" >Jeux favoris</th>
                     <th scope="col" >Joueurs</th>
-                    <th scope="col" >Age</th>
-                    <th scope="col"></th>
+                    <th scope="col" id="smart">Age</th>
+                    <th scope="col" id="smart"></th>
                   </tr>
             </thead>
             <tbody>     
@@ -143,8 +126,8 @@
                     {% endif %}
                 </th>
                 <td class="col-md-2">{{ gameF["minJ"] }} - {{ gameF["maxJ"] }}</td>
-                <td class="col-md-2">{{ gameF["age"] }}</td>
-                <td class="col-md-2">
+                <td class="col-md-2" id="smart">{{ gameF["age"] }}</td>
+                <td class="col-md-2" id="smart">
                     <form method ="post" action="/myludo/action">
                         <button type="submit" name="favorite" value="{{ gameF['_id'] }}" class="btn btn-light">🖤</button>
                         <button type="submit" name="trash" value="{{ gameF['_id'] }}" class="btn btn-danger">🗑</button>
@@ -158,8 +141,8 @@
                 <tr>
                     <th scope="row">-</th>
                     <td class="col-md-2">-</td>
-                    <td class="col-md-2">-</td>
-                    <td class="col-md-2"></td>
+                    <td class="col-md-2" id="smart">-</td>
+                    <td class="col-md-2" id="smart"></td>
                 </tr>
               {% endif %}
             </tbody>
@@ -172,7 +155,8 @@
               <tr>
                 <th scope="col" >Jeux</th>
                 <th scope="col" >Joueurs</th>
-                <th scope="col" >Age</th>
+                <th scope="col" id="smart">Age</th>
+                <th scope="col" id="smart"></th>
               </tr>
             </thead>
             <tbody>              
@@ -186,10 +170,8 @@
                         {% endif %}
                     </th>
                     <td class="col-md-2">{{ game["minJ"] }} - {{ game["maxJ"] }}</td>
-                    <td class="col-md-2">{{ game["age"] }}</td>
-                    <td class="col-md-2">   
-                <td class="col-md-2">   
-                    <td class="col-md-2">   
+                    <td class="col-md-2" id="smart">{{ game["age"] }}</td>
+                    <td class="col-md-2" id="smart">   
                         <form method ="post" action="/myludo/action">
                             <button type="submit" name="favorite" value="{{ game['_id'] }}" class="btn btn-light">❤️</button>
                             <button type="submit" name="trash" value="{{ game['_id'] }}" class="btn btn-danger">🗑</button>

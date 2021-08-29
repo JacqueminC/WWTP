@@ -14,6 +14,8 @@
 
     <h2>Mes tables comme joueur</h2>
 
+    📖 = Connaissance des règles requises
+
     {% with messages = get_flashed_messages(with_categories=true) %}
         {% if messages %}
         {% for category, message in messages %}
@@ -56,7 +58,6 @@
                         {% if table["jeuxLibre"] == True %}
                         /
                         {% else %}
-                        Jeux
                         <ul>
                         {% for jeu in table["jeux"] %}    
                             <li>{{ jeu["nom"] }} {% if jeu["version"] != "" %} - {{jeu["version"]}} {% endif %}</li>
@@ -66,13 +67,15 @@
                     </td>
                     <td align="center" style="font-weight: bold; color: #99433f;">
                         {% if table["regle"] == True %}
-                        Connaissance des règles obligatoire
+                        📖
                         <br>
-                        {% elif table["ageMin"] == True %}
-                        Age minimum : {{table["age"]}}
+                        {% endif %}
+                        {% if table["ageMin"] == True %}
+                        {{table["age"]}}ans /+
                         <br>
-                        {% elif table["noteMin"] == True %}
-                        Note minimum : {{table["note"]}}
+                        {% endif %}
+                        {% if table["noteMin"] == True %}
+                        Note {{table["note"]}} /+
                         <br>
                         {% endif %}
                     </td>
