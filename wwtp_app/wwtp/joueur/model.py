@@ -25,7 +25,7 @@ class Joueur:
         else:
             raise Exception("L'email n'est pas valide")
         
-        if len(motDePasse) >= 8:               
+        if len(motDePasse) >= 8:           
 
             if self.hasNumbers(motDePasse):
                 capital = bool(re.match(r'\w*[A-Z]\w*', motDePasse))
@@ -120,11 +120,10 @@ class Joueur:
 
         subject = "Une table a été annulée"
         body = f"La table de {hote['pseudo']} du {table['date']} a été annulée !\n\nWWTP"
-        
+        emails = []        
 
         for joueur in table["joueurs"]:
-            jEmail = Joueur.findEmailById(joueur["idJoueur"])
-            emails = []
+            jEmail = Joueur.findEmailById(joueur["idJoueur"])            
 
             emails = emails + [jEmail["email"]]
 
@@ -179,7 +178,6 @@ class Joueur:
     def hasNumbers(self, inputString):
         return any(char.isdigit() for char in inputString)
 
-
     def hashPassword(mdp):
         salt = os.urandom(32)
         key = hashlib.pbkdf2_hmac('sha256', mdp.encode('UTF-8'), salt, 100000)
@@ -227,7 +225,7 @@ class Joueur:
         try:   
             joueur = Joueur(
                 form.pseudo.data,
-                form.email.data,
+                str(form.email.data).lower(),
                 form.motDePasse.data,
                 form.nom.data,
                 form.prenom.data,
@@ -244,18 +242,14 @@ class Joueur:
             raise ex
 
     def updatePlayer(form, joueur):
-
-        if form.motDePasse.data != "":
-            mdp = Joueur.hashPassword(form.motDePasse.data)
-            joueur["motDePasse"] = mdp
-
+        
         joueur["nom"] = form.nom.data
         joueur["prenom"] = form.prenom.data 
         joueur["rue"] = form.rue.data 
         joueur["numero"] = form.numero.data
         joueur["boite"] = form.boite.data 
         joueur["codePostal"] = form.codePostal.data 
-        joueur["ville"] = form.ville.data          
+        joueur["ville"] = form.ville.data    
 
         RepoJoueur.updatePlayer(joueur)
     

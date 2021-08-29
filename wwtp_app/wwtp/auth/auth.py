@@ -19,7 +19,7 @@ def login():
     if form.validate_on_submit():
         data = request.form.to_dict()
         email = data.get("email").replace(" ", "")
-        user = Joueur.findPlayerByEmailAndAccess(email)
+        user = Joueur.findPlayerByEmailAndAccess(str(email).lower())
 
         connect = False
 

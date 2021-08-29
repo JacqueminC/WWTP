@@ -89,12 +89,16 @@
                     </td>
                     <td>
                         <form method ="post" action="/joueur/manageTable">
-                            {% if table["estValide"] == False  %}
+                            {% if table["estValide"] == False and table["estAnnule"] == False %}
                                 <button type="submit" name="validate" value="{{ table['_id'] }}" class="btn btn-success">V</button>
                             {% else %}
                                 <button type="submit"  class="btn btn-success disabled" disabled>V</button>
                             {% endif %}
+                            {% if table["estAnnule"] == False %}
                             <button type="submit" name="close" value="{{ table['_id'] }}" class="btn btn-danger">X</button>
+                            {% else %}
+                                <button type="submit" name="close" class="btn btn-danger disabled" disabled>X</button>
+                            {% endif %}                            
                         </form>
                     </td>
                 </tr>

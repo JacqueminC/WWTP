@@ -37,7 +37,6 @@ def getGameBGG(value):
 
     if len(value) > 2:
         result = Ludo.findOnBGG(value)
-        print(result)
         return jsonify(result)
 
     return ""

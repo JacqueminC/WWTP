@@ -40,9 +40,6 @@
             <a class="nav-link" href="/myludo">Ma ludothèque</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="/joueur/account">Mon compte</a>
-          </li>
-          <li class="nav-item">
             <a class="nav-link" href="/joueur/account">
               {% if session.get("user") != None and session.get("isLogged") == True %}
                 {% if session["user"].note != None %}

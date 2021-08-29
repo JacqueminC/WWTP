@@ -72,40 +72,19 @@
                 <p style="color: red; font-weight: bold;">{{ message }}</p>
                 {% endif %}                
             {% endfor %}
-        {% endif %}
-
-        
-
-        <ul class="form-group" style="list-style:none; margin-left:0; padding-left:0;">
-            <li class="col-md-4">
-                {{ wtf.form_field(form.motDePasse) }}
-            </li>
-            <li class="col-md-4">
-                {{ wtf.form_field(form.confMDP) }}
-            </li>
-        </ul> 
-
-        {% if messages %}
-            {% for category, message in messages %}        
-                {% if category == "error" %}
-                <p style="color: red; font-weight: bold;">{{ message }}</p>
-                {% endif %}                
-            {% endfor %}
-        {% endif %}
-
-        
-
-        {% if messages %}
-            {% for category, message in messages %}        
-                {% if category == "confmdp" %}
-                <p style="color: red; font-weight: bold;">{{ message }}</p>
-                {% endif %}                
-            {% endfor %}
-        {% endif %}
+        {% endif %}    
 
         <input type="submit" value="Enregistrer" class="btn btn-primary">
 
     </form>
+
+    {% if messages %}
+        {% for category, message in messages %}        
+            {% if category == "done" %}
+            <p style="color: green; font-weight: bold;">{{ message }}</p>
+            {% endif %}                
+        {% endfor %}
+    {% endif %}
 
 
 

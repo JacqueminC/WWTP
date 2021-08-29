@@ -25,39 +25,27 @@ class accountForm(FlaskForm):
     dateDeNaissance = DateField('Date de naissance', format='%Y-%m-%d', render_kw={'disabled':''})
     pseudo = StringField("Pseudo", render_kw={'disabled':''})
     email = EmailField("Email", render_kw={'disabled':''})
-    motDePasse = PasswordField("Mot de passe")
-    confMDP = PasswordField("Confirmation du mot de passe")
-
-    def validate_confMDP(self, confMDP):
-        if self.motDePasse.data != None and self.motDePasse.data != "":
-            if confMDP.data != self.motDePasse.data:
-                flash("La validation n'est pas correcte", "confmdp")
-                return ValidationError()    
 
 class registerForm(FlaskForm):
-    nom = StringField("Nom", validators=[InputRequired()])
-    prenom = StringField("Prénom", validators=[InputRequired()])
-    rue = StringField("Rue", validators=[InputRequired()])
-    numero = IntegerField("Numéro", validators=[InputRequired()])
-    boite = StringField("Boite")
-    codePostal = StringField("Code postal", validators=[InputRequired()])
-    ville = StringField("Ville", validators=[InputRequired()])
+    nom = StringField("", validators=[InputRequired()], render_kw={"placeholder": "Nom"})
+    prenom = StringField("", validators=[InputRequired()], render_kw={"placeholder": "Prénom"})
+    rue = StringField("", validators=[InputRequired()], render_kw={"placeholder": "Rue"})
+    numero = IntegerField("", validators=[InputRequired()], render_kw={"placeholder": "Numéro"})
+    boite = StringField("", render_kw={"placeholder": "Boite"})
+    codePostal = StringField("", validators=[InputRequired()], render_kw={"placeholder": "Code postal"})
+    ville = StringField("", validators=[InputRequired()], render_kw={"placeholder": "Ville"})
     dateDeNaissance = DateField('Date de naissance', format='%Y-%m-%d', validators=[InputRequired()])
-    pseudo = StringField("Pseudo", validators=[InputRequired()])
-    email = EmailField("Email", validators=[InputRequired()])
-    motDePasse = PasswordField("Mot de passe", validators=[InputRequired()])
-    confMDP = PasswordField("Confirmation du mot de passe", validators=[InputRequired()])
-
-class AdminTable(FlaskForm):
-    temps = RadioField('Label', choices=[('all','Tout'),('past','Passé'),('futur','Futur')], default='all')
-    
+    pseudo = StringField("", validators=[InputRequired()], render_kw={"placeholder": "Pseudo"})
+    email = EmailField("", validators=[InputRequired()], render_kw={"placeholder": "Email"})
+    motDePasse = PasswordField("", validators=[InputRequired()], render_kw={"placeholder": "Mot de passe"})
+    confMDP = PasswordField("", validators=[InputRequired()], render_kw={"placeholder": "Confirmation du mot de passe"})
 
     def validate_dateDeNaissance(self, dateDeNaissance):
         now = datetime.today()
         ageCalcule = relativedelta(now, dateDeNaissance.data).years
 
         if ageCalcule < 15:
-            flash("Il faut avoir 15 ans pour s'inscrire sur le site", ("ddn"))
+            flash("Il faut avoir 15 ans pour s'inscrire sur le site", "ddn")
             return ValidationError()
 
     def validate_confMDP(self, confMDP):
@@ -82,6 +70,10 @@ class AdminTable(FlaskForm):
             return ValidationError()
 
 
+class AdminTable(FlaskForm):
+    temps = RadioField('Label', choices=[('all','Tout'),('past','Passé'),('futur','Futur')], default='all')
+
+
 @bpJoueur.route("/joinTable", methods=["GET", "POST"])
 def joinTable():
 
@@ -104,11 +96,11 @@ def joinTable():
                 joueurHote = Joueur.findPlayerById(hote["idJoueur"])
                 Joueur.joinTable(jId, table["_id"])
 
-                subject = "Un joueur à rejoints votre table"
+                subject = "Un joueur a rejoint votre table"
                 body = f"{jPseudo} a rejoint votre table du {table['date']}\n\nWWTP"
                 Joueur.sendEmail([joueurHote['email']], subject, body)
 
-                flash('Vous avez rejoins la table de ' + hote["pseudo"] + ' à ' + table["ville"] + ' le ' + str(table['date']), 'info')
+                flash('Vous avez rejoint la table de ' + hote["pseudo"] + ' à ' + table["ville"] + ' le ' + str(table['date']), 'info')
                 return redirect(url_for('table.listeTable'))    
 
             else:
@@ -140,7 +132,7 @@ def leaveTable():
             user["note"] = round(note, 2)
             session.update(user)
 
-            flash("Vous avez quitter la table, vous avez subit un malus sur votre note !")        
+            flash("Vous avez quitter la table, vous avez subit un malus sur votre note !", "error")        
             return redirect(url_for('table.tableJoueur'))
 
         else:
@@ -190,7 +182,7 @@ def manageTable():
 
             Joueur.sendMailCloseByPlayer(hote, table)
 
-    flash("Votre table a bien été annulé, vous avez subit un malus sur votre note !", "done")
+            flash("Votre table a bien été annulé, vous avez subit un malus sur votre note !", "error")
         
     return redirect(url_for('table.tableHote'))
 
@@ -276,7 +268,15 @@ def account():
             form.dateDeNaissance.data = joueur["dateDeNaissance"]
 
         if form.validate_on_submit():
-            Joueur.updatePlayer(form, joueur)
+            try:
+                Joueur.updatePlayer(form, joueur)
+                flash("Votre compte à été mis à jour", "done")
+            except Exception as ex:
+                print("prout")
+                flash(ex)
+
+            
+
             return redirect(url_for("joueur.account"))
 
 
@@ -292,7 +292,6 @@ def adminjoueur():
         joueurs = Joueur.getAllPlayers()
 
         if request.form.get("lock"):
-            print(request.values["lock"])
             Joueur.lockPlayer(request.values["lock"])
 
         return render_template("adminJoueur.html", joueurs=joueurs)

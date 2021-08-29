@@ -108,10 +108,10 @@
         <table class="table table-striped">
             <thead>
                 <tr>
-                    <th scope="col" >Jeux favoris</th>
+                    <th class="col-md-3" >Jeux favoris</th>
                     <th scope="col" >Joueurs</th>
                     <th scope="col" id="smart">Age</th>
-                    <th scope="col" id="smart"></th>
+                    <th scope="col"></th>
                   </tr>
             </thead>
             <tbody>     
@@ -119,7 +119,7 @@
               {% for gameF in gamesF %}
 
               <tr>
-                <th scope="row">
+                <th class="col-md-3">
                     {{ gameF["nom"] }}
                     {% if gameF["version"] != "" %}
                         - {{ gameF["version"] }}
@@ -127,7 +127,7 @@
                 </th>
                 <td class="col-md-2">{{ gameF["minJ"] }} - {{ gameF["maxJ"] }}</td>
                 <td class="col-md-2" id="smart">{{ gameF["age"] }}</td>
-                <td class="col-md-2" id="smart">
+                <td class="col-md-2" >
                     <form method ="post" action="/myludo/action">
                         <button type="submit" name="favorite" value="{{ gameF['_id'] }}" class="btn btn-light">🖤</button>
                         <button type="submit" name="trash" value="{{ gameF['_id'] }}" class="btn btn-danger">🗑</button>
@@ -139,10 +139,10 @@
 
               {% if gamesF.count() == 0 %}
                 <tr>
-                    <th scope="row">-</th>
+                    <th class="col-md-3">-</th>
                     <td class="col-md-2">-</td>
                     <td class="col-md-2" id="smart">-</td>
-                    <td class="col-md-2" id="smart"></td>
+                    <td class="col-md-2"></td>
                 </tr>
               {% endif %}
             </tbody>
@@ -153,17 +153,17 @@
         <table class="table table-striped">
             <thead>
               <tr>
-                <th scope="col" >Jeux</th>
+                <th class="col-md-3" >Jeux</th>
                 <th scope="col" >Joueurs</th>
                 <th scope="col" id="smart">Age</th>
-                <th scope="col" id="smart"></th>
+                <th scope="col"></th>
               </tr>
             </thead>
             <tbody>              
 
               {% for game in games %}
                 <tr>
-                    <th scope="row">
+                    <th class="col-md-3">
                         {{ game["nom"] }}
                         {% if game["version"] != "" %}
                             - {{ game["version"] }}
@@ -171,7 +171,7 @@
                     </th>
                     <td class="col-md-2">{{ game["minJ"] }} - {{ game["maxJ"] }}</td>
                     <td class="col-md-2" id="smart">{{ game["age"] }}</td>
-                    <td class="col-md-2" id="smart">   
+                    <td class="col-md-2">   
                         <form method ="post" action="/myludo/action">
                             <button type="submit" name="favorite" value="{{ game['_id'] }}" class="btn btn-light">❤️</button>
                             <button type="submit" name="trash" value="{{ game['_id'] }}" class="btn btn-danger">🗑</button>
@@ -182,9 +182,9 @@
 
               {% if games.count() == 0 %}
                 <tr>
-                    <th scope="row">-</th>
+                    <th class="col-md-3">-</th>
                     <td class="col-md-2">-</td>
-                    <td class="col-md-2">-</td>
+                    <td class="col-md-2"id="smart">-</td>
                     <td class="col-md-2"></td>
                 </tr>
               {% endif %}

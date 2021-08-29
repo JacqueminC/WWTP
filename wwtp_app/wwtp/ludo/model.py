@@ -105,8 +105,7 @@ class Ludo:
 
         RepoLudo.updateLudo(r)
 
-    def findOnBGG(game):  
-        print("start")      
+    def findOnBGG(game):     
         url = 'https://www.boardgamegeek.com/xmlapi/search?search='
         urlGame = "https://www.boardgamegeek.com/xmlapi/boardgame/"
         r = get(url+game, headers={"accept":"application/xml"}).content
@@ -153,11 +152,6 @@ class Ludo:
 
             loop = 0
 
-
-            print("-------------------")
-            print(xml2.findall('boardgame'))
-            print("-------------------")
-
             for game in xml2.findall('boardgame'):
                 idGame = game.get("objectid")
                 name = game.find('name')
@@ -177,7 +171,6 @@ class Ludo:
 
                 loop = loop + 1
             
-            print("end")
 
         return found
         
