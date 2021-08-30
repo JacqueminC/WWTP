@@ -1,3 +1,4 @@
+<link href="{{ url_for('table.static', filename='style.css') }}" rel="stylesheet" />
 {% extends "base.html" %}
 {% import "bootstrap/wtf.html" as wtf%}
 
@@ -34,12 +35,12 @@
         <table class="table table-striped">
             <thead align="center">
               <tr>
-                <th scope="col">Hôte</th>
+                <th scope="col" class="smart">Hôte</th>
                 <th scope="col">📅</th>
                 <th scope="col">📍</th>
-                <th scope="col">🪑</th>
-                <th scope="col">🎲</th>
-                <th scope="col">📋</th>
+                <th scope="col" class="smart">🪑</th>
+                <th scope="col" class="smart">🎲</th>
+                <th scope="col" class="smart">📋</th>
                 <th scope="col"></th>
               </tr>
             </thead>
@@ -50,11 +51,11 @@
             {% for table in result %}
    
                 <tr>
-                    <th scope="row">{{table["hote"].nom}}</th>
+                    <th scope="row" class="smart">{{table["hote"].pseudo}}</th>
                     <td>{{table["date"].strftime('%d-%m-%Y %H:%M')}}</td>
                     <td>{{table["ville"]}}</td>
-                    <td align="center">{{table["nbPlace"] - table["joueurs"]|length}} / {{table["nbPlace"]}}</td>
-                    <td align="center">
+                    <td align="center" class="smart">{{table["nbPlace"] - table["joueurs"]|length}} / {{table["nbPlace"]}}</td>
+                    <td align="center" class="smart">
                         {% if table["jeuxLibre"] == True %}
                         /
                         {% else %}
@@ -65,7 +66,7 @@
                         </ul> 
                     {% endif %}    
                     </td>
-                    <td align="center" style="font-weight: bold; color: #99433f;">
+                    <td class="smart" align="center" style="font-weight: bold; color: #99433f;">
                         {% if table["regle"] == True %}
                         📖
                         <br>

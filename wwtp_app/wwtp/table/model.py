@@ -198,7 +198,7 @@ class CreationTableForm(FlaskForm):
     heure = TimeField('', validators=[InputRequired()])
     ville = StringField('', render_kw={'disabled':''})
     ageMin = BooleanField('Définir un âge minimum ?')
-    age = IntegerField("", render_kw={"placeholder": "Âge requis"})
+    age = IntegerField("", default=0, render_kw={"placeholder": "Âge requis"})
     regle = BooleanField(' Connaissance des règles requises ?')
     noteMin = BooleanField('Note minimum ?')
     note = IntegerRangeField('', default=0, render_kw={"placeholder": "Note"})

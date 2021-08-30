@@ -10,7 +10,7 @@
         
         var input, filter, ul, li, a, i, txtValue, urlApi;
         var xhr = new XMLHttpRequest();
-        urlApi = "http://127.0.0.1:5000/myludo/bgg/"
+        urlApi = "http://192.168.0.3:8000/myludo/bgg/"
         
         input = document.getElementById("myInput");
 
@@ -110,7 +110,7 @@
                 <tr>
                     <th class="col-md-3" >Jeux favoris</th>
                     <th scope="col" >Joueurs</th>
-                    <th scope="col" id="smart">Age</th>
+                    <th scope="col" class="smart">Age</th>
                     <th scope="col"></th>
                   </tr>
             </thead>
@@ -126,7 +126,7 @@
                     {% endif %}
                 </th>
                 <td class="col-md-2">{{ gameF["minJ"] }} - {{ gameF["maxJ"] }}</td>
-                <td class="col-md-2" id="smart">{{ gameF["age"] }}</td>
+                <td class="col-md-2 smart">{{ gameF["age"] }}</td>
                 <td class="col-md-2" >
                     <form method ="post" action="/myludo/action">
                         <button type="submit" name="favorite" value="{{ gameF['_id'] }}" class="btn btn-light">🖤</button>
@@ -141,7 +141,7 @@
                 <tr>
                     <th class="col-md-3">-</th>
                     <td class="col-md-2">-</td>
-                    <td class="col-md-2" id="smart">-</td>
+                    <td class="col-md-2 smart">-</td>
                     <td class="col-md-2"></td>
                 </tr>
               {% endif %}
@@ -155,7 +155,7 @@
               <tr>
                 <th class="col-md-3" >Jeux</th>
                 <th scope="col" >Joueurs</th>
-                <th scope="col" id="smart">Age</th>
+                <th scope="col" class="smart">Age</th>
                 <th scope="col"></th>
               </tr>
             </thead>
@@ -170,7 +170,7 @@
                         {% endif %}
                     </th>
                     <td class="col-md-2">{{ game["minJ"] }} - {{ game["maxJ"] }}</td>
-                    <td class="col-md-2" id="smart">{{ game["age"] }}</td>
+                    <td class="col-md-2 smart">{{ game["age"] }}</td>
                     <td class="col-md-2">   
                         <form method ="post" action="/myludo/action">
                             <button type="submit" name="favorite" value="{{ game['_id'] }}" class="btn btn-light">❤️</button>
@@ -184,7 +184,7 @@
                 <tr>
                     <th class="col-md-3">-</th>
                     <td class="col-md-2">-</td>
-                    <td class="col-md-2"id="smart">-</td>
+                    <td class="col-md-2 smart">-</td>
                     <td class="col-md-2"></td>
                 </tr>
               {% endif %}

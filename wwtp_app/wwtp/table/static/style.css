@@ -2,5 +2,13 @@
     .container {
         font-size: 9pt;
     }
+
+    .smart {
+        display: none;
+    }
+
+    td {
+        font-size: 9pt;
+    }
   }
 

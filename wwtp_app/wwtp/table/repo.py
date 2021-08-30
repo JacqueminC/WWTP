@@ -67,7 +67,8 @@ class RepoTable:
             "date": {
                 "$gte": dateBefore,
                 "$lt": dateAfter
-            }}
+            },
+            "estAnnule": False}
 
         return tableColl.count_documents(query)
 
@@ -80,7 +81,8 @@ class RepoTable:
             "date": {
                 "$gte": dateBefore,
                 "$lt": dateAfter
-            }}
+            },
+            "estAnnule": False}
 
         return tableColl.count_documents(query)
 

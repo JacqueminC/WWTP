@@ -21,7 +21,7 @@ import pwa
 
 Bootstrap(app)
 
-app.register_blueprint(bp)
+"""app.register_blueprint(bp)"""
 app.register_blueprint(pwa.bp)
 app.register_blueprint(bpTable, url_prefix="/table")
 app.register_blueprint(bpHome, ulr_prefix="/home")
