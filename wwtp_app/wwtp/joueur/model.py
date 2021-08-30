@@ -1,6 +1,16 @@
+from flask import flash
 from datetime import datetime, date
 from dateutil.relativedelta import relativedelta
 import re, os, hashlib, smtplib
+from wtforms.validators import InputRequired, ValidationError
+from dateutil.relativedelta import relativedelta
+from flask_wtf import FlaskForm
+from wtforms.fields.html5 import EmailField, DateField
+from wtforms import StringField, IntegerField, PasswordField, RadioField
+from wtforms.fields.core import BooleanField
+
+
+from pymongo.message import update
 
 if __package__ == "wwtp.joueur":
     from wwtp.table.repo import RepoTable
@@ -10,6 +20,67 @@ else:
 from .repo import *
 from email.message import EmailMessage
 from table.repo import RepoTable
+
+class AccountForm(FlaskForm):
+    nom = StringField("Nom", validators=[InputRequired()])
+    prenom = StringField("Prénom", validators=[InputRequired()])
+    rue = StringField("Rue", validators=[InputRequired()])
+    numero = IntegerField("Numéro", validators=[InputRequired()])
+    boite = StringField("Boite")
+    codePostal = StringField("Code postal", validators=[InputRequired()])
+    ville = StringField("Ville", validators=[InputRequired()])
+    dateDeNaissance = DateField('Date de naissance', format='%Y-%m-%d', render_kw={'disabled':''})
+    pseudo = StringField("Pseudo", render_kw={'disabled':''})
+    email = EmailField("Email", render_kw={'disabled':''})
+    mdp = PasswordField("", render_kw={'placeholder':'Nouveau mot de passe'})
+    confMdp = PasswordField("", render_kw={'placeholder':'Nouveau mot de passe'})
+
+class RegisterForm(FlaskForm):
+    nom = StringField("", validators=[InputRequired()], render_kw={"placeholder": "Nom"})
+    prenom = StringField("", validators=[InputRequired()], render_kw={"placeholder": "Prénom"})
+    rue = StringField("", validators=[InputRequired()], render_kw={"placeholder": "Rue"})
+    numero = IntegerField("", validators=[InputRequired()], render_kw={"placeholder": "Numéro"})
+    boite = StringField("", render_kw={"placeholder": "Boite"})
+    codePostal = StringField("", validators=[InputRequired()], render_kw={"placeholder": "Code postal"})
+    ville = StringField("", validators=[InputRequired()], render_kw={"placeholder": "Ville"})
+    dateDeNaissance = DateField('Date de naissance', format='%Y-%m-%d', validators=[InputRequired()])
+    pseudo = StringField("", validators=[InputRequired()], render_kw={"placeholder": "Pseudo"})
+    email = EmailField("", validators=[InputRequired()], render_kw={"placeholder": "Email"})
+    motDePasse = PasswordField("", validators=[InputRequired()], render_kw={"placeholder": "Mot de passe"})
+    confMDP = PasswordField("", validators=[InputRequired()], render_kw={"placeholder": "Confirmation du mot de passe"})
+
+    def validate_dateDeNaissance(self, dateDeNaissance):
+        now = datetime.today()
+        ageCalcule = relativedelta(now, dateDeNaissance.data).years
+
+        if ageCalcule < 15:
+            flash("Il faut avoir 15 ans pour s'inscrire sur le site wtf", "ddn")
+            return ValidationError()
+
+    def validate_confMDP(self, confMDP):
+        if confMDP.data != self.motDePasse.data:
+            flash("La validation n'est pas correcte", "confmdp")
+            return ValidationError()
+
+    def validate_email(self, email):
+        result = Joueur.findEmailExist(email.data)
+
+        if result != 0:
+            email.data = ""
+            flash("L'email est déjà utilisé", "email")
+            return ValidationError()
+
+    def validate_pseudo(self, pseudo):
+        p, find = Joueur.findPseudoExist(pseudo.data)
+
+        if not find:
+            pseudo.data = p
+            flash("Le pseudo n'est pas disponible, essayé " + p, "pseudo")
+            return ValidationError()
+
+
+class AdminTable(FlaskForm):
+    temps = RadioField('Label', choices=[('all','Tout'),('past','Passé'),('futur','Futur')], default='all')
 
 class Joueur:
 
@@ -81,7 +152,7 @@ class Joueur:
         if ageCalcule > 15:
             self.dateDeNaissance = dateDeNaissance
         else:
-            raise  Exception("Il faut avoir au minimum 15 ans pour s'inscrire sur le site")
+            raise  Exception("Il faut avoir au minimum 15 ans pour s'inscrire sur le siteeuh")
 
         self.dateDeCreation = datetime.today()
         self.estBloque = False
@@ -241,16 +312,40 @@ class Joueur:
         except Exception as ex:
             raise ex
 
-    def updatePlayer(form, joueur):
-        
-        joueur["nom"] = form.nom.data
-        joueur["prenom"] = form.prenom.data 
-        joueur["rue"] = form.rue.data 
-        joueur["numero"] = form.numero.data
-        joueur["boite"] = form.boite.data 
-        joueur["codePostal"] = form.codePostal.data 
-        joueur["ville"] = form.ville.data    
+    def updatePlayer(form, joueur):        
 
-        RepoJoueur.updatePlayer(joueur)
+        try:
+            joueur["nom"] = form.nom.data
+            joueur["prenom"] = form.prenom.data 
+            joueur["rue"] = form.rue.data 
+            joueur["numero"] = form.numero.data
+            joueur["boite"] = form.boite.data 
+            joueur["codePostal"] = form.codePostal.data 
+            joueur["ville"] = form.ville.data  
+
+            value = str(form.mdp.data)
+            if len(value) != 0:
+                if form.mdp.data == form.confMdp.data:
+                    if len(value) > 8:
+                        if any(char.isdigit() for char in value):
+                            capital = bool(re.match(r'\w*[A-Z]\w*', value))
+                            if capital:
+                                hash = Joueur.hashPassword(value)
+                                joueur["motDePasse"] = hash
+                            else:
+                                raise Exception("Le mot de passe doit contenir au moins une majuscule")
+                        else:
+                            raise Exception("Le mot de passe doit contenir des chiffres")
+                    else:
+                        raise Exception("Le mot de passe doit être de minimum 8 caratères")                    
+                else:
+                    raise Exception("La confirmation du mot de passe n'est pas valide")            
+
+            print("update")
+            """RepoJoueur.updatePlayer(joueur)""" 
+        except Exception as ex:
+            raise ex
+
+        
     
 

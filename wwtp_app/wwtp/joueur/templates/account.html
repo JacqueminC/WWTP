@@ -72,7 +72,10 @@
                 <p style="color: red; font-weight: bold;">{{ message }}</p>
                 {% endif %}                
             {% endfor %}
-        {% endif %}    
+        {% endif %}
+        
+        {{ wtf.form_field(form.mdp) }}
+        {{ wtf.form_field(form.confMdp) }}
 
         <input type="submit" value="Enregistrer" class="btn btn-primary">
 
@@ -82,7 +85,10 @@
         {% for category, message in messages %}        
             {% if category == "done" %}
             <p style="color: green; font-weight: bold;">{{ message }}</p>
-            {% endif %}                
+            {% endif %} 
+            {% if category == "error" %}
+            <p style="color: red; font-weight: bold;">{{ message }}</p>
+            {% endif %}               
         {% endfor %}
     {% endif %}
 

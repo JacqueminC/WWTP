@@ -1,78 +1,14 @@
-from flask import Blueprint, render_template,session, request, redirect, url_for, flash
+from flask import Blueprint, render_template,session, request, redirect, url_for, flash, jsonify
 from werkzeug.utils import redirect
-from wtforms import StringField, IntegerField, PasswordField, RadioField
-from wtforms.fields.core import BooleanField
-from wtforms.fields.html5 import EmailField, DateField
 from table.model import Table
 from evaluation.model import Evaluation
-from .model import Joueur
+from .model import Joueur, AccountForm, AdminTable, RegisterForm
 from bson import ObjectId
-from flask_wtf import FlaskForm
 from wtforms.validators import InputRequired, ValidationError
 from datetime import datetime
 from dateutil.relativedelta import relativedelta
 
-bpJoueur = Blueprint("joueur", __name__, template_folder="templates")
-
-class accountForm(FlaskForm):
-    nom = StringField("Nom", validators=[InputRequired()])
-    prenom = StringField("Prénom", validators=[InputRequired()])
-    rue = StringField("Rue", validators=[InputRequired()])
-    numero = IntegerField("Numéro", validators=[InputRequired()])
-    boite = StringField("Boite")
-    codePostal = StringField("Code postal", validators=[InputRequired()])
-    ville = StringField("Ville", validators=[InputRequired()])
-    dateDeNaissance = DateField('Date de naissance', format='%Y-%m-%d', render_kw={'disabled':''})
-    pseudo = StringField("Pseudo", render_kw={'disabled':''})
-    email = EmailField("Email", render_kw={'disabled':''})
-
-class registerForm(FlaskForm):
-    nom = StringField("", validators=[InputRequired()], render_kw={"placeholder": "Nom"})
-    prenom = StringField("", validators=[InputRequired()], render_kw={"placeholder": "Prénom"})
-    rue = StringField("", validators=[InputRequired()], render_kw={"placeholder": "Rue"})
-    numero = IntegerField("", validators=[InputRequired()], render_kw={"placeholder": "Numéro"})
-    boite = StringField("", render_kw={"placeholder": "Boite"})
-    codePostal = StringField("", validators=[InputRequired()], render_kw={"placeholder": "Code postal"})
-    ville = StringField("", validators=[InputRequired()], render_kw={"placeholder": "Ville"})
-    dateDeNaissance = DateField('Date de naissance', format='%Y-%m-%d', validators=[InputRequired()])
-    pseudo = StringField("", validators=[InputRequired()], render_kw={"placeholder": "Pseudo"})
-    email = EmailField("", validators=[InputRequired()], render_kw={"placeholder": "Email"})
-    motDePasse = PasswordField("", validators=[InputRequired()], render_kw={"placeholder": "Mot de passe"})
-    confMDP = PasswordField("", validators=[InputRequired()], render_kw={"placeholder": "Confirmation du mot de passe"})
-
-    def validate_dateDeNaissance(self, dateDeNaissance):
-        now = datetime.today()
-        ageCalcule = relativedelta(now, dateDeNaissance.data).years
-
-        if ageCalcule < 15:
-            flash("Il faut avoir 15 ans pour s'inscrire sur le site", "ddn")
-            return ValidationError()
-
-    def validate_confMDP(self, confMDP):
-        if confMDP.data != self.motDePasse.data:
-            flash("La validation n'est pas correcte", "confmdp")
-            return ValidationError()
-
-    def validate_email(self, email):
-        result = Joueur.findEmailExist(email.data)
-
-        if result != 0:
-            email.data = ""
-            flash("L'email est déjà utilisé", "email")
-            return ValidationError()
-
-    def validate_pseudo(self, pseudo):
-        p, find = Joueur.findPseudoExist(pseudo.data)
-
-        if not find:
-            pseudo.data = p
-            flash("Le pseudo n'est pas disponible, essayé " + p, "pseudo")
-            return ValidationError()
-
-
-class AdminTable(FlaskForm):
-    temps = RadioField('Label', choices=[('all','Tout'),('past','Passé'),('futur','Futur')], default='all')
-
+bpJoueur = Blueprint("joueur", __name__, template_folder="templates", static_folder='static', static_url_path='assets')
 
 @bpJoueur.route("/joinTable", methods=["GET", "POST"])
 def joinTable():
@@ -229,7 +165,7 @@ def evaluatePlayer():
 
 @bpJoueur.route("/inscription", methods=["GET", "POST"])
 def formInscription():
-    form = registerForm()
+    form = RegisterForm()
 
     if session.get("isLogged") != True:
 
@@ -249,36 +185,31 @@ def formInscription():
 
 @bpJoueur.route("/account", methods=["GET", "POST"])
 def account():
+
     if session.get("isLogged") == True:
-        form = accountForm()
+        form = AccountForm()
 
         joueur = Joueur.findPlayerById(session["user"]["idJoueur"])
 
-        if not form.is_submitted():       
-
-            form.nom.data = joueur["nom"]
-            form.prenom.data = joueur["prenom"]
-            form.rue.data = joueur["rue"]
-            form.numero.data = joueur["numero"]
-            form.boite.data = joueur["boite"]
-            form.codePostal.data = joueur["codePostal"]
-            form.ville.data = joueur["ville"]
-            form.email.data = joueur["email"]
-            form.pseudo.data = joueur["pseudo"]
-            form.dateDeNaissance.data = joueur["dateDeNaissance"]
+        form.nom.data = joueur["nom"]
+        form.prenom.data = joueur["prenom"]
+        form.rue.data = joueur["rue"]
+        form.numero.data = joueur["numero"]
+        form.boite.data = joueur["boite"]
+        form.codePostal.data = joueur["codePostal"]
+        form.ville.data = joueur["ville"]
+        form.email.data = joueur["email"]
+        form.pseudo.data = joueur["pseudo"]
+        form.dateDeNaissance.data = joueur["dateDeNaissance"]
 
         if form.validate_on_submit():
             try:
                 Joueur.updatePlayer(form, joueur)
                 flash("Votre compte à été mis à jour", "done")
+                return redirect(url_for("joueur.account"))
             except Exception as ex:
-                print("prout")
-                flash(ex)
-
-            
-
-            return redirect(url_for("joueur.account"))
-
+                flash(ex, "error")
+                return render_template("account.html", form=form, ve=ValidationError())
 
         return render_template("account.html", form=form)
     else:
