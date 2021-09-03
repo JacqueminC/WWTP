@@ -342,7 +342,7 @@ class Joueur:
                     raise Exception("La confirmation du mot de passe n'est pas valide")            
 
             print("update")
-            """RepoJoueur.updatePlayer(joueur)""" 
+            RepoJoueur.updatePlayer(joueur) 
         except Exception as ex:
             raise ex
 
